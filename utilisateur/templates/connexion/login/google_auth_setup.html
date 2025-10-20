@@ -1,0 +1,427 @@
+{% extends 'connexion/base_login.html' %}
+{% load static %}
+{% load static i18n %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <!-- Logo Section -->
+        <div class="auth-logo">
+            <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo-img">
+            <h1 class="app-name">Sourcing</h1>
+        </div>
+
+        <!-- Header -->
+        <div class="auth-header">
+            <h2>Configuration de Google Authenticator</h2>
+            <p class="text-muted">Scanner le code QR avec l'application Google Authenticator</p>
+        </div>
+
+        <!-- QR Code Section -->
+        <div class="auth-body text-center">
+            <div class="qr-code-container mb-4">
+                <img src="data:image/png;base64,{{ qr_code }}" alt="QR Code" class="qr-code">
+            </div>
+            
+            <div class="manual-entry">
+                <div class="alert alert-info">
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <h4 class="m-0">Entrée manuelle</h4>
+                    </div>
+                    <p class="mb-2">Si vous ne pouvez pas scanner le code QR, utilisez cette clé secrète :</p>
+                    <div class="secret-key">
+                        <code>{{ secret }}</code>
+                        <button class="btn-copy" data-clipboard-text="{{ secret }}" title="Copier la clé">
+                            <i class="far fa-copy"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-grid gap-3 mt-4">
+                <a href="{% url 'google_auth_verification' %}" class="btn-submit">
+                    <span>J'ai configuré Google Authenticator</span>
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+                
+                <a href="#" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#helpModal">
+                    <i class="fas fa-question-circle me-2"></i>
+                    Comment configurer ?
+                </a>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="auth-footer">
+            <p>Besoin d'aide ? <a href="#" class="help-link">Contactez le support</a></p>
+        </div>
+    </div>
+</div>
+
+<!-- Help Modal -->
+<div class="modal fade" id="helpModal" tabindex="-1" aria-labelledby="helpModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="helpModalLabel">Comment configurer Google Authenticator</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+            </div>
+            <div class="modal-body">
+                <ol class="list-group list-group-numbered">
+                    <li class="list-group-item border-0 ps-0">Téléchargez l'application Google Authenticator sur votre appareil mobile</li>
+                    <li class="list-group-item border-0 ps-0">Ouvrez l'application et appuyez sur "+" pour ajouter un nouveau compte</li>
+                    <li class="list-group-item border-0 ps-0">Scannez le code QR ci-dessus ou entrez manuellement la clé secrète</li>
+                    <li class="list-group-item border-0 ps-0">Une fois configuré, appuyez sur le bouton ci-dessous pour continuer</li>
+                </ol>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                <a href="https://support.google.com/accounts/answer/1066447" target="_blank" class="btn btn-success">
+                    <i class="fab fa-google me-2"></i> Aide Google Authenticator
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    :root {
+        --primary-color: #2d5c2d;
+        --primary-light: #4a7c4a;
+        --bg-color: #f8f9fa;
+        --card-bg: #ffffff;
+        --text-color: #2d3748;
+        --text-muted: #718096;
+        --border-color: #e2e8f0;
+        --hover-bg: #f8fdf8;
+        --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+        --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+        --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Base Styles */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        line-height: 1.5;
+    }
+
+    /* Layout */
+    .auth-container {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem 1rem;
+        background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+    }
+
+    .auth-card {
+        width: 100%;
+        max-width: 28rem;
+        background: var(--card-bg);
+        border-radius: 1rem;
+        overflow: hidden;
+        box-shadow: var(--shadow-lg);
+        transition: var(--transition);
+    }
+
+    .auth-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Logo Section */
+    .auth-logo {
+        text-align: center;
+        padding: 2.5rem 1.5rem 1.5rem;
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+        color: white;
+    }
+
+    .logo-img {
+        width: 4.5rem;
+        height: 4.5rem;
+        margin-bottom: 0.75rem;
+        border-radius: 50%;
+        border: 3px solid rgba(255, 255, 255, 0.2);
+        box-shadow: var(--shadow-sm);
+        transition: var(--transition);
+    }
+
+    .app-name {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin: 0;
+        letter-spacing: 0.5px;
+        color: white;
+    }
+
+    /* Header */
+    .auth-header {
+        text-align: center;
+        padding: 1.5rem 2rem;
+        background: var(--card-bg);
+    }
+
+    .auth-header h2 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--text-color);
+        margin-bottom: 0.5rem;
+    }
+
+    .auth-header p {
+        color: var(--text-muted);
+        font-size: 0.9375rem;
+    }
+
+    /* Body */
+    .auth-body {
+        padding: 0 2rem 2rem;
+    }
+
+    .qr-code-container {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 0.75rem;
+        display: inline-block;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        border: 1px solid var(--border-color);
+    }
+
+    .qr-code {
+        max-width: 200px;
+        height: auto;
+        display: block;
+        margin: 0 auto;
+    }
+
+    /* Manual Entry */
+    .manual-entry {
+        margin-top: 1.5rem;
+    }
+
+    .alert {
+        border-radius: 0.75rem;
+        border: 1px solid transparent;
+        padding: 1.25rem;
+    }
+
+    .alert-info {
+        color: #055160;
+        background-color: #cff4fc;
+        border-color: #b6effb;
+    }
+
+    .secret-key {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: white;
+        padding: 0.75rem 1rem;
+        border-radius: 0.5rem;
+        border: 1px solid var(--border-color);
+        margin-top: 0.75rem;
+    }
+
+    .secret-key code {
+        font-family: 'SFMono-Regular', Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        font-size: 0.875rem;
+        color: var(--text-color);
+        word-break: break-all;
+    }
+
+    .btn-copy {
+        background: none;
+        border: none;
+        color: var(--primary-color);
+        cursor: pointer;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.25rem;
+        transition: all 0.2s ease;
+    }
+
+    .btn-copy:hover {
+        background: rgba(45, 92, 45, 0.1);
+    }
+
+    /* Submit Button */
+    .btn-submit {
+        width: 100%;
+        padding: 1rem;
+        border: none;
+        border-radius: 0.75rem;
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+        color: white;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        transition: var(--transition);
+        box-shadow: 0 4px 6px rgba(45, 92, 45, 0.2);
+        text-decoration: none;
+    }
+
+    .btn-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 7px 14px rgba(45, 92, 45, 0.25);
+        color: white;
+    }
+
+    .btn-submit:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 4px rgba(45, 92, 45, 0.2);
+    }
+
+    .btn-submit i {
+        font-size: 0.875rem;
+        transition: transform 0.3s ease;
+    }
+
+    .btn-submit:hover i {
+        transform: translateX(3px);
+    }
+
+    /* Outline Button */
+    .btn-outline-success {
+        color: var(--primary-color);
+        border: 1px solid var(--primary-color);
+        background-color: transparent;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.75rem 1rem;
+        border-radius: 0.75rem;
+        font-weight: 500;
+    }
+
+    .btn-outline-success:hover {
+        color: #fff;
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+    }
+
+    /* Footer */
+    .auth-footer {
+        text-align: center;
+        padding: 1.25rem 2rem 2rem;
+        border-top: 1px solid var(--border-color);
+    }
+
+    .help-link {
+        color: var(--primary-color);
+        font-weight: 600;
+        text-decoration: none;
+        transition: var(--transition);
+    }
+
+    .help-link:hover {
+        text-decoration: underline;
+        opacity: 0.9;
+    }
+
+    /* Modal */
+    .modal-content {
+        border: none;
+        border-radius: 1rem;
+        overflow: hidden;
+    }
+
+    .modal-header {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+        color: white;
+        border: none;
+        padding: 1.25rem 1.5rem;
+    }
+
+    .modal-title {
+        font-weight: 600;
+    }
+
+    .btn-close {
+        filter: invert(1) brightness(100%);
+        opacity: 0.8;
+    }
+
+    .modal-body {
+        padding: 1.5rem;
+    }
+
+    .list-group-item {
+        background: none;
+        padding: 0.5rem 0;
+        border: none;
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 480px) {
+        .auth-card {
+            margin: 1rem;
+            border-radius: 0.75rem;
+        }
+
+        .auth-body {
+            padding: 0 1.25rem 1.5rem;
+        }
+
+        .auth-header {
+            padding: 1.25rem 1.25rem 1rem;
+        }
+
+        .auth-header h2 {
+            font-size: 1.25rem;
+        }
+
+        .qr-code {
+            max-width: 180px;
+        }
+    }
+</style>
+
+<!-- Clipboard.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.8/clipboard.min.js"></script>
+
+<!-- Initialize Clipboard -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize clipboard.js
+        var clipboard = new ClipboardJS('.btn-copy');
+        
+        // Show tooltip on copy
+        clipboard.on('success', function(e) {
+            var originalTitle = e.trigger.title;
+            e.trigger.innerHTML = '<i class="fas fa-check"></i>';
+            e.trigger.title = 'Copié !';
+            
+            setTimeout(function() {
+                e.trigger.innerHTML = '<i class="far fa-copy"></i>';
+                e.trigger.title = originalTitle;
+            }, 2000);
+            
+            e.clearSelection();
+        });
+    });
+</script>
+
+<!-- Bootstrap JS Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+{% endblock %}

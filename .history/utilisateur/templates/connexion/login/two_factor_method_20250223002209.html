@@ -1,0 +1,45 @@
+{% extends 'registration/base.html' %}
+{% load static %}
+{% load static i18n %}
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm border-0">
+                  
+            <a class="navbar-brand mx-auto mt-2 flex-fill text-center">
+                <div class="w-100 mb-4">
+                    <div class="navbar-brand-wrapper d-flex align-items-center justify-content-center flex-column">
+                        <img src="{% static 'images/imgs/logo/logo1.jpeg' %}" alt="logo" class="img-fluid rounded-circle" style="max-width: 200px; height: auto;">
+                        <h2 class="h4 mb-1 mt-2">Groupe MOPAKAM</h2>
+                    </div>
+                </div> 
+            </a>
+                <hr>
+                
+                <div class="card-header text-center bg-light border-0">
+                    <h2 class="text-muted">Authentification à Deux Facteurs</h2>
+                </div>
+                <div class="card-body p-4">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="form-group mb-4">
+                            <h4 class="text-muted">Choisir une méthode de vérification</h4>
+                            {% for radio in form.two_factor_method %}
+                            <div class="form-check mb-3">
+                                {{ radio.tag }}
+                                <label class="form-check-label" for="{{ radio.id_for_label }}">
+                                    {{ radio.choice_label }}
+                                </label>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <button type="submit" class="btn btn-success btn-lg btn-block rounded-pill">Continuer</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

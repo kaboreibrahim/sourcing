@@ -1,0 +1,383 @@
+{% extends 'connexion/base_login.html' %}
+{% load static %}
+{% load static i18n %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <!-- Logo Section -->
+        <div class="auth-logo">
+            <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo-img">
+            <h1 class="app-name">Sourcing</h1>
+        </div>
+
+        <!-- Header -->
+        <div class="auth-header">
+            <h2>Authentification à Deux Facteurs</h2>
+            <p class="text-muted">Sélectionnez votre méthode de vérification préférée</p>
+        </div>
+
+        <!-- Form Section -->
+        <div class="auth-body">
+            <form method="post" class="auth-form">
+                {% csrf_token %}
+                
+                <div class="verification-options">
+                    {% for radio in form.two_factor_method %}
+                    <div class="verification-option">
+                        {{ radio.tag }}
+                        <label for="{{ radio.id_for_label }}" class="verification-label">
+                            <div class="option-content">
+                                <div class="option-icon">
+                                    {% if 'SMS' in radio.choice_label %}
+                                        <i class="fas fa-mobile-alt"></i>
+                                    {% elif 'Email' in radio.choice_label %}
+                                        <i class="fas fa-envelope"></i>
+                                    {% else %}
+                                        <i class="fas fa-mobile-alt"></i>
+                                    {% endif %}
+                                </div>
+                                <div class="option-details">
+                                    <span class="option-title">{{ radio.choice_label }}</span>
+                                    <span class="option-hint">
+                                        {% if 'SMS' in radio.choice_label %}
+                                            Code envoyé par message
+                                        {% elif 'Email' in radio.choice_label %}
+                                            Code envoyé par email
+                                        {% else %}
+                                            Code généré par l'application
+                                        {% endif %}
+                                    </span>
+                                </div>
+                                <div class="radio-custom"></div>
+                            </div>
+                        </label>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <button type="submit" class="btn-submit">
+                    <span>Continuer</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </form>
+        </div>
+
+        <!-- Footer -->
+        <div class="auth-footer">
+            <p>Besoin d'aide ? <a href="#" class="help-link">Contactez le support</a></p>
+        </div>
+    </div>
+</div>
+
+<style>
+    :root {
+        --primary-color: #2d5c2d;
+        --primary-light: #4a7c4a;
+        --bg-color: #f8f9fa;
+        --card-bg: #ffffff;
+        --text-color: #2d3748;
+        --text-muted: #718096;
+        --border-color: #e2e8f0;
+        --hover-bg: #f8fdf8;
+        --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+        --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+        --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Base Styles */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        line-height: 1.5;
+    }
+
+    /* Layout */
+    .auth-container {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem 1rem;
+        background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+    }
+
+    .auth-card {
+        width: 100%;
+        max-width: 28rem;
+        background: var(--card-bg);
+        border-radius: 1rem;
+        overflow: hidden;
+        box-shadow: var(--shadow-lg);
+        transition: var(--transition);
+    }
+
+    .auth-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Logo Section */
+    .auth-logo {
+        text-align: center;
+        padding: 2.5rem 1.5rem 1.5rem;
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+        color: white;
+    }
+
+    .logo-img {
+        width: 4.5rem;
+        height: 4.5rem;
+        margin-bottom: 0.75rem;
+        border-radius: 50%;
+        border: 3px solid rgba(255, 255, 255, 0.2);
+        box-shadow: var(--shadow-sm);
+        transition: var(--transition);
+    }
+
+    .app-name {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin: 0;
+        letter-spacing: 0.5px;
+    }
+
+    /* Header */
+    .auth-header {
+        text-align: center;
+        padding: 1.5rem 2rem;
+        background: var(--card-bg);
+    }
+
+    .auth-header h2 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--text-color);
+        margin-bottom: 0.5rem;
+    }
+
+    .auth-header p {
+        color: var(--text-muted);
+        font-size: 0.9375rem;
+    }
+
+    /* Form */
+    .auth-body {
+        padding: 0 2rem 2rem;
+    }
+
+    .verification-options {
+        margin-bottom: 1.5rem;
+    }
+
+    .verification-option {
+        position: relative;
+        margin-bottom: 0.75rem;
+    }
+
+    .verification-option input[type="radio"] {
+        position: absolute;
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .verification-label {
+        display: block;
+        cursor: pointer;
+        padding: 1rem 1.25rem;
+        border: 2px solid var(--border-color);
+        border-radius: 0.75rem;
+        transition: var(--transition);
+        background: var(--card-bg);
+    }
+
+    .verification-option:hover .verification-label {
+        border-color: var(--primary-color);
+        background: var(--hover-bg);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+    }
+
+    .verification-option input[type="radio"]:checked + .verification-label {
+        border-color: var(--primary-color);
+        background: var(--hover-bg);
+        box-shadow: 0 0 0 1px var(--primary-color);
+    }
+
+    .option-content {
+        display: flex;
+        align-items: center;
+        position: relative;
+    }
+
+    .option-icon {
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 50%;
+        background: rgba(45, 92, 45, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1rem;
+        color: var(--primary-color);
+        font-size: 1.25rem;
+        transition: var(--transition);
+    }
+
+    .verification-option:hover .option-icon {
+        background: rgba(45, 92, 45, 0.15);
+        transform: scale(1.05);
+    }
+
+    .option-details {
+        flex: 1;
+    }
+
+    .option-title {
+        display: block;
+        font-weight: 600;
+        color: var(--text-color);
+        margin-bottom: 0.125rem;
+    }
+
+    .option-hint {
+        display: block;
+        font-size: 0.8125rem;
+        color: var(--text-muted);
+    }
+
+    /* Radio Button Customization */
+    .radio-custom {
+        width: 1.25rem;
+        height: 1.25rem;
+        border: 2px solid var(--border-color);
+        border-radius: 50%;
+        margin-left: 1rem;
+        position: relative;
+        transition: var(--transition);
+    }
+
+    .verification-option:hover .radio-custom {
+        border-color: var(--primary-color);
+    }
+
+    .verification-option input[type="radio"]:checked + .verification-label .radio-custom {
+        border-color: var(--primary-color);
+        background-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(45, 92, 45, 0.2);
+    }
+
+    .radio-custom::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0);
+        width: 0.5rem;
+        height: 0.5rem;
+        border-radius: 50%;
+        background: white;
+        transition: var(--transition);
+    }
+
+    .verification-option input[type="radio"]:checked + .verification-label .radio-custom::after {
+        transform: translate(-50%, -50%) scale(1);
+    }
+
+    /* Submit Button */
+    .btn-submit {
+        width: 100%;
+        padding: 1rem;
+        border: none;
+        border-radius: 0.75rem;
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+        color: white;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        transition: var(--transition);
+        box-shadow: 0 4px 6px rgba(45, 92, 45, 0.2);
+    }
+
+    .btn-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 7px 14px rgba(45, 92, 45, 0.25);
+    }
+
+    .btn-submit:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 4px rgba(45, 92, 45, 0.2);
+    }
+
+    .btn-submit i {
+        font-size: 0.875rem;
+        transition: transform 0.3s ease;
+    }
+
+    .btn-submit:hover i {
+        transform: translateX(3px);
+    }
+
+    /* Footer */
+    .auth-footer {
+        text-align: center;
+        padding: 1.25rem 2rem 2rem;
+        border-top: 1px solid var(--border-color);
+    }
+
+    .help-link {
+        color: var(--primary-color);
+        font-weight: 600;
+        text-decoration: none;
+        transition: var(--transition);
+    }
+
+    .help-link:hover {
+        text-decoration: underline;
+        opacity: 0.9;
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 480px) {
+        .auth-card {
+            margin: 1rem;
+            border-radius: 0.75rem;
+        }
+
+        .auth-body {
+            padding: 0 1.25rem 1.5rem;
+        }
+
+        .verification-label {
+            padding: 0.875rem 1rem;
+        }
+
+        .option-icon {
+            width: 2.25rem;
+            height: 2.25rem;
+            font-size: 1.125rem;
+        }
+
+        .btn-submit {
+            padding: 0.875rem;
+        }
+    }
+</style>
+
+<!-- Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+{% endblock %}

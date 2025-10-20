@@ -1,0 +1,44 @@
+{% extends 'registration/base.html' %}
+{% load static %}
+{% load static i18n %}
+{% block content %}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        
+        <div class="col-md-6">
+            
+            <div class="card shadow-sm border-0">
+                <a class="navbar-brand mx-auto mt-2 flex-fill text-center">
+                    <div class="w-100 mb-4">
+                        <div class="navbar-brand-wrapper d-flex align-items-center justify-content-center flex-column">
+                            <img src="{% static 'images/imgs/logo/logo1.jpeg' %}" alt="logo" class="img-fluid rounded-circle" style="max-width: 200px; height: auto;">
+                            <h2 class="h4 mb-1 mt-2">Groupe MOPAKAM</h2>
+                        </div>
+                    </div> 
+                </a>
+                <hr>
+                
+                <div class="card-header text-center bg-light border-0">
+                    <h2 class="text-muted">Configuration de Google Authenticator</h2>
+                </div>
+                <div class="card-body text-center p-4">
+                    <p class="text-muted mb-4">Scanner ce code QR avec l'application Google Authenticator pour terminer la configuration.</p>
+                    <img src="data:image/png;base64,{{ qr_code }}" alt="QR Code" class="img-fluid mb-3" style="max-width: 200px; height: auto;">
+                    
+                    <div class="alert alert-info mt-4">
+                        <strong>Entrée manuelle :</strong>
+                        <p class="mb-2">Si vous ne pouvez pas scanner le code QR, utilisez cette clé secrète :</p>
+                        <code class="bg-light p-2 border rounded">{{ secret }}</code>
+                    </div>
+                    
+                    <a href="{% url 'google_auth_verification' %}" class="btn btn-success btn-lg rounded-pill mt-4">
+                        J'ai configuré Google Authenticator
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

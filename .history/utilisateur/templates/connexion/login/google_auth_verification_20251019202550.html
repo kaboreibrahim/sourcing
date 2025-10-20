@@ -1,0 +1,492 @@
+{% extends 'connexion/base_login.html' %}
+{% load static %}
+{% load static i18n %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <!-- Logo Section -->
+        <div class="auth-logo">
+            <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo-img">
+            <h1 class="app-name">Sourcing</h1>
+        </div>
+
+        <!-- Header -->
+        <div class="auth-header">
+            <h2>Vérification Google Authenticator</h2>
+            <p class="text-muted">Entrez le code à 6 chiffres de votre application</p>
+        </div>
+
+        <!-- Form Section -->
+        <div class="auth-body">
+            {% if messages %}
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} mb-4">
+                    <div class="d-flex align-items-center">
+                        <i class="fas {% if message.tags == 'success' %}fa-check-circle{% else %}fa-exclamation-circle{% endif %} me-2"></i>
+                        <span>{{ message }}</span>
+                    </div>
+                </div>
+                {% endfor %}
+            {% endif %}
+
+            <form method="post" id="auth-form" class="auth-form">
+                {% csrf_token %}
+                
+                <div class="form-group mb-4">
+                    <label for="{{ form.code.id_for_label }}" class="form-label">
+                        Code d'authentification
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-white">
+                            <i class="fas fa-mobile-alt text-muted"></i>
+                        </span>
+                        {{ form.code }}
+                    </div>
+                    {% if form.code.errors %}
+                        <div class="invalid-feedback d-block">
+                            {% for error in form.code.errors %}
+                                <i class="fas fa-exclamation-circle me-1"></i>{{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    <small class="form-text text-muted mt-2 d-block">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Entrez le code à 6 chiffres affiché dans votre application Google Authenticator.
+                    </small>
+                </div>
+
+                <button type="submit" class="btn-submit" id="submit">
+                    <span>Vérifier</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+
+                <div class="text-center mt-4">
+                    <p class="text-muted mb-2">Vous rencontrez des problèmes ?</p>
+                    <a href="#" class="btn btn-outline-success btn-sm" data-bs-toggle="modal" data-bs-target="#helpModal">
+                        <i class="fas fa-question-circle me-1"></i>
+                        Aide
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Footer -->
+        <div class="auth-footer">
+            <p>Besoin d'aide ? <a href="#" class="help-link">Contactez le support</a></p>
+        </div>
+    </div>
+</div>
+
+<!-- Help Modal -->
+<div class="modal fade" id="helpModal" tabindex="-1" aria-labelledby="helpModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="helpModalLabel">Aide pour la vérification en deux étapes</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+            </div>
+            <div class="modal-body">
+                <h6 class="fw-bold mb-3">Comment obtenir votre code de vérification :</h6>
+                <ol class="list-group list-group-numbered mb-4">
+                    <li class="list-group-item border-0 ps-0">Ouvrez l'application Google Authenticator sur votre appareil mobile</li>
+                    <li class="list-group-item border-0 ps-0">Recherchez l'entrée correspondant à Sourcing</li>
+                    <li class="list-group-item border-0 ps-0">Entrez le code à 6 chiffres affiché</li>
+                </ol>
+                
+                <div class="alert alert-warning">
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <h6 class="m-0">Vous ne voyez pas de code ?</h6>
+                    </div>
+                    <p class="mb-0">Assurez-vous que l'heure de votre appareil est synchronisée. Google Authenticator utilise l'heure de votre appareil pour générer des codes.</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                <a href="https://support.google.com/accounts/answer/1066447" target="_blank" class="btn btn-success">
+                    <i class="fab fa-google me-2"></i> Aide Google Authenticator
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Reuse the same styles from other auth pages */
+    :root {
+        --primary-color: #2d5c2d;
+        --primary-light: #4a7c4a;
+        --bg-color: #f8f9fa;
+        --card-bg: #ffffff;
+        --text-color: #2d3748;
+        --text-muted: #718096;
+        --border-color: #e2e8f0;
+        --hover-bg: #f8fdf8;
+        --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+        --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+        --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Base Styles */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        line-height: 1.5;
+    }
+
+    /* Layout */
+    .auth-container {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem 1rem;
+        background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+    }
+
+    .auth-card {
+        width: 100%;
+        max-width: 28rem;
+        background: var(--card-bg);
+        border-radius: 1rem;
+        overflow: hidden;
+        box-shadow: var(--shadow-lg);
+        transition: var(--transition);
+    }
+
+    .auth-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Logo Section */
+    .auth-logo {
+        text-align: center;
+        padding: 2.5rem 1.5rem 1.5rem;
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+        color: white;
+    }
+
+    .logo-img {
+        width: 4.5rem;
+        height: 4.5rem;
+        margin-bottom: 0.75rem;
+        border-radius: 50%;
+        border: 3px solid rgba(255, 255, 255, 0.2);
+        box-shadow: var(--shadow-sm);
+        transition: var(--transition);
+    }
+
+    .app-name {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin: 0;
+        letter-spacing: 0.5px;
+        color: white;
+    }
+
+    /* Header */
+    .auth-header {
+        text-align: center;
+        padding: 1.5rem 2rem;
+        background: var(--card-bg);
+    }
+
+    .auth-header h2 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--text-color);
+        margin-bottom: 0.5rem;
+    }
+
+    .auth-header p {
+        color: var(--text-muted);
+        font-size: 0.9375rem;
+    }
+
+    /* Form */
+    .auth-body {
+        padding: 0 2rem 2rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        color: var(--text-color);
+    }
+
+    .input-group {
+        position: relative;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: stretch;
+        width: 100%;
+    }
+
+    .input-group-text {
+        display: flex;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 1.5;
+        color: #6c757d;
+        text-align: center;
+        white-space: nowrap;
+        background-color: #fff;
+        border: 1px solid #ced4da;
+        border-radius: 0.5rem 0 0 0.5rem;
+        border-right: none;
+    }
+
+    .form-control {
+        display: block;
+        width: 100%;
+        padding: 0.75rem 1rem;
+        font-size: 1.25rem;
+        font-weight: 600;
+        text-align: center;
+        letter-spacing: 0.2em;
+        color: var(--text-color);
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 1px solid #ced4da;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        border-radius: 0 0.5rem 0.5rem 0;
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    }
+
+    .form-control:focus {
+        color: #212529;
+        background-color: #fff;
+        border-color: var(--primary-color);
+        outline: 0;
+        box-shadow: 0 0 0 0.25rem rgba(45, 92, 45, 0.15);
+    }
+
+    .invalid-feedback {
+        width: 100%;
+        margin-top: 0.25rem;
+        font-size: 0.875em;
+        color: #dc3545;
+    }
+
+    .alert {
+        position: relative;
+        padding: 1rem 1rem;
+        margin-bottom: 1rem;
+        border: 1px solid transparent;
+        border-radius: 0.5rem;
+    }
+
+    .alert-success {
+        color: #0f5132;
+        background-color: #d1e7dd;
+        border-color: #badbcc;
+    }
+
+    .alert-danger {
+        color: #842029;
+        background-color: #f8d7da;
+        border-color: #f5c2c7;
+    }
+
+    .alert-warning {
+        color: #664d03;
+        background-color: #fff3cd;
+        border-color: #ffecb5;
+    }
+
+    .alert-info {
+        color: #055160;
+        background-color: #cff4fc;
+        border-color: #b6effb;
+    }
+
+    /* Submit Button */
+    .btn-submit {
+        width: 100%;
+        padding: 1rem;
+        border: none;
+        border-radius: 0.75rem;
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+        color: white;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        transition: var(--transition);
+        box-shadow: 0 4px 6px rgba(45, 92, 45, 0.2);
+    }
+
+    .btn-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 7px 14px rgba(45, 92, 45, 0.25);
+    }
+
+    .btn-submit:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 4px rgba(45, 92, 45, 0.2);
+    }
+
+    .btn-submit i {
+        font-size: 0.875rem;
+        transition: transform 0.3s ease;
+    }
+
+    .btn-submit:hover i {
+        transform: translateX(3px);
+    }
+
+    /* Outline Button */
+    .btn-outline-success {
+        color: var(--primary-color);
+        border: 1px solid var(--primary-color);
+        background-color: transparent;
+        transition: all 0.3s ease;
+    }
+
+    .btn-outline-success:hover {
+        color: #fff;
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+    }
+
+    .btn-sm {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.8125rem;
+        border-radius: 0.5rem;
+    }
+
+    /* Footer */
+    .auth-footer {
+        text-align: center;
+        padding: 1.25rem 2rem 2rem;
+        border-top: 1px solid var(--border-color);
+    }
+
+    .help-link {
+        color: var(--primary-color);
+        font-weight: 600;
+        text-decoration: none;
+        transition: var(--transition);
+    }
+
+    .help-link:hover {
+        text-decoration: underline;
+        opacity: 0.9;
+    }
+
+    /* Modal */
+    .modal-content {
+        border: none;
+        border-radius: 1rem;
+        overflow: hidden;
+    }
+
+    .modal-header {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+        color: white;
+        border: none;
+        padding: 1.25rem 1.5rem;
+    }
+
+    .modal-title {
+        font-weight: 600;
+    }
+
+    .btn-close {
+        filter: invert(1) brightness(100%);
+        opacity: 0.8;
+    }
+
+    .modal-body {
+        padding: 1.5rem;
+    }
+
+    .list-group-item {
+        background: none;
+        padding: 0.5rem 0;
+        border: none;
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 480px) {
+        .auth-card {
+            margin: 1rem;
+            border-radius: 0.75rem;
+        }
+
+        .auth-body {
+            padding: 0 1.25rem 1.5rem;
+        }
+
+        .auth-header {
+            padding: 1.25rem 1.25rem 1rem;
+        }
+
+        .auth-header h2 {
+            font-size: 1.25rem;
+        }
+
+        .form-control {
+            font-size: 1.1rem;
+            letter-spacing: 0.15em;
+            padding: 0.75rem 0.5rem;
+        }
+    }
+</style>
+
+<!-- Auto-submit the form when 6 digits are entered -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const codeInput = document.getElementById('{{ form.code.id_for_label }}');
+        
+        if (codeInput) {
+            // Format input to show 6 separate boxes
+            codeInput.type = 'text';
+            codeInput.maxLength = 6;
+            codeInput.placeholder = '000000';
+            
+            // Auto-submit when 6 digits are entered
+            codeInput.addEventListener('input', function(e) {
+                // Only allow numbers
+                this.value = this.value.replace(/[^0-9]/g, '');
+                
+                if (this.value.length === 6) {
+                    document.getElementById('auth-form').submit();
+                }
+            });
+            
+            // Focus the input on page load
+            codeInput.focus();
+        }
+    });
+</script>
+
+<!-- Bootstrap JS Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+{% endblock %}

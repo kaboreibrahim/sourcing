@@ -1,0 +1,47 @@
+{% extends 'registration/base.html' %}
+{% load static %}
+{% load static i18n %}
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm border-0">
+                <a class="navbar-brand mx-auto mt-2 flex-fill text-center">
+                    <div class="w-100 mb-4">
+                        <div class="navbar-brand-wrapper d-flex align-items-center justify-content-center flex-column">
+                            <img src="{% static 'images/imgs/logo/logo1.jpeg' %}" alt="logo" class="img-fluid rounded-circle" style="max-width: 200px; height: auto;">
+                            <h2 class="h4 mb-1 mt-2">Groupe MOPAKAM</h2>
+                        </div>
+                    </div> 
+                </a>
+                <hr>
+                
+                <div class="card-header text-center bg-light border-0">
+                    <h2 class="text-muted">{% trans "Vérification par Email" %}</h2>
+                </div>
+                <div class="card-body p-4">
+                    {% if messages %}
+                    {% for message in messages %}
+                    <div class="alert {{ message.tags }} mb-3">
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+                    <p class="text-muted mb-4">{% trans "Un code de vérification à 6 chiffres a été envoyé à votre adresse e-mail. Veuillez entrer le code ci-dessous." %}</p>
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="form-group mb-4">
+                            <label for="{{ form.code.id_for_label }}" class="text-muted">{% trans "Code de Vérification" %}</label>
+                            {{ form.code }}
+                            {% if form.code.errors %}
+                            <div class="text-danger mt-2">{{ form.code.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <button type="submit" class="btn btn-success btn-lg btn-block rounded-pill">{% trans "Vérifier" %}</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

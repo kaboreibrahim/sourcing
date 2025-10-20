@@ -1,0 +1,116 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "Supprimer la zone" %}{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8 max-w-2xl">
+    <!-- Breadcrumb -->
+    <nav class="mb-6 text-sm">
+        <ol class="flex items-center gap-2 text-gray-600">
+            <li><a href="{% url 'zone-list' %}" class="hover:text-blue-600">{% trans "Zones" %}</a></li>
+            <li><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg></li>
+            <li><a href="{% url 'zone-detail' zone.pk %}" class="hover:text-blue-600">Zone {{ zone.numero }}</a></li>
+            <li><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg></li>
+            <li class="text-gray-800 font-semibold">{% trans "Supprimer" %}</li>
+        </ol>
+    </nav>
+    
+    <!-- Alerte de confirmation -->
+    <div class="bg-white rounded-xl shadow-lg p-8">
+        <div class="flex items-center justify-center mb-6">
+            <div class="bg-red-100 rounded-full p-4">
+                <svg class="w-16 h-16 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                </svg>
+            </div>
+        </div>
+        
+        <h1 class="text-2xl font-bold text-gray-800 text-center mb-4">
+            {% trans "Confirmer la suppression" %}
+        </h1>
+        
+        <p class="text-center text-gray-600 mb-6">
+            {% trans "Êtes-vous sûr de vouloir supprimer cette zone ?" %}
+        </p>
+        
+        <!-- Informations sur la zone -->
+        <div class="bg-gray-50 rounded-lg p-6 mb-6">
+            <div class="flex items-center justify-between mb-4">
+                <span class="text-4xl font-bold text-blue-600">{{ zone.numero }}</span>
+                <span class="text-lg text-gray-600">{% trans "Zone" %}</span>
+            </div>
+            
+            {% if zone.description %}
+            <p class="text-gray-700 mb-4">{{ zone.description }}</p>
+            {% endif %}
+            
+            <div class="flex items-center gap-2 text-sm text-gray-600">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                </svg>
+                <span>
+                    {% blocktrans count counter=total_villes %}
+                        {{ counter }} ville associée
+                    {% plural %}
+                        {{ counter }} villes associées
+                    {% endblocktrans %}
+                </span>
+            </div>
+        </div>
+        
+        <!-- Avertissement -->
+        {% if total_villes > 0 %}
+        <div class="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded mb-6">
+            <div class="flex">
+                <svg class="w-5 h-5 text-yellow-500 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                </svg>
+                <div class="text-sm text-yellow-700">
+                    <p class="font-semibold mb-1">{% trans "Attention" %}</p>
+                    <p>
+                        {% blocktrans count counter=total_villes %}
+                            Cette zone contient {{ counter }} ville. La suppression de la zone entraînera également la suppression de cette ville (suppression logique).
+                        {% plural %}
+                            Cette zone contient {{ counter }} villes. La suppression de la zone entraînera également la suppression de ces villes (suppression logique).
+                        {% endblocktrans %}
+                    </p>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        
+        <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded mb-6">
+            <div class="flex">
+                <svg class="w-5 h-5 text-red-500 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                </svg>
+                <div class="text-sm text-red-700">
+                    <p class="font-semibold mb-1">{% trans "Suppression logique" %}</p>
+                    <p>{% trans "Les données ne seront pas définitivement supprimées de la base de données mais marquées comme supprimées. Vous pourrez les restaurer ultérieurement depuis l'interface d'administration." %}</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Formulaire de confirmation -->
+        <form method="post" class="space-y-4">
+            {% csrf_token %}
+            
+            <div class="flex gap-4">
+                <button type="submit" 
+                        class="flex-1 bg-red-600 hover:bg-red-700 text-white font-semibold px-6 py-3 rounded-lg shadow-md transition flex items-center justify-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                    </svg>
+                    {% trans "Oui, supprimer" %}
+                </button>
+                <a href="{% url 'zone-detail' zone.pk %}" 
+                   class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold px-6 py-3 rounded-lg text-center transition">
+                    {% trans "Annuler" %}
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

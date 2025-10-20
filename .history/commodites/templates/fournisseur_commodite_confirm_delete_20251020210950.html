@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "Supprimer la liaison" %}{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8 max-w-2xl">
+    <!-- Breadcrumb -->
+    <nav class="mb-6 text-sm">
+        <ol class="flex items-center gap-2 text-gray-600">
+            <li><a href="{% url 'liaison-list' %}" class="hover:text-green-600">{% trans "Liaisons" %}</a></li>
+            <li><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg></li>
+            <li class="text-gray-800 font-semibold">{% trans "Supprimer" %}</li>
+        </ol>
+    </nav>
+    
+    <!-- Alerte de confirmation -->
+    <div class="bg-white rounded-xl shadow-lg p-8">
+        <div class="flex items-center justify-center mb-6">
+            <div class="bg-red-100 rounded-full p-4">
+                <svg class="w-16 h-16 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                </svg>
+            </div>
+        </div>
+        
+        <h1 class="text-2xl font-bold text-gray-800 text-center mb-4">
+            {% trans "Confirmer la suppression" %}
+        </h1>
+        
+        <p class="text-center text-gray-600 mb-6">
+            {% trans "Êtes-vous sûr de vouloir supprimer cette liaison ?" %}
+        </p>
+        
+        <!-- Informations sur la liaison -->
+        <div class="bg-gray-50 rounded-lg p-6 mb-6">
+            <div class="flex items-center gap-4 mb-4">
+                <span class="text-5xl">🔗</span>
+                <div class="flex-1">
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">
+                        {{ fournisseurcommodite.fournisseur.nom }} → {{ fournisseurcommodite.commodite.nom }}
+                    </h3>
+                    
+                    <div class="flex flex-wrap gap-3 text-sm">
+                        <span class="inline-flex items-center gap-2 bg-blue-100 text-blue-700 px-3 py-1 rounded-full font-semibold">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                            </svg>
+                            {{ fournisseurcommodite.fournisseur.nom }}
+                        </span>
+                        
+                        <span class="inline-flex items-center gap-2 bg-green-100 text-green-700 px-3 py-1 rounded-full font-semibold">
+                            🌾 {{ fournisseurcommodite.commodite.nom }}
+                        </span>
+                        
+                        {% if fournisseurcommodite.fournisseur.ville %}
+                        <span class="inline-flex items-center gap-2 text-gray-600">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            </svg>
+                            {{ fournisseurcommodite.fournisseur.ville.nom }}
+                        </span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded mb-6">
+            <div class="flex">
+                <svg class="w-5 h-5 text-red-500 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                </svg>
+                <div class="text-sm text-red-700">
+                    <p class="font-semibold mb-1">{% trans "Suppression logique" %}</p>
+                    <p>{% trans "Cette liaison sera marquée comme supprimée mais pourra être restaurée depuis l'interface d'administration." %}</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Formulaire de confirmation -->
+        <form method="post" class="space-y-4">
+            {% csrf_token %}
+            
+            <div class="flex gap-4">
+                <button type="submit" 
+                        class="flex-1 bg-red-600 hover:bg-red-700 text-white font-semibold px-6 py-3 rounded-lg shadow-md transition flex items-center justify-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                    </svg>
+                    {% trans "Oui, supprimer" %}
+                </button>
+                <a href="{% url 'commodite-detail' fournisseurcommodite.commodite.pk %}" 
+                   class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold px-6 py-3 rounded-lg text-center transition">
+                    {% trans "Annuler" %}
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}Zone {{ zone.numero }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .ville-reference-card {
+        background: linear-gradient(135deg, #fef3c7 0%, #fcd34d 100%);
+        border: 3px solid #f59e0b;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .ville-reference-card::before {
+        content: "⭐";
+        position: absolute;
+        top: -10px;
+        right: -10px;
+        font-size: 8rem;
+        opacity: 0.1;
+        transform: rotate(15deg);
+    }
+    
+    .ville-card {
+        transition: all 0.3s ease;
+        border: 2px solid #e5e7eb;
+    }
+    
+    .ville-card:hover {
+        transform: translateX(5px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        border-color: #3b82f6;
+    }
+    
+    .stat-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        border-radius: 9999px;
+        font-size: 0.875rem;
+        font-weight: 600;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- Breadcrumb -->
+    <nav class="mb-6 text-sm">
+        <ol class="flex items-center gap-2 text-gray-600">
+            <li><a href="{% url 'zone-list' %}" class="hover:text-blue-600">{% trans "Zones" %}</a></li>
+            <li><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg></li>
+            <li class="text-gray-800 font-semibold">Zone {{ zone.numero }}</li>
+        </ol>
+    </nav>
+    
+    <!-- En-tête de la zone -->
+    <div class="bg-white rounded-xl shadow-lg p-8 mb-8">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+            <div class="flex-1">
+                <div class="flex items-center gap-4 mb-2">
+                    <h1 class="text-5xl font-bold text-blue-600">{{ zone.numero }}</h1>
+                    <span class="text-2xl text-gray
