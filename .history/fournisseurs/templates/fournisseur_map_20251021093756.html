@@ -1,0 +1,377 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block title %}Carte des Fournisseurs - Côte d'Ivoire{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+<style>
+    #map {
+        height: 600px;
+        width: 100%;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .map-container {
+        margin-top: 20px;
+    }
+    
+    .filters-card {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        margin-bottom: 20px;
+    }
+    
+    .stats-container {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+    }
+    
+    .stat-card {
+        flex: 1;
+        min-width: 200px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .stat-card.secondary {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    }
+    
+    .stat-card.tertiary {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    }
+    
+    .stat-card h3 {
+        margin: 0;
+        font-size: 2em;
+        font-weight: bold;
+    }
+    
+    .stat-card p {
+        margin: 5px 0 0 0;
+        opacity: 0.9;
+    }
+    
+    .filter-row {
+        display: flex;
+        gap: 15px;
+        align-items: end;
+        flex-wrap: wrap;
+    }
+    
+    .filter-group {
+        flex: 1;
+        min-width: 200px;
+    }
+    
+    .filter-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 600;
+        color: #333;
+    }
+    
+    .filter-group select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+    
+    .btn-filter {
+        padding: 10px 30px;
+        background: #667eea;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background 0.3s;
+    }
+    
+    .btn-filter:hover {
+        background: #5568d3;
+    }
+    
+    .btn-reset {
+        padding: 10px 20px;
+        background: #6c757d;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background 0.3s;
+    }
+    
+    .btn-reset:hover {
+        background: #5a6268;
+    }
+    
+    .leaflet-popup-content {
+        min-width: 200px;
+    }
+    
+    .popup-title {
+        font-size: 16px;
+        font-weight: bold;
+        color: #667eea;
+        margin-bottom: 10px;
+    }
+    
+    .popup-info {
+        margin: 5px 0;
+        font-size: 14px;
+    }
+    
+    .popup-link {
+        display: inline-block;
+        margin-top: 10px;
+        padding: 8px 15px;
+        background: #667eea;
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+        font-size: 13px;
+        transition: background 0.3s;
+    }
+    
+    .popup-link:hover {
+        background: #5568d3;
+        color: white;
+    }
+    
+    .legend {
+        background: white;
+        padding: 10px;
+        border-radius: 4px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    
+    .legend-title {
+        font-weight: bold;
+        margin-bottom: 8px;
+    }
+    
+    .legend-item {
+        display: flex;
+        align-items: center;
+        margin: 5px 0;
+    }
+    
+    .legend-color {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        margin-right: 8px;
+        border: 2px solid white;
+        box-shadow: 0 0 3px rgba(0,0,0,0.3);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="mb-4">
+                <i class="fas fa-map-marked-alt"></i>
+                Carte des Fournisseurs - Côte d'Ivoire
+            </h1>
+            
+            <!-- Statistiques -->
+            <div class="stats-container">
+                <div class="stat-card">
+                    <h3>{{ total_with_coordinates }}</h3>
+                    <p>Fournisseurs géolocalisés</p>
+                </div>
+                <div class="stat-card secondary">
+                    <h3>{{ total_fournisseurs }}</h3>
+                    <p>Total fournisseurs</p>
+                </div>
+                <div class="stat-card tertiary">
+                    <h3>{{ zones.count }}</h3>
+                    <p>Zones couvertes</p>
+                </div>
+            </div>
+            
+            <!-- Filtres -->
+            <div class="filters-card">
+                <h5 class="mb-3">
+                    <i class="fas fa-filter"></i>
+                    Filtres de recherche
+                </h5>
+                <form method="get" id="filterForm">
+                    <div class="filter-row">
+                        <div class="filter-group">
+                            <label for="zone">Zone</label>
+                            <select name="zone" id="zone" class="form-select">
+                                <option value="">Toutes les zones</option>
+                                {% for zone in zones %}
+                                <option value="{{ zone.id }}" {% if selected_zone == zone.id|stringformat:"s" %}selected{% endif %}>
+                                    Zone {{ zone.numero }} - {{ zone.nom }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <label for="commodite">Commodité</label>
+                            <select name="commodite" id="commodite" class="form-select">
+                                <option value="">Toutes les commodités</option>
+                                {% for commodite in commodites %}
+                                <option value="{{ commodite.id }}" {% if selected_commodite == commodite.id|stringformat:"s" %}selected{% endif %}>
+                                    {{ commodite.nom }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <button type="submit" class="btn-filter">
+                                <i class="fas fa-search"></i>
+                                Filtrer
+                            </button>
+                            <button type="button" class="btn-reset" onclick="resetFilters()">
+                                <i class="fas fa-redo"></i>
+                                Réinitialiser
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Carte -->
+            <div class="map-container">
+                <div id="map"></div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+    // Données des fournisseurs
+    const fournisseursData = {{ fournisseurs_json|safe }};
+    
+    // Initialiser la carte centrée sur la Côte d'Ivoire
+    const map = L.map('map').setView([7.539989, -5.547080], 7);
+    
+    // Ajouter le fond de carte OpenStreetMap
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        maxZoom: 18,
+    }).addTo(map);
+    
+    // Couleurs pour les marqueurs selon le nombre de commodités
+    function getMarkerColor(totalCommodites) {
+        if (totalCommodites === 0) return '#dc3545'; // Rouge
+        if (totalCommodites <= 3) return '#ffc107'; // Jaune
+        if (totalCommodites <= 6) return '#17a2b8'; // Bleu
+        return '#28a745'; // Vert
+    }
+    
+    // Créer une icône personnalisée
+    function createCustomIcon(color) {
+        return L.divIcon({
+            className: 'custom-marker',
+            html: `<div style="
+                background-color: ${color};
+                width: 30px;
+                height: 30px;
+                border-radius: 50%;
+                border: 3px solid white;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            "></div>`,
+            iconSize: [30, 30],
+            iconAnchor: [15, 15],
+            popupAnchor: [0, -15]
+        });
+    }
+    
+    // Ajouter les marqueurs pour chaque fournisseur
+    const markers = L.markerClusterGroup ? L.markerClusterGroup() : L.layerGroup();
+    
+    fournisseursData.forEach(function(fournisseur) {
+        const color = getMarkerColor(fournisseur.total_commodites);
+        const icon = createCustomIcon(color);
+        
+        const marker = L.marker([fournisseur.latitude, fournisseur.longitude], {
+            icon: icon
+        });
+        
+        // Contenu du popup
+        const popupContent = `
+            <div class="popup-title">${fournisseur.nom}</div>
+            <div class="popup-info">
+                <strong>📍 Ville:</strong> ${fournisseur.ville}<br>
+                <strong>🏷️ Zone:</strong> ${fournisseur.zone}<br>
+                <strong>📦 Commodités:</strong> ${fournisseur.total_commodites}
+            </div>
+            <a href="${fournisseur.url}" class="popup-link">
+                <i class="fas fa-info-circle"></i>
+                Voir détails
+            </a>
+        `;
+        
+        marker.bindPopup(popupContent);
+        markers.addLayer(marker);
+    });
+    
+    map.addLayer(markers);
+    
+    // Ajouter une légende
+    const legend = L.control({position: 'bottomright'});
+    legend.onAdd = function(map) {
+        const div = L.DomUtil.create('div', 'legend');
+        div.innerHTML = `
+            <div class="legend-title">Nombre de commodités</div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #dc3545;"></div>
+                <span>Aucune</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #ffc107;"></div>
+                <span>1-3</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #17a2b8;"></div>
+                <span>4-6</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #28a745;"></div>
+                <span>7+</span>
+            </div>
+        `;
+        return div;
+    };
+    legend.addTo(map);
+    
+    // Fonction pour réinitialiser les filtres
+    function resetFilters() {
+        document.getElementById('zone').value = '';
+        document.getElementById('commodite').value = '';
+        document.getElementById('filterForm').submit();
+    }
+    
+    // Ajuster la carte pour afficher tous les marqueurs
+    if (fournisseursData.length > 0) {
+        const bounds = L.latLngBounds(
+            fournisseursData.map(f => [f.latitude, f.longitude])
+        );
+        map.fitBounds(bounds, {padding: [50, 50]});
+    }
+</script>
+{% endblock %}

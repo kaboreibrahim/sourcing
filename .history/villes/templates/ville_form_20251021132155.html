@@ -1,0 +1,217 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "Carte d'analyse logistique" %}{% endblock %}
+
+{% block extra_css %}
+<style>
+    #map {
+        height: 600px;
+        border-radius: 1rem;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    }
+    .info-box {
+        background: white;
+        border-radius: 0.75rem;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        padding: 1rem;
+        margin-top: 1rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+
+    <!-- En-tête -->
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold text-gray-800">🗺️ {% trans "Carte d'analyse logistique" %}</h1>
+        <a href="{% url 'zone-list' %}" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg shadow-md transition">
+            {% trans "Retour" %}
+        </a>
+    </div>
+
+    <!-- Formulaire -->
+    <div class="bg-white rounded-xl shadow-md p-6 mb-6 space-y-4">
+        <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">{% trans "Nom de la ville" %}</label>
+            <input id="id_nom" type="text" placeholder="Ex: Bouaké" class="w-full border border-gray-300 rounded-lg px-4 py-2">
+            <button id="searchCityBtn" class="mt-3 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">{% trans "Rechercher" %}</button>
+        </div>
+
+        <div class="flex flex-wrap gap-4">
+            <button id="drawPolygonBtn" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg">🖊️ {% trans "Dessiner zone" %}</button>
+            <button id="clearBtn" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg">🧹 {% trans "Effacer tout" %}</button>
+        </div>
+    </div>
+
+    <!-- Carte -->
+    <div id="map"></div>
+
+    <!-- Informations -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+        <div class="info-box">
+            <h3 class="font-semibold text-gray-700 mb-1">{% trans "Superficie" %}</h3>
+            <p id="infoSuperficie" class="text-xl font-bold text-blue-700">-</p>
+        </div>
+        <div class="info-box">
+            <h3 class="font-semibold text-gray-700 mb-1">{% trans "Distance vers le Port d'Abidjan" %}</h3>
+            <p id="infoDistAbidjan" class="text-xl font-bold text-green-700">-</p>
+        </div>
+        <div class="info-box">
+            <h3 class="font-semibold text-gray-700 mb-1">{% trans "Distance vers le Port de San-Pédro" %}</h3>
+            <p id="infoDistSanPedro" class="text-xl font-bold text-orange-700">-</p>
+        </div>
+    </div>
+
+    <!-- Champs cachés pour le backend -->
+    <input type="hidden" id="id_superficie">
+    <input type="hidden" id="id_distance_port_abidjan">
+    <input type="hidden" id="id_distance_port_sanpedro">
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://api-maps.yandex.ru/2.1/?lang=fr_FR"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const PORT_ABIDJAN = [5.3040792, -4.0259701];
+    const PORT_SANPEDRO = [4.739636, -6.619770];
+    let map, cityMarker, polygon, drawingManager;
+    let routeAbidjan = null, routeSanPedro = null;
+
+    ymaps.ready(() => {
+        map = new ymaps.Map("map", {
+            center: [7.5, -5.5],
+            zoom: 7,
+            controls: ["zoomControl", "fullscreenControl"]
+        });
+
+        addPorts();
+
+        // Événements
+        map.events.add("click", (e) => placeCity(e.get("coords")));
+        document.getElementById("drawPolygonBtn").addEventListener("click", toggleDrawing);
+        document.getElementById("clearBtn").addEventListener("click", clearAll);
+        document.getElementById("searchCityBtn").addEventListener("click", searchCity);
+    });
+
+    // 🟦 Ajoute les ports
+    function addPorts() {
+        const ports = [
+            new ymaps.Placemark(PORT_ABIDJAN, { iconCaption: "Port d'Abidjan" }, { preset: "islands#blueCircleDotIcon" }),
+            new ymaps.Placemark(PORT_SANPEDRO, { iconCaption: "Port de San-Pédro" }, { preset: "islands#greenCircleDotIcon" })
+        ];
+        ports.forEach(p => map.geoObjects.add(p));
+    }
+
+    // 📍 Ville sélectionnée
+    function placeCity(coords) {
+        if (cityMarker) map.geoObjects.remove(cityMarker);
+        cityMarker = new ymaps.Placemark(coords, { iconCaption: "Ville" }, { preset: "islands#redCircleDotIcon", draggable: true });
+        map.geoObjects.add(cityMarker);
+
+        cityMarker.events.add("dragend", () => calcRoutes(cityMarker.geometry.getCoordinates()));
+        calcRoutes(coords);
+    }
+
+    // 🚗 Itinéraires routiers réels
+    function calcRoutes(coords) {
+        clearRoutes();
+        updateInfo("infoDistAbidjan", "⏳ Calcul...");
+        updateInfo("infoDistSanPedro", "⏳ Calcul...");
+
+        // Abidjan
+        ymaps.route([coords, PORT_ABIDJAN]).then(route => {
+            const km = Math.round(route.getLength() / 1000);
+            route.getPaths().get(0).options.set({ strokeColor: "#1E90FF", strokeWidth: 5 });
+            map.geoObjects.add(route);
+            routeAbidjan = route;
+
+            document.getElementById("id_distance_port_abidjan").value = km;
+            updateInfo("infoDistAbidjan", `${km} km 🚗 (par route)`);
+            map.setBounds(map.geoObjects.getBounds(), { checkZoomRange: true, zoomMargin: 50 });
+        }).catch(() => updateInfo("infoDistAbidjan", "Erreur de calcul"));
+
+        // San-Pédro
+        ymaps.route([coords, PORT_SANPEDRO]).then(route => {
+            const km = Math.round(route.getLength() / 1000);
+            route.getPaths().get(0).options.set({ strokeColor: "#32CD32", strokeWidth: 5 });
+            map.geoObjects.add(route);
+            routeSanPedro = route;
+
+            document.getElementById("id_distance_port_sanpedro").value = km;
+            updateInfo("infoDistSanPedro", `${km} km 🚗 (par route)`);
+            map.setBounds(map.geoObjects.getBounds(), { checkZoomRange: true, zoomMargin: 50 });
+        }).catch(() => updateInfo("infoDistSanPedro", "Erreur de calcul"));
+    }
+
+    function clearRoutes() {
+        if (routeAbidjan) map.geoObjects.remove(routeAbidjan);
+        if (routeSanPedro) map.geoObjects.remove(routeSanPedro);
+        routeAbidjan = routeSanPedro = null;
+    }
+
+    // ✏️ Dessin de zone
+    function toggleDrawing() {
+        const btn = document.getElementById("drawPolygonBtn");
+        if (drawingManager) {
+            drawingManager.editor.stopDrawing();
+            drawingManager = null;
+            btn.textContent = "🖊️ Dessiner zone";
+            return;
+        }
+
+        btn.textContent = "⏸️ Arrêter le dessin";
+        polygon = new ymaps.Polygon([], {}, { fillColor: "#00FF0050", strokeColor: "#00FF00", strokeWidth: 3 });
+        map.geoObjects.add(polygon);
+        polygon.editor.startDrawing();
+        polygon.editor.events.add("drawingstop", () => {
+            calculateArea();
+            drawingManager = null;
+            btn.textContent = "🖊️ Dessiner zone";
+        });
+        drawingManager = polygon;
+    }
+
+    // 📐 Calcul superficie
+    function calculateArea() {
+        if (!polygon) return;
+        const area = Math.abs(ymaps.geoQuery(polygon).get(0).geometry.getArea() / 1e6).toFixed(2);
+        document.getElementById("id_superficie").value = area;
+        updateInfo("infoSuperficie", `${area} km²`);
+    }
+
+    // 🧹 Effacer tout
+    function clearAll() {
+        map.geoObjects.removeAll();
+        addPorts();
+        cityMarker = polygon = null;
+        ["infoSuperficie", "infoDistAbidjan", "infoDistSanPedro"].forEach(id => updateInfo(id, "-"));
+        ["id_superficie", "id_distance_port_abidjan", "id_distance_port_sanpedro"].forEach(id => document.getElementById(id).value = "");
+        document.getElementById("drawPolygonBtn").textContent = "🖊️ Dessiner zone";
+    }
+
+    // 🔍 Recherche ville
+    function searchCity() {
+        const name = document.getElementById("id_nom").value;
+        if (!name) return alert("Veuillez entrer le nom de la ville d'abord.");
+        ymaps.geocode(`${name}, Côte d'Ivoire`, { results: 1 }).then(res => {
+            const geo = res.geoObjects.get(0);
+            if (!geo) return alert("Ville non trouvée.");
+            const coords = geo.geometry.getCoordinates();
+            map.setCenter(coords, 10);
+            placeCity(coords);
+        });
+    }
+
+    // 🔧 Mise à jour des infos
+    function updateInfo(id, text) {
+        const el = document.getElementById(id);
+        if (el) el.textContent = text;
+    }
+});
+</script>
+{% endblock %}

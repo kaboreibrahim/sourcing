@@ -1,0 +1,238 @@
+{% extends "la/base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "Carte des Fournisseurs" %}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<style>
+    #map {
+        height: 600px;
+        border-radius: 1rem;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    }
+    
+    .leaflet-popup-content {
+        min-width: 250px;
+    }
+    
+    .marker-cluster-small {
+        background-color: rgba(59, 130, 246, 0.6);
+    }
+    
+    .marker-cluster-small div {
+        background-color: rgba(59, 130, 246, 0.8);
+    }
+    
+    .legend {
+        background: white;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .legend-marker {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        border: 2px solid white;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- Breadcrumb -->
+    <nav class="mb-6 text-sm">
+        <ol class="flex items-center gap-2 text-gray-600">
+            <li><a href="{% url 'fournisseur-list' %}" class="hover:text-blue-600">{% trans "Fournisseurs" %}</a></li>
+            <li><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg></li>
+            <li class="text-gray-800 font-semibold">{% trans "Carte" %}</li>
+        </ol>
+    </nav>
+    
+    <!-- En-tête -->
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+        <div>
+            <h1 class="text-4xl font-bold text-gray-800 mb-2">
+                🗺️ {% trans "Carte des Fournisseurs" %}
+            </h1>
+            <p class="text-gray-600">
+                {% trans "Localisation géographique de" %} {{ total_with_coordinates }} {% trans "fournisseurs sur" %} {{ total_fournisseurs }}
+            </p>
+        </div>
+        
+        <a href="{% url 'fournisseur-list' %}" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg shadow-md transition">
+            {% trans "Retour à la liste" %}
+        </a>
+    </div>
+    
+    <!-- Filtres -->
+    <div class="bg-white rounded-xl shadow-md p-6 mb-6">
+        <form method="get" class="flex flex-wrap gap-4 items-end">
+            <div class="flex-1 min-w-[200px]">
+                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                    {% trans "Zone" %}
+                </label>
+                <select name="zone" class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none">
+                    <option value="">{% trans "Toutes les zones" %}</option>
+                    {% for zone in zones %}
+                        <option value="{{ zone.pk }}" {% if selected_zone == zone.pk|stringformat:"s" %}selected{% endif %}>
+                            Zone {{ zone.numero }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="flex-1 min-w-[200px]">
+                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                    {% trans "Commodité" %}
+                </label>
+                <select name="commodite" class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none">
+                    <option value="">{% trans "Toutes les commodités" %}</option>
+                    {% for commodite in commodites %}
+                        <option value="{{ commodite.pk }}" {% if selected_commodite == commodite.pk|stringformat:"s" %}selected{% endif %}>
+                            {{ commodite.nom }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-lg transition">
+                {% trans "Filtrer" %}
+            </button>
+        </form>
+    </div>
+    
+    <!-- Statistiques rapides -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+        <div class="bg-gradient-to-br from-blue-500 to-blue-700 rounded-xl p-4 text-white">
+            <p class="text-sm opacity-90">{% trans "Sur la carte" %}</p>
+            <p class="text-3xl font-bold">{{ total_with_coordinates }}</p>
+        </div>
+        
+        <div class="bg-gradient-to-br from-green-500 to-green-700 rounded-xl p-4 text-white">
+            <p class="text-sm opacity-90">{% trans "Total fournisseurs" %}</p>
+            <p class="text-3xl font-bold">{{ total_fournisseurs }}</p>
+        </div>
+        
+        <div class="bg-gradient-to-br from-purple-500 to-purple-700 rounded-xl p-4 text-white">
+            <p class="text-sm opacity-90">{% trans "Couverture GPS" %}</p>
+            <p class="text-3xl font-bold">{% widthratio total_with_coordinates total_fournisseurs 100 %}%</p>
+        </div>
+        
+        <div class="bg-gradient-to-br from-orange-500 to-orange-700 rounded-xl p-4 text-white">
+            <p class="text-sm opacity-90">{% trans "Zones actives" %}</p>
+            <p class="text-3xl font-bold">{{ zones|length }}</p>
+        </div>
+    </div>
+    
+    <!-- Carte -->
+    <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+        <div id="map"></div>
+    </div>
+    
+    <!-- Légende -->
+    <div class="bg-white rounded-xl shadow-lg p-6">
+        <h3 class="text-lg font-bold text-gray-800 mb-4">{% trans "Légende" %}</h3>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="legend-item">
+                <div class="legend-marker" style="background-color: #ef4444;"></div>
+                <span class="text-sm text-gray-700">{% trans "0 commodité" %}</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-marker" style="background-color: #f59e0b;"></div>
+                <span class="text-sm text-gray-700">{% trans "1-2 commodités" %}</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-marker" style="background-color: #3b82f6;"></div>
+                <span class="text-sm text-gray-700">{% trans "3-4 commodités" %}</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-marker" style="background-color: #10b981;"></div>
+                <span class="text-sm text-gray-700">{% trans "5+ commodités" %}</span>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialiser la carte (centrée sur la Côte d'Ivoire)
+    const map = L.map('map').setView([7.5400, -5.5471], 7);
+    
+    // Ajouter le fond de carte
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors',
+        maxZoom: 18
+    }).addTo(map);
+    
+    // Données des fournisseurs
+    const fournisseurs = {{ fournisseurs_json|safe }};
+    
+    // Fonction pour déterminer la couleur du marker
+    function getMarkerColor(nbCommodites) {
+        if (nbCommodites === 0) return '#ef4444'; // Rouge
+        if (nbCommodites <= 2) return '#f59e0b'; // Orange
+        if (nbCommodites <= 4) return '#3b82f6'; // Bleu
+        return '#10b981'; // Vert
+    }
+    
+    // Créer une icône personnalisée
+    function createCustomIcon(color) {
+        return L.divIcon({
+            html: `<div style="background-color: ${color}; width: 30px; height: 30px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.3);"></div>`,
+            className: '',
+            iconSize: [30, 30],
+            iconAnchor: [15, 15]
+        });
+    }
+    
+    // Ajouter les markers
+    const markers = [];
+    fournisseurs.forEach(function(fournisseur) {
+        const color = getMarkerColor(fournisseur.total_commodites);
+        const icon = createCustomIcon(color);
+        
+        const marker = L.marker([fournisseur.latitude, fournisseur.longitude], { icon: icon })
+            .addTo(map)
+            .bindPopup(`
+                <div class="p-2">
+                    <h3 class="font-bold text-lg mb-2">${fournisseur.nom}</h3>
+                    <div class="space-y-1 text-sm">
+                        <p><strong>📍 Ville:</strong> ${fournisseur.ville}</p>
+                        <p><strong>🗺️ Zone:</strong> ${fournisseur.zone}</p>
+                        <p><strong>🌾 Commodités:</strong> ${fournisseur.total_commodites}</p>
+                    </div>
+                    <a href="${fournisseur.url}" class="block mt-3 bg-blue-600 text-white text-center py-2 rounded hover:bg-blue-700 transition">
+                        Voir les détails
+                    </a>
+                </div>
+            `);
+        
+        markers.push(marker);
+    });
+    
+    // Ajuster la vue pour afficher tous les markers
+    if (markers.length > 0) {
+        const group = L.featureGroup(markers);
+        map.fitBounds(group.getBounds().pad(0.1));
+    }
+    
+    // Afficher le nombre total
+    console.log(`${fournisseurs.length} fournisseurs affichés sur la carte`);
+});
+</script>
+{% endblock %}

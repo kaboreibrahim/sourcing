@@ -181,3 +181,4 @@ class Echantionnage(SafeDeleteModel):
             self.impurete_insolubles <= 0.5 and
             self.teneur_eau_matiere_volatiles_mnl <= 0.2
         )
+

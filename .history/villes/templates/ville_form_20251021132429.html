@@ -1,0 +1,299 @@
+{% extends "layouts/base.html" %}
+{% load static i18n %}
+
+{% block title %}{{ title }}{% endblock %}
+
+
+<div class="container mx-auto px-4 py-8 max-w-7xl">
+    <!-- Breadcrumb -->
+    <nav class="mb-6 text-sm">
+        <ol class="flex items-center gap-2 text-gray-600">
+            <li><a href="{% url 'ville-list' %}" class="hover:text-blue-600">{% trans "Villes" %}</a></li>
+            <li><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg></li>
+            <li class="text-gray-800 font-semibold">{{ title }}</li>
+        </ol>
+    </nav>
+    
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Formulaire -->
+        <div class="bg-white rounded-xl shadow-lg p-8">
+            <h1 class="text-3xl font-bold text-gray-800 mb-6">{{ title }}</h1>
+            
+            <form method="post" class="space-y-8" id="villeForm">
+                {% csrf_token %}
+                
+                {% if form.non_field_errors %}
+                <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded">
+                    <div class="text-red-700">{{ form.non_field_errors }}</div>
+                </div>
+                {% endif %}
+                
+                <!-- SECTION PRINCIPALE -->
+                <div class="border-l-4 border-blue-500 pl-6">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4">{% trans "Informations principales" %}</h2>
+                    <div class="space-y-4">
+                        {% for field in form.visible_fields %}
+                            {% if field.name in "nom zone description" %}
+                                <div>
+                                    <label for="{{ field.id_for_label }}" class="block text-sm font-semibold text-gray-700 mb-2">
+                                        {{ field.label }}{% if field.field.required %} <span class="text-red-500">*</span>{% endif %}
+                                    </label>
+                                    {{ field }}
+                                    {% if field.errors %}
+                                        <p class="text-sm text-red-600">{{ field.errors.0 }}</p>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+
+                        <label class="flex items-center gap-3 cursor-pointer bg-yellow-50 border-2 border-yellow-200 rounded-lg p-4 hover:bg-yellow-100 transition w-full">
+                            {{ form.est_ville_reference }}
+                            <div>
+                                <span class="text-lg">⭐</span>
+                                <span class="font-semibold text-gray-800">{{ form.est_ville_reference.label }}</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- SECTION SUPERFICIE -->
+                <div class="border-l-4 border-green-500 pl-6">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4">{% trans "Superficie et localisation" %}</h2>
+                    <div class="space-y-4">
+                        <div>
+                            <label for="{{ form.superficie.id_for_label }}" class="block text-sm font-semibold text-gray-700 mb-2">
+                                {{ form.superficie.label }}
+                            </label>
+                            <div class="relative">
+                                {{ form.superficie }}
+                                <span class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm">km²</span>
+                            </div>
+                            <p class="mt-1 text-xs text-blue-600">💡 Dessinez une zone sur la carte pour calculer automatiquement</p>
+                        </div>
+
+                        <div>
+                            <label for="{{ form.distance_port_abidjan.id_for_label }}" class="block text-sm font-semibold text-gray-700 mb-2">
+                                {{ form.distance_port_abidjan.label }}
+                            </label>
+                            <div class="relative">
+                                {{ form.distance_port_abidjan }}
+                                <span class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm">km</span>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="{{ form.distance_port_sanpedro.id_for_label }}" class="block text-sm font-semibold text-gray-700 mb-2">
+                                {{ form.distance_port_sanpedro.label }}
+                            </label>
+                            <div class="relative">
+                                {{ form.distance_port_sanpedro }}
+                                <span class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm">km</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
+                    <p class="text-blue-700 text-sm">
+                        {% trans "Si vous cochez cette option, cette ville deviendra la ville de référence de sa zone. L'ancienne ville de référence perdra automatiquement ce statut." %}
+                    </p>
+                </div>
+
+                <!-- BOUTONS -->
+                <div class="flex gap-4 pt-4 border-t">
+                    <button type="submit" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg shadow-md transition">
+                        💾 {{ button_text }}
+                    </button>
+                    <a href="{% url 'ville-list' %}" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold px-6 py-3 rounded-lg text-center transition">
+                        ❌ {% trans "Annuler" %}
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <!-- CARTE YANDEX -->
+        <div class="bg-white rounded-xl shadow-lg p-6">
+            <div class="flex gap-2 mb-3">
+                <button id="drawPolygonBtn" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition text-sm font-semibold">
+                    🖊️ Dessiner zone
+                </button>
+                <button id="clearBtn" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition text-sm font-semibold">
+                    🗑️ Effacer
+                </button>
+                <button id="searchCityBtn" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm font-semibold">
+                    🔍 Rechercher
+                </button>
+            </div>
+
+            <div id="map" class="w-full h-[600px] rounded-lg border-2 border-gray-200"></div>
+
+            <div class="mt-4 p-4 bg-gray-50 rounded-lg text-sm">
+                <h3 class="font-semibold mb-2">📊 Résumé</h3>
+                <div class="space-y-2">
+                    <p>Superficie : <span id="infoSuperficie" class="font-semibold text-gray-800">-</span></p>
+                    <p>Distance Abidjan : <span id="infoDistAbidjan" class="font-semibold text-gray-800">-</span></p>
+                    <p>Distance San-Pédro : <span id="infoDistSanPedro" class="font-semibold text-gray-800">-</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- STYLES -->
+<style>
+    input, select, textarea {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 2px solid #e5e7eb;
+        border-radius: 0.5rem;
+        transition: all 0.3s;
+    }
+    input:focus, select:focus, textarea:focus {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
+        outline: none;
+    }
+</style>
+
+{% block extra_js %}
+<script src="https://api-maps.yandex.ru/2.1/?lang=fr_FR"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const PORT_ABIDJAN = [5.3040792, -4.0259701];
+    const PORT_SANPEDRO = [4.739636, -6.619770];
+    let map, cityMarker, polygon, drawingManager;
+    let routeAbidjan = null, routeSanPedro = null;
+
+    ymaps.ready(() => {
+        map = new ymaps.Map("map", {
+            center: [7.5, -5.5],
+            zoom: 7,
+            controls: ["zoomControl", "fullscreenControl"]
+        });
+
+        addPorts();
+
+        // Événements
+        map.events.add("click", (e) => placeCity(e.get("coords")));
+        document.getElementById("drawPolygonBtn").addEventListener("click", toggleDrawing);
+        document.getElementById("clearBtn").addEventListener("click", clearAll);
+        document.getElementById("searchCityBtn").addEventListener("click", searchCity);
+    });
+
+    // 🟦 Ajoute les ports
+    function addPorts() {
+        const ports = [
+            new ymaps.Placemark(PORT_ABIDJAN, { iconCaption: "Port d'Abidjan" }, { preset: "islands#blueCircleDotIcon" }),
+            new ymaps.Placemark(PORT_SANPEDRO, { iconCaption: "Port de San-Pédro" }, { preset: "islands#greenCircleDotIcon" })
+        ];
+        ports.forEach(p => map.geoObjects.add(p));
+    }
+
+    // 📍 Ville sélectionnée
+    function placeCity(coords) {
+        if (cityMarker) map.geoObjects.remove(cityMarker);
+        cityMarker = new ymaps.Placemark(coords, { iconCaption: "Ville" }, { preset: "islands#redCircleDotIcon", draggable: true });
+        map.geoObjects.add(cityMarker);
+
+        cityMarker.events.add("dragend", () => calcRoutes(cityMarker.geometry.getCoordinates()));
+        calcRoutes(coords);
+    }
+
+    // 🚗 Itinéraires routiers réels
+    function calcRoutes(coords) {
+        clearRoutes();
+        updateInfo("infoDistAbidjan", "⏳ Calcul...");
+        updateInfo("infoDistSanPedro", "⏳ Calcul...");
+
+        // Abidjan
+        ymaps.route([coords, PORT_ABIDJAN]).then(route => {
+            const km = Math.round(route.getLength() / 1000);
+            route.getPaths().get(0).options.set({ strokeColor: "#1E90FF", strokeWidth: 5 });
+            map.geoObjects.add(route);
+            routeAbidjan = route;
+
+            document.getElementById("id_distance_port_abidjan").value = km;
+            updateInfo("infoDistAbidjan", `${km} km 🚗 (par route)`);
+            map.setBounds(map.geoObjects.getBounds(), { checkZoomRange: true, zoomMargin: 50 });
+        }).catch(() => updateInfo("infoDistAbidjan", "Erreur de calcul"));
+
+        // San-Pédro
+        ymaps.route([coords, PORT_SANPEDRO]).then(route => {
+            const km = Math.round(route.getLength() / 1000);
+            route.getPaths().get(0).options.set({ strokeColor: "#32CD32", strokeWidth: 5 });
+            map.geoObjects.add(route);
+            routeSanPedro = route;
+
+            document.getElementById("id_distance_port_sanpedro").value = km;
+            updateInfo("infoDistSanPedro", `${km} km 🚗 (par route)`);
+            map.setBounds(map.geoObjects.getBounds(), { checkZoomRange: true, zoomMargin: 50 });
+        }).catch(() => updateInfo("infoDistSanPedro", "Erreur de calcul"));
+    }
+
+    function clearRoutes() {
+        if (routeAbidjan) map.geoObjects.remove(routeAbidjan);
+        if (routeSanPedro) map.geoObjects.remove(routeSanPedro);
+        routeAbidjan = routeSanPedro = null;
+    }
+
+    // ✏️ Dessin de zone
+    function toggleDrawing() {
+        const btn = document.getElementById("drawPolygonBtn");
+        if (drawingManager) {
+            drawingManager.editor.stopDrawing();
+            drawingManager = null;
+            btn.textContent = "🖊️ Dessiner zone";
+            return;
+        }
+
+        btn.textContent = "⏸️ Arrêter le dessin";
+        polygon = new ymaps.Polygon([], {}, { fillColor: "#00FF0050", strokeColor: "#00FF00", strokeWidth: 3 });
+        map.geoObjects.add(polygon);
+        polygon.editor.startDrawing();
+        polygon.editor.events.add("drawingstop", () => {
+            calculateArea();
+            drawingManager = null;
+            btn.textContent = "🖊️ Dessiner zone";
+        });
+        drawingManager = polygon;
+    }
+
+    // 📐 Calcul superficie
+    function calculateArea() {
+        if (!polygon) return;
+        const area = Math.abs(ymaps.geoQuery(polygon).get(0).geometry.getArea() / 1e6).toFixed(2);
+        document.getElementById("id_superficie").value = area;
+        updateInfo("infoSuperficie", `${area} km²`);
+    }
+
+    // 🧹 Effacer tout
+    function clearAll() {
+        map.geoObjects.removeAll();
+        addPorts();
+        cityMarker = polygon = null;
+        ["infoSuperficie", "infoDistAbidjan", "infoDistSanPedro"].forEach(id => updateInfo(id, "-"));
+        ["id_superficie", "id_distance_port_abidjan", "id_distance_port_sanpedro"].forEach(id => document.getElementById(id).value = "");
+        document.getElementById("drawPolygonBtn").textContent = "🖊️ Dessiner zone";
+    }
+
+    // 🔍 Recherche ville
+    function searchCity() {
+        const name = document.getElementById("id_nom").value;
+        if (!name) return alert("Veuillez entrer le nom de la ville d'abord.");
+        ymaps.geocode(`${name}, Côte d'Ivoire`, { results: 1 }).then(res => {
+            const geo = res.geoObjects.get(0);
+            if (!geo) return alert("Ville non trouvée.");
+            const coords = geo.geometry.getCoordinates();
+            map.setCenter(coords, 10);
+            placeCity(coords);
+        });
+    }
+
+    // 🔧 Mise à jour des infos
+    function updateInfo(id, text) {
+        const el = document.getElementById(id);
+        if (el) el.textContent = text;
+    }
+});
+</script>
+{% endblock %}

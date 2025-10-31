@@ -1,0 +1,144 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+{% load i18n %}
+{% block title %}Zone {{ zone.numero }}{% endblock %}
+{% block extra_css %}
+<style>
+    .ville-reference-card {
+        background: linear-gradient(to right, #fef3c7, #fef9e7);
+        border-left: 4px solid #f59e0b;
+    }
+   
+    .ville-card {
+        transition: all 0.2s ease;
+    }
+   
+    .ville-card:hover {
+        background: #f9fafb;
+    }
+   
+    .divider {
+        height: 1px;
+        background: linear-gradient(to right, transparent, #e5e7eb, transparent);
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div class="container mx-auto px-4 py-8 max-w-5xl">
+    <!-- Breadcrumb -->
+    <nav class="mb-8 text-sm text-gray-500">
+        <a href="{% url 'zone-list' %}" class="hover:text-gray-900">{% trans "Zones" %}</a>
+        <span class="mx-2">/</span>
+        <span class="text-gray-900">Zone {{ zone.numero }}</span>
+    </nav>
+   
+    <!-- En-tête -->
+    <div class="mb-12">
+        <div class="flex items-baseline gap-4 mb-3">
+            <h1 class="text-4xl font-bold text-gray-900">Zone {{ zone.numero }}</h1>
+            <span class="text-sm text-gray-500">{{ total_villes }} {% trans "ville" %}{{ total_villes|pluralize:"s" }}</span>
+        </div>
+       
+        {% if zone.description %}
+        <p class="text-gray-600 text-lg mb-6">{{ zone.description }}</p>
+        {% endif %}
+       
+        <div class="flex flex-wrap gap-3">
+            <a href="{% url 'zone-update' zone.pk %}"
+               class="text-sm text-blue-600 hover:text-blue-700 font-medium">
+                {% trans "Modifier la zone" %}
+            </a>
+            <span class="text-gray-300">•</span>
+            <a href="{% url 'ville-create' %}?zone={{ zone.pk }}"
+               class="text-sm text-green-600 hover:text-green-700 font-medium">
+                {% trans "Ajouter une ville" %}
+            </a>
+            <span class="text-gray-300">•</span>
+            <a href="{% url 'zone-delete' zone.pk %}"
+               class="text-sm text-red-600 hover:text-red-700 font-medium">
+                {% trans "Supprimer la zone" %}
+            </a>
+        </div>
+    </div>
+   
+    <div class="divider mb-8"></div>
+   
+    <!-- Liste des villes -->
+    {% if villes %}
+        <div class="space-y-3">
+            {% for ville in villes %}
+                <div class="{% if ville.est_ville_reference %}ville-reference-card{% else %}ville-card{% endif %} rounded-lg p-6 border border-gray-200">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-2">
+                                {% if ville.est_ville_reference %}
+                                <span class="text-yellow-500 text-lg">★</span>
+                                {% endif %}
+                                <h3 class="text-xl font-semibold text-gray-900">{{ ville.nom }}</h3>
+                                {% if ville.est_ville_reference %}
+                                <span class="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded font-medium">
+                                    {% trans "Référence" %}
+                                </span>
+                                {% endif %}
+                            </div>
+                           
+                            {% if ville.description %}
+                            <p class="text-gray-600 text-sm mb-3">{{ ville.description }}</p>
+                            {% endif %}
+                           
+                            <div class="flex flex-wrap gap-x-6 gap-y-2 text-sm text-gray-500">
+                                {% if ville.superficie %}
+                                <span>{{ ville.superficie }} km²</span>
+                                {% endif %}
+                               
+                                {% if ville.distance_port_abidjan %}
+                                <span>{{ ville.distance_port_abidjan }} km → Abidjan</span>
+                                {% endif %}
+                               
+                                {% if ville.distance_port_sanpedro %}
+                                <span>{{ ville.distance_port_sanpedro }} km → San-Pedro</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                       
+                        <div class="flex gap-2 text-sm">
+                            <a href="{% url 'ville-detail' ville.pk %}"
+                               class="text-gray-600 hover:text-gray-900 font-medium">
+                                {% trans "Voir" %}
+                            </a>
+                            <span class="text-gray-300">•</span>
+                            <a href="{% url 'ville-update' ville.pk %}"
+                               class="text-blue-600 hover:text-blue-700 font-medium">
+                                {% trans "Modifier" %}
+                            </a>
+                            <span class="text-gray-300">•</span>
+                            <a href="{% url 'ville-delete' ville.pk %}"
+                               class="text-red-600 hover:text-red-700 font-medium">
+                                {% trans "Supprimer" %}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="text-center py-16">
+            <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 mb-4">
+                <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                </svg>
+            </div>
+            <h3 class="text-lg font-medium text-gray-900 mb-2">
+                {% trans "Aucune ville dans cette zone" %}
+            </h3>
+            <p class="text-gray-500 mb-6">
+                {% trans "Commencez par ajouter des villes à cette zone." %}
+            </p>
+            <a href="{% url 'ville-create' %}?zone={{ zone.pk }}"
+               class="inline-block bg-gray-900 hover:bg-gray-800 text-white text-sm font-medium px-6 py-2.5 rounded-lg transition">
+                {% trans "Ajouter une ville" %}
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,364 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block title %}Carte des Fournisseurs - Côte d'Ivoire{% endblock %}
+
+{% block extra_css %}
+<style>
+    #map {
+        height: 600px;
+        width: 100%;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .map-container {
+        margin-top: 20px;
+    }
+    
+    .filters-card {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        margin-bottom: 20px;
+    }
+    
+    .stats-container {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+    }
+    
+    .stat-card {
+        flex: 1;
+        min-width: 200px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .stat-card.secondary {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    }
+    
+    .stat-card.tertiary {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    }
+    
+    .stat-card h3 {
+        margin: 0;
+        font-size: 2em;
+        font-weight: bold;
+    }
+    
+    .stat-card p {
+        margin: 5px 0 0 0;
+        opacity: 0.9;
+    }
+    
+    .filter-row {
+        display: flex;
+        gap: 15px;
+        align-items: end;
+        flex-wrap: wrap;
+    }
+    
+    .filter-group {
+        flex: 1;
+        min-width: 200px;
+    }
+    
+    .filter-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 600;
+        color: #333;
+    }
+    
+    .filter-group select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+    
+    .btn-filter {
+        padding: 10px 30px;
+        background: #667eea;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background 0.3s;
+    }
+    
+    .btn-filter:hover {
+        background: #5568d3;
+    }
+    
+    .btn-reset {
+        padding: 10px 20px;
+        background: #6c757d;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background 0.3s;
+    }
+    
+    .btn-reset:hover {
+        background: #5a6268;
+    }
+    
+    .legend {
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+        background: white;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        z-index: 1000;
+    }
+    
+    .legend-title {
+        font-weight: bold;
+        margin-bottom: 10px;
+        font-size: 14px;
+    }
+    
+    .legend-item {
+        display: flex;
+        align-items: center;
+        margin: 8px 0;
+        font-size: 13px;
+    }
+    
+    .legend-color {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        margin-right: 10px;
+        border: 2px solid white;
+        box-shadow: 0 0 3px rgba(0,0,0,0.3);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="mb-4">
+                <i class="fas fa-map-marked-alt"></i>
+                Carte des Fournisseurs - Côte d'Ivoire
+            </h1>
+            
+            <!-- Statistiques -->
+            <div class="stats-container">
+                <div class="stat-card">
+                    <h3>{{ total_with_coordinates }}</h3>
+                    <p>Fournisseurs géolocalisés</p>
+                </div>
+                <div class="stat-card secondary">
+                    <h3>{{ total_fournisseurs }}</h3>
+                    <p>Total fournisseurs</p>
+                </div>
+                <div class="stat-card tertiary">
+                    <h3>{{ zones.count }}</h3>
+                    <p>Zones couvertes</p>
+                </div>
+            </div>
+            
+            <!-- Filtres -->
+            <div class="filters-card">
+                <h5 class="mb-3">
+                    <i class="fas fa-filter"></i>
+                    Filtres de recherche
+                </h5>
+                <form method="get" id="filterForm">
+                    <div class="filter-row">
+                        <div class="filter-group">
+                            <label for="zone">Zone</label>
+                            <select name="zone" id="zone" class="form-select">
+                                <option value="">Toutes les zones</option>
+                                {% for zone in zones %}
+                                <option value="{{ zone.id }}" {% if selected_zone == zone.id|stringformat:"s" %}selected{% endif %}>
+                                    Zone {{ zone.numero }} - {{ zone.nom }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <label for="commodite">Commodité</label>
+                            <select name="commodite" id="commodite" class="form-select">
+                                <option value="">Toutes les commodités</option>
+                                {% for commodite in commodites %}
+                                <option value="{{ commodite.id }}" {% if selected_commodite == commodite.id|stringformat:"s" %}selected{% endif %}>
+                                    {{ commodite.nom }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <button type="submit" class="btn-filter">
+                                <i class="fas fa-search"></i>
+                                Filtrer
+                            </button>
+                            <button type="button" class="btn-reset" onclick="resetFilters()">
+                                <i class="fas fa-redo"></i>
+                                Réinitialiser
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Carte -->
+            <div class="map-container" style="position: relative;">
+                <div id="map"></div>
+                
+                <!-- Légende -->
+                <div class="legend">
+                    <div class="legend-title">Nombre de commodités</div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background-color: #dc3545;"></div>
+                        <span>Aucune</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background-color: #ffc107;"></div>
+                        <span>1-3</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background-color: #17a2b8;"></div>
+                        <span>4-6</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background-color: #28a745;"></div>
+                        <span>7+</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://api-maps.yandex.ru/2.1/?apikey={{ yandex_api_key }}&lang=fr_FR" type="text/javascript"></script>
+<script>
+    console.log('Initialisation de la carte Yandex...');
+    
+    // Données des fournisseurs
+    const fournisseursData = {{ fournisseurs_json|safe }};
+    console.log('Nombre de fournisseurs:', fournisseursData.length);
+    
+    let myMap;
+    
+    // Fonction pour obtenir la couleur selon le nombre de commodités
+    function getMarkerColor(totalCommodites) {
+        if (totalCommodites === 0) return 'red';
+        if (totalCommodites <= 3) return 'yellow';
+        if (totalCommodites <= 6) return 'blue';
+        return 'green';
+    }
+    
+    // Fonction pour obtenir le preset d'icône Yandex
+    function getMarkerPreset(totalCommodites) {
+        const color = getMarkerColor(totalCommodites);
+        return 'islands#' + color + 'CircleDotIcon';
+    }
+    
+    // Initialisation de la carte
+    ymaps.ready(init);
+    
+    function init() {
+        try {
+            // Créer la carte centrée sur la Côte d'Ivoire
+            myMap = new ymaps.Map('map', {
+                center: [7.539989, -5.547080],
+                zoom: 7,
+                controls: ['zoomControl', 'fullscreenControl', 'geolocationControl', 'searchControl']
+            });
+            
+            console.log('Carte Yandex initialisée avec succès');
+            
+            // Ajouter les marqueurs pour chaque fournisseur
+            fournisseursData.forEach(function(fournisseur) {
+                try {
+                    const preset = getMarkerPreset(fournisseur.total_commodites);
+                    
+                    // Créer le placemark (marqueur)
+                    const placemark = new ymaps.Placemark(
+                        [fournisseur.latitude, fournisseur.longitude],
+                        {
+                            balloonContentHeader: '<strong>' + fournisseur.nom + '</strong>',
+                            balloonContentBody: 
+                                '<div style="padding: 10px;">' +
+                                '<p style="margin: 5px 0;"><strong>📍 Ville:</strong> ' + fournisseur.ville + '</p>' +
+                                '<p style="margin: 5px 0;"><strong>🏷️ Zone:</strong> ' + fournisseur.zone + '</p>' +
+                                '<p style="margin: 5px 0;"><strong>📦 Commodités:</strong> ' + fournisseur.total_commodites + '</p>' +
+                                '<a href="' + fournisseur.url + '" style="display: inline-block; margin-top: 10px; padding: 8px 15px; background: #667eea; color: white; text-decoration: none; border-radius: 4px;">Voir détails</a>' +
+                                '</div>',
+                            iconCaption: fournisseur.nom
+                        },
+                        {
+                            preset: preset,
+                            hideIconOnBalloonOpen: false
+                        }
+                    );
+                    
+                    // Ajouter le marqueur à la carte
+                    myMap.geoObjects.add(placemark);
+                    
+                } catch (error) {
+                    console.error('Erreur ajout marqueur:', fournisseur.nom, error);
+                }
+            });
+            
+            console.log('Tous les marqueurs ont été ajoutés');
+            
+            // Ajuster la vue pour afficher tous les marqueurs
+            if (fournisseursData.length > 0) {
+                const bounds = myMap.geoObjects.getBounds();
+                if (bounds) {
+                    myMap.setBounds(bounds, {
+                        checkZoomRange: true,
+                        zoomMargin: 50
+                    });
+                }
+            }
+            
+        } catch (error) {
+            console.error('Erreur initialisation carte:', error);
+            document.getElementById('map').innerHTML = 
+                '<div style="padding: 40px; text-align: center; color: #dc3545; background: #f8f9fa; border-radius: 8px;">' +
+                '<i class="fas fa-exclamation-triangle" style="font-size: 48px; margin-bottom: 20px;"></i>' +
+                '<h3>Erreur de chargement de la carte</h3>' +
+                '<p>Veuillez vérifier votre connexion internet et recharger la page.</p>' +
+                '</div>';
+        }
+    }
+    
+    // Fonction pour réinitialiser les filtres
+    function resetFilters() {
+        document.getElementById('zone').value = '';
+        document.getElementById('commodite').value = '';
+        document.getElementById('filterForm').submit();
+    }
+</script>
+<script>
+    console.log('Clé API Yandex:', '{{ yandex_api_key }}');
+    console.log('Nombre de fournisseurs:', {{ fournisseurs|length }});
+    console.log('Données brutes:', {{ fournisseurs_json|safe }});
+</script>
+{% endblock %}

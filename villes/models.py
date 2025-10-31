@@ -1,8 +1,10 @@
 from django.db import models
+from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 from safedelete.models import SafeDeleteModel, SOFT_DELETE_CASCADE
 from simple_history.models import HistoricalRecords
 import uuid
+
 
 
 class Ville(SafeDeleteModel):
@@ -11,8 +13,7 @@ class Ville(SafeDeleteModel):
     - `id`: Identifiant unique de la ville (UUID).
     - `nom`: Nom de la ville.
     - `superficie`: Superficie de la ville en km².
-    - `distance_port_abidjan`: Distance par rapport au port d'Abidjan.
-    - `distance_port_sanpedro`: Distance par rapport au port de San-Pedro.
+
     - `description`: Description de la ville.
     - `ville_reference`: Ville de référence.
     - `zone`: Relation avec la zone géographique.
@@ -61,6 +62,7 @@ class Ville(SafeDeleteModel):
         null=True,
         help_text="Distance entre la ville et le port de San-Pedro"
     )
+    
     
     description = models.CharField(
         _("Description"),
@@ -135,3 +137,95 @@ class Ville(SafeDeleteModel):
         except cls.MultipleObjectsReturned:
             # Si plusieurs villes sont marquées comme référence, retourner la première
             return cls.objects.filter(zone=zone, est_ville_reference=True).first()
+
+
+
+class Localite(SafeDeleteModel):
+    """
+    Modèle représentant une localité.
+    - `id`: Identifiant unique de la localité (UUID).
+    - `nom`: Nom de la localité.
+    - `distance_port_abidjan`: Distance entre la localité et le port d'Abidjan.
+    - `distance_port_sanpedro`: Distance entre la localité et le port de San-Pedro.
+    - `ville`: Ville à laquelle appartient la localité.
+    - `created_at`: Date de création.
+    - `updated_at`: Date de mise à jour.
+    """
+    
+
+    _safedelete_policy = SOFT_DELETE_CASCADE
+    
+    id = models.UUIDField(
+        "Identifiant unique",
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False
+    )
+    
+    nom = models.CharField(
+        "Nom de la localité",
+        max_length=100,
+        unique=True
+    )
+
+    distance_port_abidjan = models.DecimalField(
+        _("Distance du port d'Abidjan"),
+        max_digits=15,
+        decimal_places=2,
+        blank=True,
+        null=True,
+        help_text="Distance entre la ville et le port d'Abidjan"
+    )
+    
+    distance_port_sanpedro = models.DecimalField(
+        _("Distance du port de San-Pedro"),
+        max_digits=15,
+        decimal_places=2,
+        blank=True,
+        null=True,
+        help_text="Distance entre la ville et le port de San-Pedro"
+    )
+    
+    ville = models.ForeignKey(
+        Ville,
+        on_delete=models.CASCADE,
+        related_name="localites"
+    )
+    
+    created_at = models.DateTimeField(
+        "Date de création",
+        auto_now_add=True
+    )
+    
+    updated_at = models.DateTimeField(
+        "Date de mise à jour",
+        auto_now=True
+    )
+    
+    history = HistoricalRecords(
+        table_name='localite_history',
+        history_id_field=models.UUIDField(default=uuid.uuid4)
+    )
+    
+    class Meta:
+        verbose_name = "Localité"
+        verbose_name_plural = "Localités"
+        ordering = ['nom']
+        db_table = 'localite'
+        indexes = [
+            models.Index(fields=['ville']),
+        ]
+    
+    def __str__(self):
+        return f"{self.nom} ({self.ville.nom})"
+    
+    def save(self, *args, **kwargs):
+        """
+        Surcharge de la méthode save pour sauvegarder la localité
+        """
+        # Vérification de l'unicité du nom de la localité
+        if Localite.objects.filter(nom=self.nom).exclude(id=getattr(self, 'id', None)).exists():
+            raise ValidationError("Une localité avec ce nom existe déjà.")
+        
+        # Appel de la méthode save de la classe parente
+        super().save(*args, **kwargs)

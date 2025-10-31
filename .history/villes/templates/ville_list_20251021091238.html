@@ -1,0 +1,53 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "Liste des Villes" %}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .ville-row {
+        transition: all 0.2s ease;
+    }
+    
+    .ville-row:hover {
+        background-color: #f3f4f6;
+        transform: translateX(5px);
+    }
+    
+    .ville-reference-row {
+        background: linear-gradient(90deg, #fef3c7 0%, #fff 100%);
+        border-left: 4px solid #f59e0b;
+    }
+    
+    .filter-chip {
+        transition: all 0.3s ease;
+    }
+    
+    .filter-chip:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- List of cities -->
+    {% for zone in zones %}
+        <h2 class="text-2xl font-bold mb-4">Zone {{ zone.numero }}</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {% for ville in zone.ville_set.all %}
+                <div class="ville-row {% if ville.est_ville_reference %}ville-reference-row{% endif %}">
+                    <a href="{% url 'ville-detail' ville.pk %}">
+                        <h3 class="font-semibold text-gray-800">{{ ville.nom }}</h3>
+                        {% if ville.description %}
+                            <p class="text-gray-500">{{ ville.description }}</p>
+                        {% endif %}
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

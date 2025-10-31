@@ -1,0 +1,713 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}Zone {{ zone.numero }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --primary: #3b82f6;
+        --primary-dark: #2563eb;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --gray-50: #f9fafb;
+        --gray-100: #f3f4f6;
+        --gray-200: #e5e7eb;
+        --gray-600: #4b5563;
+        --gray-800: #1f2937;
+    }
+    
+    body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+    }
+    
+    .main-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+    
+    /* En-tête Zone */
+    .zone-header {
+        background: white;
+        border-radius: 1.5rem;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .zone-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 6px;
+        background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    .zone-number {
+        font-size: 4rem;
+        font-weight: 900;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        line-height: 1;
+    }
+    
+    /* Layout en 3 colonnes */
+    .content-grid {
+        display: grid;
+        grid-template-columns: 350px 1fr 400px;
+        gap: 1.5rem;
+        align-items: start;
+    }
+    
+    @media (max-width: 1280px) {
+        .content-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .sidebar-panel {
+            order: -1;
+        }
+    }
+    
+    /* Panneau latéral des villes */
+    .sidebar-panel {
+        background: white;
+        border-radius: 1.5rem;
+        padding: 1.5rem;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        position: sticky;
+        top: 2rem;
+        max-height: calc(100vh - 4rem);
+        overflow-y: auto;
+    }
+    
+    .sidebar-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--gray-800);
+        margin-bottom: 1rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 2px solid var(--gray-200);
+    }
+    
+    .ville-item {
+        padding: 1rem;
+        border-radius: 0.75rem;
+        margin-bottom: 0.75rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        border: 2px solid transparent;
+        background: var(--gray-50);
+    }
+    
+    .ville-item:hover {
+        background: #eff6ff;
+        border-color: var(--primary);
+        transform: translateX(5px);
+    }
+    
+    .ville-item.active {
+        background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+        border-color: var(--primary);
+        box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.1);
+    }
+    
+    .ville-item.reference {
+        background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+        border-color: var(--warning);
+        position: relative;
+    }
+    
+    .ville-item.reference::before {
+        content: '⭐';
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+        font-size: 1.25rem;
+    }
+    
+    .ville-name {
+        font-weight: 600;
+        color: var(--gray-800);
+        margin-bottom: 0.25rem;
+    }
+    
+    .ville-stats {
+        display: flex;
+        gap: 1rem;
+        font-size: 0.75rem;
+        color: var(--gray-600);
+        margin-top: 0.5rem;
+    }
+    
+    /* Zone centrale de détails */
+    .details-panel {
+        background: white;
+        border-radius: 1.5rem;
+        padding: 2rem;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        min-height: 600px;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        color: var(--gray-600);
+    }
+    
+    .empty-state svg {
+        width: 120px;
+        height: 120px;
+        margin: 0 auto 1.5rem;
+        color: var(--gray-300);
+    }
+    
+    /* Détails d'une ville */
+    .ville-detail-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+        margin-bottom: 2rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 2px solid var(--gray-200);
+    }
+    
+    .ville-detail-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--gray-800);
+    }
+    
+    .reference-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 9999px;
+        font-size: 0.875rem;
+        font-weight: 600;
+    }
+    
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+    
+    .stat-box {
+        background: linear-gradient(135deg, var(--gray-50) 0%, white 100%);
+        padding: 1.25rem;
+        border-radius: 1rem;
+        border: 2px solid var(--gray-200);
+        text-align: center;
+    }
+    
+    .stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--primary);
+        margin-bottom: 0.25rem;
+    }
+    
+    .stat-label {
+        font-size: 0.875rem;
+        color: var(--gray-600);
+        font-weight: 500;
+    }
+    
+    .section-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--gray-800);
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .section-title svg {
+        width: 1.5rem;
+        height: 1.5rem;
+        color: var(--primary);
+    }
+    
+    /* Liste des fournisseurs */
+    .fournisseur-list {
+        display: grid;
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+    
+    .fournisseur-card {
+        background: var(--gray-50);
+        padding: 1rem;
+        border-radius: 0.75rem;
+        border: 1px solid var(--gray-200);
+        transition: all 0.2s;
+    }
+    
+    .fournisseur-card:hover {
+        background: #f0f9ff;
+        border-color: var(--primary);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+    
+    .fournisseur-name {
+        font-weight: 600;
+        color: var(--gray-800);
+        margin-bottom: 0.5rem;
+    }
+    
+    .fournisseur-localite {
+        font-size: 0.875rem;
+        color: var(--gray-600);
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+    
+    /* Tags de commodités */
+    .commodite-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+    
+    .commodite-tag {
+        background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+        color: #1e40af;
+        padding: 0.5rem 1rem;
+        border-radius: 9999px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        border: 1px solid #93c5fd;
+        transition: all 0.2s;
+    }
+    
+    .commodite-tag:hover {
+        background: linear-gradient(135deg, #bfdbfe 0%, #93c5fd 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.1);
+    }
+    
+    /* Panneau de résumé à droite */
+    .summary-panel {
+        background: white;
+        border-radius: 1.5rem;
+        padding: 1.5rem;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        position: sticky;
+        top: 2rem;
+    }
+    
+    .summary-stat {
+        padding: 1rem;
+        background: var(--gray-50);
+        border-radius: 0.75rem;
+        margin-bottom: 1rem;
+        border-left: 4px solid var(--primary);
+    }
+    
+    .summary-stat-value {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary);
+    }
+    
+    .summary-stat-label {
+        font-size: 0.875rem;
+        color: var(--gray-600);
+        margin-top: 0.25rem;
+    }
+    
+    /* Boutons d'action */
+    .action-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        margin-top: 1.5rem;
+    }
+    
+    .btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.75rem;
+        font-weight: 600;
+        transition: all 0.2s;
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+    }
+    
+    .btn-primary {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+        color: white;
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.4);
+    }
+    
+    .btn-success {
+        background: linear-gradient(135deg, var(--success) 0%, #059669 100%);
+        color: white;
+    }
+    
+    .btn-success:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.4);
+    }
+    
+    .btn-danger {
+        background: linear-gradient(135deg, var(--danger) 0%, #dc2626 100%);
+        color: white;
+    }
+    
+    .btn-danger:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 15px -3px rgba(239, 68, 68, 0.4);
+    }
+    
+    /* Scrollbar personnalisée */
+    .sidebar-panel::-webkit-scrollbar {
+        width: 6px;
+    }
+    
+    .sidebar-panel::-webkit-scrollbar-track {
+        background: var(--gray-100);
+        border-radius: 3px;
+    }
+    
+    .sidebar-panel::-webkit-scrollbar-thumb {
+        background: var(--gray-600);
+        border-radius: 3px;
+    }
+    
+    .sidebar-panel::-webkit-scrollbar-thumb:hover {
+        background: var(--gray-800);
+    }
+    
+    /* Animation de chargement */
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .fade-in {
+        animation: fadeIn 0.3s ease-out;
+    }
+    
+    .search-box {
+        position: relative;
+        margin-bottom: 1rem;
+    }
+    
+    .search-box input {
+        width: 100%;
+        padding: 0.75rem 1rem 0.75rem 2.5rem;
+        border: 2px solid var(--gray-200);
+        border-radius: 0.75rem;
+        font-size: 0.875rem;
+        transition: all 0.2s;
+    }
+    
+    .search-box input:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+    
+    .search-box svg {
+        position: absolute;
+        left: 0.75rem;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 1rem;
+        height: 1rem;
+        color: var(--gray-600);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="main-container">
+    <!-- En-tête de la zone -->
+    <div class="zone-header">
+        <div style="display: flex; justify-content: space-between; align-items: start; flex-wrap: wrap; gap: 1rem;">
+            <div>
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                    <div class="zone-number">{{ zone.numero }}</div>
+                    <div>
+                        <div style="font-size: 1.5rem; font-weight: 600; color: var(--gray-800);">{% trans "Zone" %}</div>
+                        <div style="color: var(--gray-600);">{{ zone.description|default:"Sans description" }}</div>
+                    </div>
+                </div>
+                
+                <div style="display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1rem;">
+                    <span style="display: inline-flex; align-items: center; gap: 0.5rem; background: #dbeafe; color: #1e40af; padding: 0.5rem 1rem; border-radius: 9999px; font-size: 0.875rem; font-weight: 600;">
+                        <svg style="width: 1rem; height: 1rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                        </svg>
+                        {{ total_villes }} {% trans "villes" %}
+                    </span>
+                    
+                    {% if ville_reference %}
+                    <span style="display: inline-flex; align-items: center; gap: 0.5rem; background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); color: white; padding: 0.5rem 1rem; border-radius: 9999px; font-size: 0.875rem; font-weight: 600;">
+                        ⭐ {% trans "Référence:" %} {{ ville_reference.nom }}
+                    </span>
+                    {% endif %}
+                    
+                    <span style="display: inline-flex; align-items: center; gap: 0.5rem; background: #f3f4f6; color: var(--gray-600); padding: 0.5rem 1rem; border-radius: 9999px; font-size: 0.875rem;">
+                        <svg style="width: 1rem; height: 1rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                        {{ zone.created_at|date:"d/m/Y" }}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Layout en 3 colonnes -->
+    <div class="content-grid">
+        <!-- Colonne 1: Liste des villes -->
+        <div class="sidebar-panel">
+            <h3 class="sidebar-title">
+                {% trans "Villes" %} ({{ total_villes }})
+            </h3>
+            
+            <div class="search-box">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+                <input type="text" id="searchVille" placeholder="{% trans 'Rechercher une ville...' %}" onkeyup="filterVilles()">
+            </div>
+            
+            <div id="villesList">
+                {% for ville in villes %}
+                <div class="ville-item {% if ville.est_ville_reference %}reference{% endif %}" 
+                     onclick="showVilleDetails({{ ville.id }})" 
+                     data-ville-id="{{ ville.id }}"
+                     data-ville-name="{{ ville.nom|lower }}">
+                    <div class="ville-name">{{ ville.nom }}</div>
+                    <div class="ville-stats">
+                        <span>📍 {{ ville.num_localites }}</span>
+                        <span>🏢 {{ ville.num_fournisseurs }}</span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <!-- Colonne 2: Détails de la ville sélectionnée -->
+        <div class="details-panel">
+            <div id="detailsContent" class="empty-state">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                </svg>
+                <h3 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 0.5rem;">{% trans "Sélectionnez une ville" %}</h3>
+                <p>{% trans "Cliquez sur une ville dans la liste pour voir ses détails" %}</p>
+            </div>
+        </div>
+        
+        <!-- Colonne 3: Résumé et actions -->
+        <div class="summary-panel">
+            <h3 class="sidebar-title">{% trans "Résumé de la zone" %}</h3>
+            
+            <div class="summary-stat">
+                <div class="summary-stat-value">{{ total_localites }}</div>
+                <div class="summary-stat-label">{% trans "Localités totales" %}</div>
+            </div>
+            
+            <div class="summary-stat" style="border-left-color: var(--success);">
+                <div class="summary-stat-value" style="color: var(--success);">{{ total_fournisseurs }}</div>
+                <div class="summary-stat-label">{% trans "Fournisseurs totaux" %}</div>
+            </div>
+            
+            <div class="summary-stat" style="border-left-color: var(--warning);">
+                <div class="summary-stat-value" style="color: var(--warning);">{{ commodites_zone|length }}</div>
+                <div class="summary-stat-label">{% trans "Commodités disponibles" %}</div>
+            </div>
+            
+            {% if commodites_zone %}
+            <div style="margin-top: 1.5rem;">
+                <h4 style="font-size: 0.875rem; font-weight: 600; color: var(--gray-800); margin-bottom: 0.75rem;">
+                    {% trans "Toutes les commodités" %}
+                </h4>
+                <div class="commodite-tags">
+                    {% for commodite in commodites_zone %}
+                    <span class="commodite-tag">{{ commodite }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+            
+            <div class="action-buttons">
+                <a href="{% url 'zone-update' zone.pk %}" class="btn btn-primary">
+                    <svg style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                    </svg>
+                    {% trans "Modifier la zone" %}
+                </a>
+                
+                <a href="{% url 'ville-create' %}?zone={{ zone.pk }}" class="btn btn-success">
+                    <svg style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                    {% trans "Ajouter une ville" %}
+                </a>
+                
+                <a href="{% url 'zone-delete' zone.pk %}" class="btn btn-danger">
+                    <svg style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                    </svg>
+                    {% trans "Supprimer" %}
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Données des villes (générées par Django)
+const villesData = {
+    {% for ville in villes %}
+    {{ ville.id }}: {
+        id: {{ ville.id }},
+        nom: "{{ ville.nom|escapejs }}",
+        description: "{{ ville.description|escapejs }}",
+        est_reference: {{ ville.est_ville_reference|lower }},
+        num_localites: {{ ville.num_localites }},
+        num_fournisseurs: {{ ville.num_fournisseurs }},
+        commodites: [{% for commodite in ville.commodites %}"{{ commodite|escapejs }}"{% if not forloop.last %}, {% endif %}{% endfor %}]
+    }{% if not forloop.last %},{% endif %}
+    {% endfor %}
+};
+
+function showVilleDetails(villeId) {
+    // Retirer la classe active de tous les éléments
+    document.querySelectorAll('.ville-item').forEach(item => {
+        item.classList.remove('active');
+    });
+    
+    // Ajouter la classe active à l'élément cliqué
+    const clickedItem = document.querySelector(`[data-ville-id="${villeId}"]`);
+    if (clickedItem) {
+        clickedItem.classList.add('active');
+    }
+    
+    const ville = villesData[villeId];
+    if (!ville) return;
+    
+    const detailsContent = document.getElementById('detailsContent');
+    
+    let commoditesHTML = '';
+    if (ville.commodites.length > 0) {
+        commoditesHTML = `
+            <div style="margin-top: 2rem;">
+                <h3 class="section-title">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                    </svg>
+                    {% trans "Commodités disponibles" %}
+                </h3>
+                <div class="commodite-tags">
+                    ${ville.commodites.map(c => `<span class="commodite-tag">${c}</span>`).join('')}
+                </div>
+            </div>
+        `;
+}
+
+function filterVilles() {
+    const searchTerm = document.getElementById('searchVille').value.toLowerCase();
+    const villeItems = document.querySelectorAll('.ville-item');
+    
+    villeItems.forEach(item => {
+        const villeName = item.getAttribute('data-ville-name');
+        if (villeName.includes(searchTerm)) {
+            item.style.display = 'block';
+        } else {
+            item.style.display = 'none';
+        }
+    });
+}
+
+// Afficher automatiquement la ville de référence au chargement
+document.addEventListener('DOMContentLoaded', function() {
+    {% if ville_reference %}
+    showVilleDetails({{ ville_reference.id }});
+    {% elif villes %}
+    showVilleDetails({{ villes.0.id }});
+    {% endif %}
+});
+</script>
+{% endblock %}
+    }
+    
+    const referenceHTML = ville.est_reference ? `
+        <span class="reference-badge">
+            ⭐ {% trans "VILLE DE RÉFÉRENCE" %}
+        </span>
+    ` : '';
+    
+    detailsContent.innerHTML = `
+        <div class="fade-in">
+            <div class="ville-detail-header">
+                <div>
+                    <h2 class="ville-detail-title">${ville.nom}</h2>
+                    ${ville.description ? `<p style="color: var(--gray-600); margin-top: 0.5rem;">${ville.description}</p>` : ''}
+                </div>
+                ${referenceHTML}
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="stat-value">${ville.num_localites}</div>
+                    <div class="stat-label">{% trans "Localités" %}</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value">${ville.num_fournisseurs}</div>
+                    <div class="stat-label">{% trans "Fournisseurs" %}</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value">${ville.commodites.length}</div>
+                    <div class="stat-label">{% trans "Commodités" %}</div>
+                </div>
+            </div>
+            
+            ${commoditesHTML}
+            
+            <div style="margin-top: 2rem; padding-top: 2rem; border-top: 2px solid var(--gray-200);">
+                <a href="/villes/${ville.id}/" class="btn btn-primary" style="width: 100%;">
+                    <svg style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                    </svg>
+                    {% trans "Voir tous les détails de la ville" %}
+                </a>
+            </div>
+        </div>
+    `;
