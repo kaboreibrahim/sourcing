@@ -5,6 +5,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from zones.models import Zone
 from  villes.models import Ville
 
+from Pays.models import Pays
 
 # ============================================================
 # VUES POUR ZONE
@@ -42,14 +43,21 @@ class ZoneListView(LoginRequiredMixin, ListView):
         if search_query:
             queryset = queryset.filter(
                 Q(numero__icontains=search_query) |
-                Q(description__icontains=search_query)|
+                Q(description__icontains=search_query) |
                 Q(villes__nom__icontains=search_query)
             )
+            
+        # Filtre par pays
+        pays_id = self.request.GET.get('pays')
+        if pays_id:
+            queryset = queryset.filter(pays_id=pays_id)
         
-        return queryset
+        return queryset.distinct()
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['search_query'] = self.request.GET.get('search', '')
+        context['selected_pays'] = self.request.GET.get('pays', '')
+        context['pays_list'] = Pays.objects.all().order_by('nom')
         context['total_zones'] = Zone.objects.count()
         return context

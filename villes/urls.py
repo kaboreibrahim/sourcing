@@ -1,6 +1,12 @@
-from django.urls import path
-from .views import (VilleListView, VilleCreateView, VilleDetailView, 
-VilleUpdateView, VilleDeleteView ,localiteCreateView, LocaliteListView, LocaliteDeleteView, LocaliteUpdateView, LocaliteDetailView)
+from django.urls import path, include
+from .views import (LocaliteCreateView, LocaliteListView, LocaliteDeleteView, LocaliteUpdateView, LocaliteDetailView,
+VilleListView, VilleCreateView, VilleDetailView, VilleUpdateView, VilleDeleteView,
+VillePortListView, VillePortCreateView, LoadPortsByPaysView,
+PortLocaliteListView, LoadPortsByPaysLocaliteView,PortLocaliteCreateView,PortLocaliteDetailView
+)
+
+# Import des vues de portville
+from .views.portville.detail import VillePortDetailView
 
 urlpatterns = [
    # URLs pour les Villes
@@ -13,8 +19,23 @@ urlpatterns = [
     # URLs pour les Localites
     path('localites/', LocaliteListView.as_view(), name='localite-list'),
     path('localites/<uuid:pk>/delete/', LocaliteDeleteView.as_view(), name='localite-delete'),
-    path('localites/create/', localiteCreateView.as_view(), name='localite-create'),
+    path('localites/create/', LocaliteCreateView.as_view(), name='localite-create'),
     path('localites/<uuid:pk>/update/', LocaliteUpdateView.as_view(), name='localite-update'),
     path('localites/<uuid:pk>/', LocaliteDetailView.as_view(), name='localite-detail'),
+
+    # URLs pour les Port-Ville
+    path('port-ville/', VillePortListView.as_view(), name='ville-port-list'),
+    path('port-ville/create/', VillePortCreateView.as_view(), name='ville-port-create'),
+    path('port-ville/<uuid:pk>/', VillePortDetailView.as_view(), name='ville-port-detail'),
+    path('portville/load-ports/', LoadPortsByPaysView.as_view(), name='load-ports-by-pays'),
+
+    # URLs pour les Port-Localite
+    path('port-localite/', PortLocaliteListView.as_view(), name='port-localite-list'),
+    path('port-localite/create/', PortLocaliteCreateView.as_view(), name='port-localite-create'),
+    path('port-localite/<uuid:pk>/', PortLocaliteDetailView.as_view(), name='port-localite-detail'),
+    path('portlocalite/load-ports/', LoadPortsByPaysLocaliteView.as_view(), name='load-ports-by-pays-localite'),
+  
+ 
+    
     
 ]

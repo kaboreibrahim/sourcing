@@ -1,0 +1,925 @@
+{% extends 'layouts/base.html' %}
+{% block content %}
+<div class="container-fluid py-4 suppliers-map-container">
+    <!-- En-tête avec gradient -->
+    <div class="page-header mb-4">
+        <div class="header-content">
+            <h1 class="page-title">
+                <i class="fas fa-map-marked-alt"></i>
+                Carte Interactive des Fournisseurs
+            </h1>
+            <p class="page-subtitle">Visualisez et gérez vos fournisseurs en temps réel</p>
+        </div>
+    </div>
+    
+    <!-- Panneau de contrôle moderne -->
+    <div class="control-panel mb-4">
+        <div class="row g-3">
+            <!-- Filtres -->
+            <div class="col-lg-4 col-md-6">
+                <div class="control-card">
+                    <div class="card-icon">
+                        <i class="fas fa-filter"></i>
+                    </div>
+                    <h5 class="control-title">Filtres</h5>
+                    <div class="control-content">
+                        <div class="form-group mb-3">
+                            <label class="form-label">
+                                <i class="fas fa-city"></i> Ville
+                            </label>
+                            <select id="villeFilter" class="form-select modern-select">
+                                <option value="">Toutes les villes</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-search"></i> Recherche
+                            </label>
+                            <input type="text" id="searchFournisseur" class="form-control modern-input" 
+                                   placeholder="Nom du fournisseur...">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Vue Carte -->
+            <div class="col-lg-3 col-md-6">
+                <div class="control-card">
+                    <div class="card-icon">
+                        <i class="fas fa-layer-group"></i>
+                    </div>
+                    <h5 class="control-title">Type de Carte</h5>
+                    <div class="control-content">
+                        <select id="mapStyleSelector" class="form-select modern-select">
+                            <option value="streets-v12">🗺️ Plan</option>
+                            <option value="satellite-v9">🛰️ Satellite</option>
+                            <option value="satellite-streets-v12">🌍 Satellite + Rues</option>
+                            <option value="outdoors-v12">🏞️ Extérieur</option>
+                            <option value="light-v11">☀️ Clair</option>
+                            <option value="dark-v11">🌙 Sombre</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Statistiques -->
+            <div class="col-lg-3 col-md-6">
+                <div class="control-card stats-card">
+                    <div class="card-icon">
+                        <i class="fas fa-chart-pie"></i>
+                    </div>
+                    <h5 class="control-title">Statistiques</h5>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-value" id="totalFournisseurs">0</div>
+                            <div class="stat-label">Total</div>
+                        </div>
+                        <div class="stat-divider"></div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="visibleFournisseurs">0</div>
+                            <div class="stat-label">Affichés</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="col-lg-2 col-md-6">
+                <div class="control-card actions-card">
+                    <div class="card-icon">
+                        <i class="fas fa-sliders-h"></i>
+                    </div>
+                    <h5 class="control-title">Actions</h5>
+                    <button id="resetFilters" class="btn btn-reset">
+                        <i class="fas fa-redo-alt"></i>
+                        Réinitialiser
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Carte avec animation -->
+    <div class="map-container mb-4">
+        <div class="map-wrapper">
+            <div id="map"></div>
+            <div class="map-loading" id="mapLoading">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Chargement...</span>
+                </div>
+                <p>Chargement de la carte...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Liste des fournisseurs avec design amélioré -->
+    <div class="suppliers-list-section">
+        <div class="list-header">
+            <h5>
+                <i class="fas fa-list"></i>
+                Liste des Fournisseurs
+            </h5>
+            <span class="badge bg-primary" id="listCount">0 fournisseur(s)</span>
+        </div>
+        <div class="suppliers-list-container">
+            <div id="fournisseursList" class="suppliers-grid"></div>
+            <div id="emptyState" class="empty-state" style="display: none;">
+                <i class="fas fa-inbox"></i>
+                <p>Aucun fournisseur trouvé</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Inclure Mapbox et Font Awesome -->
+<link href='https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css' rel='stylesheet' />
+<script src='https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js'></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+/* Variables CSS pour le thème */
+:root {
+    --primary-color: #3b82f6;
+    --primary-dark: #2563eb;
+    --primary-light: #60a5fa;
+    --secondary-color: #8b5cf6;
+    --success-color: #10b981;
+    --danger-color: #ef4444;
+    --warning-color: #f59e0b;
+    --dark-bg: #1e293b;
+    --light-bg: #f8fafc;
+    --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --card-shadow-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Conteneur principal */
+.suppliers-map-container {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background-attachment: fixed;
+    min-height: 100vh;
+    padding: 2rem;
+}
+
+/* En-tête */
+.page-header {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: var(--card-shadow-hover);
+    animation: slideDown 0.6s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.page-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 0.5rem;
+}
+
+.page-title i {
+    margin-right: 1rem;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+.page-subtitle {
+    color: #64748b;
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+/* Cartes de contrôle */
+.control-panel {
+    animation: fadeIn 0.8s ease-out 0.2s both;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.control-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: var(--card-shadow);
+    transition: var(--transition);
+    height: 100%;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.control-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--card-shadow-hover);
+}
+
+.card-icon {
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+    color: white;
+    font-size: 1.5rem;
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+}
+
+.control-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 1rem;
+}
+
+.modern-select,
+.modern-input {
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 0.75rem;
+    transition: var(--transition);
+    background: white;
+}
+
+.modern-select:focus,
+.modern-input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    outline: none;
+}
+
+.form-label {
+    font-weight: 600;
+    color: #475569;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.form-label i {
+    margin-right: 0.5rem;
+    color: var(--primary-color);
+}
+
+/* Statistiques */
+.stats-card {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+}
+
+.stats-card .card-icon {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.stats-card .control-title {
+    color: white;
+}
+
+.stats-grid {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: white;
+}
+
+.stat-label {
+    font-size: 0.85rem;
+    opacity: 0.9;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.stat-divider {
+    width: 2px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* Bouton réinitialiser */
+.btn-reset {
+    width: 100%;
+    padding: 0.75rem;
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.btn-reset:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(239, 68, 68, 0.3);
+}
+
+.btn-reset i {
+    margin-right: 0.5rem;
+}
+
+/* Carte */
+.map-container {
+    animation: fadeIn 1s ease-out 0.4s both;
+}
+
+.map-wrapper {
+    position: relative;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: var(--card-shadow-hover);
+    height: 600px;
+}
+
+#map {
+    width: 100%;
+    height: 100%;
+}
+
+.map-loading {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.95);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.map-loading p {
+    margin-top: 1rem;
+    color: #64748b;
+    font-weight: 600;
+}
+
+/* Marqueurs personnalisés */
+.marker-custom {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 3px solid white;
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.5);
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+}
+
+.marker-custom:hover {
+    transform: scale(1.3);
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.7);
+}
+
+.marker-custom::before {
+    content: '📍';
+    font-size: 1.2rem;
+}
+
+/* Popups Mapbox */
+.mapboxgl-popup-content {
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: var(--card-shadow-hover);
+    border: none;
+}
+
+.popup-title {
+    font-weight: 700;
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    color: var(--primary-color);
+    border-bottom: 2px solid var(--primary-light);
+    padding-bottom: 0.5rem;
+}
+
+.popup-info {
+    font-size: 0.95rem;
+    line-height: 1.8;
+}
+
+.popup-info p {
+    margin: 0.5rem 0;
+    display: flex;
+    align-items: center;
+}
+
+.popup-info strong {
+    color: #475569;
+    margin-right: 0.5rem;
+}
+
+/* Liste des fournisseurs */
+.suppliers-list-section {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: var(--card-shadow-hover);
+    animation: fadeIn 1.2s ease-out 0.6s both;
+}
+
+.list-header {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    padding: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.list-header h5 {
+    margin: 0;
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+.list-header i {
+    margin-right: 0.75rem;
+}
+
+.suppliers-list-container {
+    padding: 1.5rem;
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.suppliers-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+}
+
+.supplier-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.25rem;
+    box-shadow: var(--card-shadow);
+    transition: var(--transition);
+    cursor: pointer;
+    border: 2px solid transparent;
+    position: relative;
+    overflow: hidden;
+}
+
+.supplier-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    transform: scaleY(0);
+    transition: var(--transition);
+}
+
+.supplier-card:hover {
+    transform: translateX(5px);
+    box-shadow: var(--card-shadow-hover);
+    border-color: var(--primary-light);
+}
+
+.supplier-card:hover::before {
+    transform: scaleY(1);
+}
+
+.supplier-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    margin-bottom: 0.75rem;
+}
+
+.supplier-name {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0;
+}
+
+.supplier-city {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.supplier-contact {
+    font-size: 0.9rem;
+    color: #64748b;
+    margin: 0.5rem 0;
+}
+
+.supplier-contact i {
+    color: var(--primary-color);
+    margin-right: 0.5rem;
+}
+
+.supplier-phone {
+    font-size: 0.85rem;
+    color: #94a3b8;
+    display: flex;
+    align-items: center;
+}
+
+.supplier-phone i {
+    margin-right: 0.5rem;
+}
+
+/* État vide */
+.empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: #94a3b8;
+}
+
+.empty-state i {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+.empty-state p {
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+/* Scrollbar personnalisée */
+.suppliers-list-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.suppliers-list-container::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 10px;
+}
+
+.suppliers-list-container::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    border-radius: 10px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .suppliers-map-container {
+        padding: 1rem;
+    }
+
+    .page-title {
+        font-size: 1.8rem;
+    }
+
+    .map-wrapper {
+        height: 400px;
+    }
+
+    .suppliers-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Animations d'entrée pour les cartes fournisseurs */
+.supplier-card {
+    animation: slideIn 0.5s ease-out forwards;
+    opacity: 0;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.supplier-card:nth-child(1) { animation-delay: 0.1s; }
+.supplier-card:nth-child(2) { animation-delay: 0.2s; }
+.supplier-card:nth-child(3) { animation-delay: 0.3s; }
+.supplier-card:nth-child(4) { animation-delay: 0.4s; }
+.supplier-card:nth-child(5) { animation-delay: 0.5s; }
+.supplier-card:nth-child(n+6) { animation-delay: 0.6s; }
+</style>
+
+<script>
+// Configuration Mapbox
+mapboxgl.accessToken = 'pk.eyJ1IjoiaWJyYWsiLCJhIjoiY21oYnV4M3M5MDZqMTJyc2E0enFpbTlwaCJ9.OH_RYh--XO3vn363pKRlRg';
+
+let map;
+let markers = [];
+let allFournisseurs = [];
+
+// Initialiser la carte
+function initMap() {
+    map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/streets-v12',
+        center: [-5.5471, 6.8270],
+        zoom: 8
+    });
+
+    map.addControl(new mapboxgl.NavigationControl(), 'top-right');
+    map.addControl(new mapboxgl.FullscreenControl(), 'top-right');
+
+    map.on('load', () => {
+        document.getElementById('mapLoading').style.display = 'none';
+        loadFournisseurs();
+    });
+}
+
+// Charger les fournisseurs
+async function loadFournisseurs() {
+    try {
+        const response = await fetch('/api/fournisseurs/');
+        const data = await response.json();
+        allFournisseurs = data;
+        
+        displayFournisseurs(allFournisseurs);
+        populateFilters(allFournisseurs);
+        updateStats(allFournisseurs.length, allFournisseurs.length);
+    } catch (error) {
+        console.error('Erreur lors du chargement des fournisseurs:', error);
+        loadTestData();
+    }
+}
+
+// Données de test
+function loadTestData() {
+    allFournisseurs = [
+        {
+            id: 1,
+            nom: "Fournisseur Premium Plus",
+            nom_responsable: "Jean Dupont",
+            latitude: 6.8270,
+            longitude: -5.5471,
+            contact: "+225 01 23 45 67 89",
+            ville: { nom: "Abidjan" },
+            localite: { nom: "Cocody" },
+            distance_port_abidjan: 15.5,
+            distance_port_sanpedro: 250.0
+        },
+        {
+            id: 2,
+            nom: "Solutions Logistics SARL",
+            nom_responsable: "Marie Martin",
+            latitude: 6.9000,
+            longitude: -5.5000,
+            contact: "+225 09 87 65 43 21",
+            ville: { nom: "Abidjan" },
+            localite: { nom: "Plateau" },
+            distance_port_abidjan: 5.2,
+            distance_port_sanpedro: 245.0
+        },
+        {
+            id: 3,
+            nom: "Express Distribution CI",
+            nom_responsable: "Paul Kouassi",
+            latitude: 6.8500,
+            longitude: -5.5200,
+            contact: "+225 05 11 22 33 44",
+            ville: { nom: "Abidjan" },
+            localite: { nom: "Marcory" },
+            distance_port_abidjan: 8.3,
+            distance_port_sanpedro: 248.0
+        }
+    ];
+    
+    displayFournisseurs(allFournisseurs);
+    populateFilters(allFournisseurs);
+    updateStats(allFournisseurs.length, allFournisseurs.length);
+}
+
+// Afficher les fournisseurs sur la carte
+function displayFournisseurs(fournisseurs) {
+    markers.forEach(marker => marker.remove());
+    markers = [];
+
+    const validFournisseurs = fournisseurs.filter(f => 
+        f.latitude && f.longitude && 
+        !isNaN(f.latitude) && !isNaN(f.longitude)
+    );
+
+    if (validFournisseurs.length === 0) {
+        document.getElementById('emptyState').style.display = 'flex';
+        document.getElementById('fournisseursList').style.display = 'none';
+        return;
+    }
+
+    document.getElementById('emptyState').style.display = 'none';
+    document.getElementById('fournisseursList').style.display = 'grid';
+
+    validFournisseurs.forEach(fournisseur => {
+        const el = document.createElement('div');
+        el.className = 'marker-custom';
+
+        const popupContent = `
+            <div class="popup-title">
+                <i class="fas fa-building"></i> ${fournisseur.nom}
+            </div>
+            <div class="popup-info">
+                ${fournisseur.nom_responsable ? `<p><strong><i class="fas fa-user"></i> Responsable:</strong> ${fournisseur.nom_responsable}</p>` : ''}
+                ${fournisseur.contact ? `<p><strong><i class="fas fa-phone"></i> Contact:</strong> ${fournisseur.contact}</p>` : ''}
+                <p><strong><i class="fas fa-map-marker-alt"></i> Ville:</strong> ${fournisseur.ville.nom}</p>
+                ${fournisseur.localite ? `<p><strong><i class="fas fa-location-dot"></i> Localité:</strong> ${fournisseur.localite.nom}</p>` : ''}
+                ${fournisseur.distance_port_abidjan ? `<p><strong><i class="fas fa-ship"></i> Port Abidjan:</strong> ${fournisseur.distance_port_abidjan} km</p>` : ''}
+                ${fournisseur.distance_port_sanpedro ? `<p><strong><i class="fas fa-anchor"></i> Port San-Pedro:</strong> ${fournisseur.distance_port_sanpedro} km</p>` : ''}
+            </div>
+        `;
+
+        const popup = new mapboxgl.Popup({ offset: 25 })
+            .setHTML(popupContent);
+
+        const marker = new mapboxgl.Marker(el)
+            .setLngLat([fournisseur.longitude, fournisseur.latitude])
+            .setPopup(popup)
+            .addTo(map);
+
+        markers.push(marker);
+    });
+
+    if (validFournisseurs.length > 0) {
+        const bounds = new mapboxgl.LngLatBounds();
+        validFournisseurs.forEach(f => {
+            bounds.extend([f.longitude, f.latitude]);
+        });
+        map.fitBounds(bounds, { padding: 50 });
+    }
+
+    updateFournisseursList(validFournisseurs);
+    updateStats(allFournisseurs.length, validFournisseurs.length);
+}
+
+// Mettre à jour la liste des fournisseurs
+function updateFournisseursList(fournisseurs) {
+    const listContainer = document.getElementById('fournisseursList');
+    listContainer.innerHTML = '';
+
+    fournisseurs.forEach((fournisseur, index) => {
+        const card = document.createElement('div');
+        card.className = 'supplier-card';
+        card.innerHTML = `
+            <div class="supplier-header">
+                <h6 class="supplier-name">
+                    <i class="fas fa-building"></i> ${fournisseur.nom}
+                </h6>
+                <span class="supplier-city">${fournisseur.ville.nom}</span>
+            </div>
+            <p class="supplier-contact">
+                <i class="fas fa-user"></i> ${fournisseur.nom_responsable || 'Non renseigné'}
+            </p>
+            ${fournisseur.contact ? `
+                <div class="supplier-phone">
+                    <i class="fas fa-phone"></i> ${fournisseur.contact}
+                </div>
+            ` : ''}
+        `;
+        
+        card.addEventListener('click', () => {
+            map.flyTo({
+                center: [fournisseur.longitude, fournisseur.latitude],
+                zoom: 14,
+                essential: true
+            });
+            
+            setTimeout(() => {
+                if (markers[index]) {
+                    markers[index].togglePopup();
+                }
+            }, 1000);
+        });
+
+        listContainer.appendChild(card);
+    });
+
+    document.getElementById('listCount').textContent = `${fournisseurs.length} fournisseur(s)`;
+}
+
+// Peupler les filtres
+function populateFilters(fournisseurs) {
+    const villeSelect = document.getElementById('villeFilter');
+    const villes = [...new Set(fournisseurs.map(f => f.ville.nom))].sort();
+    
+    villes.forEach(ville => {
+        const option = document.createElement('option');
+        option.value = ville;
+        option.textContent = ville;
+        villeSelect.appendChild(option);
+    });
+}
+
+// Filtrer les fournisseurs
+function filterFournisseurs() {
+    const villeFilter = document.getElementById('villeFilter').value;
+    const searchTerm = document.getElementById('searchFournisseur').value.toLowerCase();
+
+    let filtered = allFournisseurs;
+
+    if (villeFilter) {
+        filtered = filtered.filter(f => f.ville.nom === villeFilter);
+    }
+
+    if (searchTerm) {
+        filtered = filtered.filter(f => 
+            f.nom.toLowerCase().includes(searchTerm) ||
+            (f.nom_responsable && f.nom_responsable.toLowerCase().includes(searchTerm))
+        );
+    }
+
+    displayFournisseurs(filtered);
+}
+
+// Mettre à jour les statistiques
+function updateStats(total, visible) {
+    document.getElementById('totalFournisseurs').textContent = total;
+    document.getElementById('visibleFournisseurs').textContent = visible;
+}
+
+// Event listeners
+document.addEventListener('DOMContentLoaded', function() {
+    initMap();
+
+    // Changement de style de carte
+    document.getElementById('mapStyleSelector').addEventListener('change', function(e) {
+        const style = e.target.value;
+        map.setStyle(`mapbox://styles/mapbox/${style}`);
+        
+        map.once('style.load', function() {
+            displayFournisseurs(allFournisseurs.filter(f => {
+                const villeFilter = document.getElementById('villeFilter').value;
+                const searchTerm = document.getElementById('searchFournisseur').value.toLowerCase();
+                
+                let matches = true;
+                if (villeFilter) matches = matches && f.ville.nom === villeFilter;
+                if (searchTerm) matches = matches && (
+                    f.nom.toLowerCase().includes(searchTerm) ||
+                    (f.nom_responsable && f.nom_responsable.toLowerCase().includes(searchTerm))
+                );
+                return matches;
+            }));
+        });
+    });
+
+    document.getElementById('villeFilter').addEventListener('change', filterFournisseurs);
+    document.getElementById('searchFournisseur').addEventListener('input', filterFournisseurs);
+    
+    document.getElementById('resetFilters').addEventListener('click', function() {
+        document.getElementById('villeFilter').value = '';
+        document.getElementById('searchFournisseur').value = '';
+        displayFournisseurs(allFournisseurs);
+        
+        // Animation du bouton
+        this.style.transform = 'rotate(360deg)';
+        setTimeout(() => {
+            this.style.transform = 'rotate(0deg)';
+        }, 300);
+    });
+});
+</script>
+
+{% endblock %}

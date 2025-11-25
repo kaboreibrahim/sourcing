@@ -25,11 +25,11 @@
         50% { opacity: 0.9; }
     }
     
-    .localite-card {
+    .localite-card, .port-card {
         transition: all 0.3s ease;
     }
     
-    .localite-card:hover {
+    .localite-card:hover, .port-card:hover {
         transform: translateX(5px);
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
@@ -96,6 +96,17 @@
                         {% endblocktrans %}
                     </span>
                     
+                    <span class="inline-flex items-center gap-2 bg-orange-100 text-orange-700 px-4 py-2 rounded-lg font-semibold">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"></path>
+                        </svg>
+                        {% blocktrans count counter=nombre_ports %}
+                            {{ counter }} port
+                        {% plural %}
+                            {{ counter }} ports
+                        {% endblocktrans %}
+                    </span>
+                   
                     <span class="inline-flex items-center gap-2 bg-gray-100 text-gray-600 px-4 py-2 rounded-lg">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
@@ -126,7 +137,7 @@
     </div>
     
     <!-- Statistiques -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <!-- Nombre de localités -->
         <div class="stat-card bg-gradient-to-br from-indigo-500 to-indigo-700 rounded-xl p-6 text-white shadow-lg">
             <div class="flex items-center justify-between">
@@ -139,6 +150,23 @@
                 <div class="bg-white bg-opacity-20 rounded-full p-4">
                     <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                    </svg>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Nombre de ports -->
+        <div class="stat-card bg-gradient-to-br from-orange-500 to-orange-700 rounded-xl p-6 text-white shadow-lg">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-orange-200 text-sm font-semibold uppercase tracking-wide mb-2">
+                        {% trans "Ports liés" %}
+                    </p>
+                    <p class="text-4xl font-bold">{{ nombre_ports }}</p>
+                </div>
+                <div class="bg-white bg-opacity-20 rounded-full p-4">
+                    <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"></path>
                     </svg>
                 </div>
             </div>
@@ -167,56 +195,85 @@
                 </div>
             </div>
         </div>
-        
-        <!-- Distance port Abidjan -->
-        <div class="stat-card bg-gradient-to-br from-blue-500 to-blue-700 rounded-xl p-6 text-white shadow-lg">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-blue-200 text-sm font-semibold uppercase tracking-wide mb-2">
-                        {% trans "Port d'Abidjan" %}
-                    </p>
-                    <p class="text-4xl font-bold">
-                        {% if ville.distance_port_abidjan %}
-                            {{ ville.distance_port_abidjan }}
-                        {% else %}
-                            -
-                        {% endif %}
-                    </p>
-                    <p class="text-blue-200 text-sm mt-1">km</p>
-                </div>
-                <div class="bg-white bg-opacity-20 rounded-full p-4">
-                    <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                    </svg>
-                </div>
-            </div>
+    </div>
+    
+    <!-- Section Ports -->
+    <div class="bg-white rounded-xl shadow-lg p-8 mb-8">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-bold text-gray-800 flex items-center gap-2">
+                <svg class="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"></path>
+                </svg>
+                {% trans "Ports" %} ({{ nombre_ports }})
+            </h2>
+
+             
+            <a href="{% url 'localite-create' %}?ville={{ ville.pk }}" 
+               class="bg-green-600 hover:bg-green-700 text-white font-semibold px-4 py-2 rounded-lg shadow-md transition flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                {% trans "Ajouter un port" %}
+            </a>
         </div>
         
-        <!-- Distance port San-Pedro -->
-        <div class="stat-card bg-gradient-to-br from-green-500 to-green-700 rounded-xl p-6 text-white shadow-lg">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-green-200 text-sm font-semibold uppercase tracking-wide mb-2">
-                        {% trans "Port de San-Pedro" %}
-                    </p>
-                    <p class="text-4xl font-bold">
-                        {% if ville.distance_port_sanpedro %}
-                            {{ ville.distance_port_sanpedro }}
-                        {% else %}
-                            -
-                        {% endif %}
-                    </p>
-                    <p class="text-green-200 text-sm mt-1">km</p>
-                </div>
-                <div class="bg-white bg-opacity-20 rounded-full p-4">
-                    <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                    </svg>
-                </div>
+        {% if ville_ports %}
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {% for ville_port in ville_ports %}
+                    <div class="port-card bg-gradient-to-br from-orange-50 to-white border-2 border-orange-200 rounded-lg p-5 hover:border-orange-300">
+                        <div class="flex justify-between items-start mb-3">
+                            <h3 class="text-lg font-bold text-gray-800 flex-1">
+                                <a href="{% url 'ville-port-detail' ville_port.pk %}" class="hover:text-orange-600 hover:underline">
+                                    {{ ville_port.port.nom }}
+                                </a>
+                            </h3>
+                            
+                            <a href="{% url 'ville-port-detail' ville_port.pk %}" 
+                               class="text-orange-600 hover:text-orange-800 p-1"
+                               title="{% trans "Voir l'itinéraire" %}">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                                </svg>
+                            </a>
+                        </div>
+                        
+                        <div class="space-y-2">
+                            <div class="flex items-center justify-between">
+                                <span class="flex items-center gap-2 text-gray-600 text-sm">
+                                    <svg class="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                    </svg>
+                                    {% trans "Distance" %}
+                                </span>
+                                <span class="font-bold text-gray-800">
+                                    {% if ville_port.distance %}
+                                        {{ ville_port.distance }} km
+                                    {% else %}
+                                        <span class="text-gray-400 italic">{% trans "Non définie" %}</span>
+                                    {% endif %}
+                                </span>
+                            </div>
+                            
+                            {% if ville_port.port.pays %}
+                            <div class="flex items-center justify-between pt-2 border-t border-gray-200">
+                                <span class="text-gray-600 text-sm">{% trans "Pays" %}</span>
+                                <span class="text-gray-700 font-medium">{{ ville_port.port.pays.nom }}</span>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
             </div>
-        </div>
+        {% else %}
+            <div class="text-center py-12">
+                <svg class="w-20 h-20 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"></path>
+                </svg>
+                <h3 class="text-lg font-semibold text-gray-700 mb-2">{% trans "Aucun port lié" %}</h3>
+                <p class="text-gray-500">{% trans "Cette ville n'est pas encore liée à un port." %}</p>
+            </div>
+        {% endif %}
     </div>
     
     <!-- Section Localités -->
@@ -244,7 +301,19 @@
                     <div class="localite-card bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-lg p-5 hover:border-indigo-300">
                         <div class="flex justify-between items-start mb-3">
                             <h3 class="text-lg font-bold text-gray-800 flex-1">{{ localite.nom }}</h3>
+                            
                             <div class="flex gap-1">
+                                {% comment %} {% with liaison=localite.ports_localites.all|first %}
+                                    {% if liaison %}
+                                        <a href="{% url 'port-localite-detail' liaison.pk %}" 
+                                           class="text-gray-600 hover:text-gray-800 p-1"
+                                           title="{% trans 'itinéraire' %}">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                                            </svg>
+                                        </a>
+                                    {% endif %}
+                                {% endwith %} {% endcomment %}
                                 <a href="{% url 'localite-detail' localite.pk %}" 
                                    class="text-blue-600 hover:text-blue-800 p-1"
                                    title="{% trans 'Voir' %}">
@@ -264,37 +333,38 @@
                         </div>
                         
                         <div class="space-y-2 text-sm">
-                            <div class="flex items-center justify-between text-gray-600">
+                            {% if localite.latitude and localite.longitude %}
+                            <div class="flex items-start justify-between text-gray-600 pb-2 border-b border-gray-200">
                                 <span class="flex items-center gap-1">
-                                    <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg class="w-4 h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                     </svg>
-                                    Abidjan
+                                    {% trans "Coordonnées" %}
                                 </span>
-                                <span class="font-semibold text-gray-800">
-                                    {% if localite.distance_port_abidjan %}
-                                        {{ localite.distance_port_abidjan }} km
-                                    {% else %}
-                                        -
-                                    {% endif %}
+                                <span class="font-semibold text-gray-800 text-xs text-right">
+                                    {{ localite.latitude|floatformat:4 }}, {{ localite.longitude|floatformat:4 }}
                                 </span>
                             </div>
+                            {% endif %}
                             
-                            <div class="flex items-center justify-between text-gray-600">
+                            {% for port_localite in localite.ports_localites.all %}
+                            <a href="{% url 'port-localite-detail' port_localite.pk %}" class="flex items-center justify-between text-gray-600 hover:text-gray-800 hover:bg-gray-50 rounded-lg px-2 py-1 transition">
                                 <span class="flex items-center gap-1">
-                                    <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg class="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
                                     </svg>
-                                    San-Pedro
+                                    {{ port_localite.port.nom }}
                                 </span>
                                 <span class="font-semibold text-gray-800">
-                                    {% if localite.distance_port_sanpedro %}
-                                        {{ localite.distance_port_sanpedro }} km
+                                    {% if port_localite.distance %}
+                                        {{ port_localite.distance }} km
                                     {% else %}
                                         -
                                     {% endif %}
                                 </span>
-                            </div>
+                            </a>
+                            {% endfor %}
                         </div>
                     </div>
                 {% endfor %}
@@ -328,16 +398,16 @@
         
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-                <label class="block text-sm font-semibold text-gray-600 mb-1">
+                <p class="block text-sm font-semibold text-gray-600 mb-1">
                     {% trans "Identifiant" %}
-                </label>
+                </p>
                 <p class="text-gray-800 font-mono text-sm bg-gray-50 p-3 rounded border">{{ ville.id }}</p>
             </div>
             
             <div>
-                <label class="block text-sm font-semibold text-gray-600 mb-1">
+                <p class="block text-sm font-semibold text-gray-600 mb-1">
                     {% trans "Zone géographique" %}
-                </label>
+                </p>
                 <p class="text-gray-800">
                     <a href="{% url 'zone-detail' ville.zone.pk %}" class="text-blue-600 hover:text-blue-800 font-semibold">
                         Zone {{ ville.zone.numero }}
@@ -349,16 +419,16 @@
             </div>
             
             <div>
-                <label class="block text-sm font-semibold text-gray-600 mb-1">
+                <p class="block text-sm font-semibold text-gray-600 mb-1">
                     {% trans "Date de création" %}
-                </label>
+                </p>
                 <p class="text-gray-800">{{ ville.created_at|date:"d/m/Y à H:i" }}</p>
             </div>
             
             <div>
-                <label class="block text-sm font-semibold text-gray-600 mb-1">
+                <p class="block text-sm font-semibold text-gray-600 mb-1">
                     {% trans "Dernière modification" %}
-                </label>
+                </p>
                 <p class="text-gray-800">{{ ville.updated_at|date:"d/m/Y à H:i" }}</p>
             </div>
         </div>

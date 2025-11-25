@@ -8,6 +8,7 @@ from fournisseurs.models import Fournisseur
 from commodites.models import FournisseurCommodite, Commodite
 from zones.models import Zone
 from villes.models import Ville
+from Pays.models import Pays
 
 # ============================================================
 # VUES POUR FOURNISSEUR
@@ -68,6 +69,11 @@ class FournisseurListView(LoginRequiredMixin, ListView):
         commodite_id = self.request.GET.get('commodite', '')
         if commodite_id:
             queryset = queryset.filter(liens_commodites__commodite_id=commodite_id)
+            
+        # Filtre par pays via la zone de la ville
+        pays_id = self.request.GET.get('pays', '')
+        if pays_id:
+            queryset = queryset.filter(ville__zone__pays_id=pays_id)
         
         return queryset
     
@@ -85,5 +91,9 @@ class FournisseurListView(LoginRequiredMixin, ListView):
         
         context['commodites'] = Commodite.objects.all().order_by('nom')
         context['selected_commodite'] = self.request.GET.get('commodite', '')
+        
+        # Ajout de la liste des pays pour le filtre
+        context['pays_list'] = Pays.objects.all().order_by('nom')
+        context['selected_pays'] = self.request.GET.get('pays', '')
         
         return context

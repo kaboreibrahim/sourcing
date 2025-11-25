@@ -1,0 +1,28 @@
+from django.urls import path
+from .views import (localiteCreateView, LocaliteListView, LocaliteDeleteView, LocaliteUpdateView, LocaliteDetailView,
+VilleListView, VilleCreateView, VilleDetailView, VilleUpdateView, VilleDeleteView
+,VillePortListView,VillePortCreateView,get_ports_by_ville_pays
+)
+
+urlpatterns = [
+   # URLs pour les Villes
+    path('villes/', VilleListView.as_view(), name='ville-list'),
+    path('villes/create/', VilleCreateView.as_view(), name='ville-create'),
+    path('villes/<uuid:pk>/', VilleDetailView.as_view(), name='ville-detail'),
+    path('villes/<uuid:pk>/update/', VilleUpdateView.as_view(), name='ville-update'),
+    path('villes/<uuid:pk>/delete/', VilleDeleteView.as_view(), name='ville-delete'),
+
+    # URLs pour les Localites
+    path('localites/', LocaliteListView.as_view(), name='localite-list'),
+    path('localites/<uuid:pk>/delete/', LocaliteDeleteView.as_view(), name='localite-delete'),
+    path('localites/create/', localiteCreateView.as_view(), name='localite-create'),
+    path('localites/<uuid:pk>/update/', LocaliteUpdateView.as_view(), name='localite-update'),
+    path('localites/<uuid:pk>/', LocaliteDetailView.as_view(), name='localite-detail'),
+
+    # URLs pour les Port-Ville
+    path('port-ville/', VillePortListView.as_view(), name='ville-port-list'),
+    path('port-ville/create/', VillePortCreateView.as_view(), name='ville-port-create'),
+ 
+    
+    
+]

@@ -8,7 +8,8 @@ from fournisseurs.models import Fournisseur
 from commodites.models import FournisseurCommodite, Commodite
 from zones.models import Zone
 from villes.models import Ville, Localite
- 
+from Pays.models import Pays
+
 # ============================================================
 # VUE POUR RECHERCHE AVANCÉE
 # ============================================================
@@ -51,7 +52,7 @@ class FournisseurSearchView(LoginRequiredMixin, ListView):
         if ville_id:
             queryset = queryset.filter(ville_id=ville_id)
         
-         # Filtre par localite
+        # Filtre par localite
         localite_id = self.request.GET.get('localite', '')
         if localite_id:
             queryset = queryset.filter(localite_id=localite_id)
@@ -83,18 +84,23 @@ class FournisseurSearchView(LoginRequiredMixin, ListView):
             queryset = queryset.filter(
                 Q(document_fourni_aex='') | Q(document_fourni_aex__isnull=True)
             )
+            
+        # Filtre par pays
+        pays_id = self.request.GET.get('pays', '')
+        if pays_id:
+            queryset = queryset.filter(ville__zone__pays_id=pays_id)
         
         return queryset.order_by('nom')
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         
-       
-        
+        # Ajout des listes pour les filtres
         context['zones'] = Zone.objects.all().order_by('numero')
         context['villes'] = Ville.objects.select_related('zone').order_by('nom')
         context['localites'] = Localite.objects.select_related('ville').order_by('nom')
         context['commodites'] = Commodite.objects.all().order_by('nom')
+        context['pays_list'] = Pays.objects.all().order_by('nom')
         
         # Conserver les valeurs des filtres
         context['search_params'] = {
@@ -104,6 +110,7 @@ class FournisseurSearchView(LoginRequiredMixin, ListView):
             'ville': self.request.GET.get('ville', ''),
             'localite': self.request.GET.get('localite', ''),
             'commodite': self.request.GET.get('commodite', ''),
+            'pays': self.request.GET.get('pays', ''),
             'has_gps': self.request.GET.get('has_gps', ''),
             'has_doc': self.request.GET.get('has_doc', ''),
         }

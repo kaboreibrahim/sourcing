@@ -1,0 +1,248 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{{ title }}{% endblock %}
+
+ 
+<style>
+    #map {
+        width: 100%;
+        height: 600px;
+        border-radius: 0.75rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+    .route-info {
+        background: white;
+        border-radius: 0.75rem;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    }
+    .coordinate {
+        font-family: monospace;
+        background: #f3f4f6;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.25rem;
+        font-size: 0.875rem;
+    }
+</style>
+ 
+{% block content %}
+<div class="container mx-auto px-4 py-8 max-w-6xl">
+    <!-- Fil d'Ariane -->
+    <nav class="mb-6 text-sm">
+        <ol class="flex items-center gap-2 text-gray-600">
+            <li><a href="{% url 'ville-port-list' %}" class="hover:text-green-600">{% trans "Liaisons" %}</a></li>
+            <li><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg></li>
+            <li class="text-gray-800 font-semibold">{{ title }}</li>
+        </ol>
+    </nav>
+    
+    <!-- En-tête -->
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-800">{{ title }}</h1>
+            <p class="text-gray-600 mt-2">
+                {% trans "Itinéraire entre le port et la ville" %}
+            </p>
+        </div>
+        <div class="mt-4 md:mt-0">
+            <a href="{% url 'ville-port-list' %}" 
+               class="inline-flex items-center px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                </svg>
+                {% trans "Retour à la liste" %}
+            </a>
+        </div>
+    </div>
+    
+    <!-- Informations sur la liaison -->
+    <div class="route-info mb-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">{% trans "Port" %}</h3>
+                <div class="space-y-2">
+                    <p><span class="font-medium">{% trans "Nom" %}:</span> {{ port.nom }}</p>
+                    <p><span class="font-medium">{% trans "Coordonnées" %}:</span> 
+                        <span class="coordinate">{{ port.latitude|floatformat:6 }}, {{ port.longitude|floatformat:6 }}</span>
+                    </p>
+                </div>
+            </div>
+            <div>
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">{% trans "Ville" %}</h3>
+                <div class="space-y-2">
+                    <p><span class="font-medium">{% trans "Nom" %}:</span> {{ ville.nom }}</p>
+                    <p><span class="font-medium">{% trans "Coordonnées" %}:</span> 
+                        <span class="coordinate">{{ ville.latitude|floatformat:6 }}, {{ ville.longitude|floatformat:6 }}</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mt-6 pt-6 border-t border-gray-200">
+            <p class="text-xl font-semibold text-gray-800">
+                {% trans "Distance" %}: 
+                <span class="text-green-600">{{ distance|floatformat:2 }} km</span>
+            </p>
+        </div>
+    </div>
+    
+    <!-- Carte -->
+    <div class="bg-white rounded-xl shadow-lg p-6">
+        <h2 class="text-xl font-bold text-gray-800 mb-4">{% trans "Itinéraire sur la carte" %}</h2>
+        <div id="map"></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    #map {
+        width: 100%;
+        height: 600px;
+        border-radius: 0.75rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        min-height: 400px;
+    }
+    .route-info {
+        background: white;
+        border-radius: 0.75rem;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    }
+    .coordinate {
+        font-family: monospace;
+        background: #f3f4f6;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.25rem;
+        font-size: 0.875rem;
+    }
+    .map-container {
+        position: relative;
+        width: 100%;
+        height: 600px;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Load Mapbox GL JS -->
+<script src='https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js'></script>
+<link href='https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css' rel='stylesheet' />
+
+<script>
+// Vérifier si Mapbox est chargé
+if (!mapboxgl) {
+    console.error('Mapbox GL JS n\'a pas pu être chargé');
+}
+
+// Vérifier que le token est défini
+const mapboxToken = 'pk.eyJ1IjoiaWJyYWsiLCJhIjoiY21oYnV4M3M5MDZqMTJyc2E0enFpbTlwaCJ9.OH_RYh--XO3vn363pKRlRg';
+if (!mapboxToken) {
+    console.error('Le token Mapbox n\'est pas défini');
+}
+
+// Vérifier que le conteneur de la carte existe
+const mapContainer = document.getElementById('map');
+if (!mapContainer) {
+    console.error('Le conteneur de la carte n\'a pas été trouvé');
+}
+    try {
+        // Vérifier les coordonnées
+        const portCoords = [{{ port.longitude }}, {{ port.latitude }}];
+        const villeCoords = [{{ ville.longitude }}, {{ ville.latitude }}];
+        
+        if (!portCoords || !villeCoords) {
+            throw new Error('Coordonnées manquantes');
+        }
+        
+        console.log('Port coords:', portCoords);
+        console.log('Ville coords:', villeCoords);
+    
+    // Calculer le point médian pour le centrage de la carte
+    const center = [
+        (portCoords[0] + villeCoords[0]) / 2,
+        (portCoords[1] + villeCoords[1]) / 2
+    ];
+    
+    // Créer la carte
+    const map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/streets-v11',
+        center: center,
+        zoom: 7
+    });
+    
+    // Attendre que la carte soit chargée
+    map.on('load', function() {
+        // Ajouter la source et la couche pour l'itinéraire
+        map.addSource('route', {
+            'type': 'geojson',
+            'data': {
+                'type': 'Feature',
+                'properties': {},
+                'geometry': {
+                    'type': 'LineString',
+                    'coordinates': [portCoords, villeCoords]
+                }
+            }
+        });
+        
+        // Ajouter la ligne de l'itinéraire
+        map.addLayer({
+            'id': 'route',
+            'type': 'line',
+            'source': 'route',
+            'layout': {
+                'line-join': 'round',
+                'line-cap': 'round'
+            },
+            'paint': {
+                'line-color': '#3b82f6',
+                'line-width': 4,
+                'line-opacity': 0.7
+            }
+        });
+        
+        // Ajouter les marqueurs
+        new mapboxgl.Marker({ color: '#3b82f6' })
+            .setLngLat(portCoords)
+            .setPopup(new mapboxgl.Popup().setHTML(`<h3 class="font-bold">{{ port.nom }}</h3><p>{% trans "Port" %}</p>`))
+            .addTo(map);
+            
+        new mapboxgl.Marker({ color: '#10b981' })
+            .setLngLat(villeCoords)
+            .setPopup(new mapboxgl.Popup().setHTML(`<h3 class="font-bold">{{ ville.nom }}</h3><p>{% trans "Ville" %}</p>`))
+            .addTo(map);
+        
+        // Ajuster la vue pour inclure les deux points
+        const bounds = new mapboxgl.LngLatBounds()
+            .extend(portCoords)
+            .extend(villeCoords);
+        map.fitBounds(bounds, {
+            padding: 100,
+            maxZoom: 12
+        });
+    });
+    
+        // Gestion du redimensionnement de la fenêtre
+        window.addEventListener('resize', function() {
+            map.resize();
+        });
+        
+    } catch (error) {
+        console.error('Erreur lors du chargement de la carte:', error);
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative';
+        errorDiv.role = 'alert';
+        errorDiv.innerHTML = `
+            <strong class="font-bold">Erreur !</strong>
+            <span class="block sm:inline">Impossible de charger la carte: ${error.message}</span>
+        `;
+        document.getElementById('map').appendChild(errorDiv);
+    }
+</script>
+{% endblock %}

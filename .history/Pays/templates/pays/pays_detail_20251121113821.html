@@ -1,0 +1,502 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{{ pays.nom }} - {% trans "Détails" %}{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Animations personnalisées */
+    @keyframes slideInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+    
+    @keyframes scaleIn {
+        from {
+            opacity: 0;
+            transform: scale(0.9);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+    
+    .animate-slide-up {
+        animation: slideInUp 0.6s ease-out forwards;
+    }
+    
+    .animate-fade-in {
+        animation: fadeIn 0.5s ease-out forwards;
+    }
+    
+    .animate-scale-in {
+        animation: scaleIn 0.4s ease-out forwards;
+    }
+    
+    /* Effet glassmorphism */
+    .glass-card {
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    
+    /* Gradient animé */
+    .gradient-bg {
+        background: linear-gradient(-45deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #00f2fe 100%);
+        background-size: 400% 400%;
+        animation: gradient 15s ease infinite;
+    }
+    
+    @keyframes gradient {
+        0%, 100% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+    }
+    
+    /* Skeleton loader */
+    .skeleton {
+        background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+        background-size: 200% 100%;
+        animation: loading 1.5s infinite;
+    }
+    
+    @keyframes loading {
+        0% { background-position: 200% 0; }
+        100% { background-position: -200% 0; }
+    }
+    
+    /* Hover effects améliorés */
+    .card-hover {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .card-hover:hover {
+        transform: translateY(-8px) scale(1.02);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+    
+    /* Badges avec pulse */
+    .badge-pulse {
+        animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    
+    @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.7; }
+    }
+    
+    /* Smooth scrolling */
+    html {
+        scroll-behavior: smooth;
+    }
+    
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+        width: 8px;
+    }
+    
+    ::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+        background: #667eea;
+        border-radius: 4px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+        background: #5568d3;
+    }
+    
+    .empty-state {
+        background-color: #f9fafb;
+        border: 2px dashed #e5e7eb;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- En-tête avec boutons d'action -->
+    <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-8">
+        <div class="flex items-center gap-4">
+            {% if pays.flag %}
+                <img src="{{ pays.flag.url }}" alt="{{ pays.nom }}" class="w-16 h-12 object-cover rounded border border-gray-200 shadow-sm">
+            {% else %}
+                <div class="w-16 h-12 bg-gray-100 rounded border border-gray-200 flex items-center justify-center text-gray-400">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+            {% endif %}
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900">{{ pays.nom }}</h1>
+                <div class="flex items-center gap-2 mt-1">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                        {{ pays.code|upper }}
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="flex flex-wrap gap-3">
+            <a href="{% url 'pays-update' pays.pk %}" class="action-btn inline-flex items-center gap-2 bg-white hover:bg-gray-50 text-gray-700 font-medium px-4 py-2 border border-gray-300 rounded-lg shadow-sm">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                </svg>
+                {% trans "Modifier" %}
+            </a>
+            <a href="{% url 'pays-list' %}" class="action-btn inline-flex items-center gap-2 bg-white hover:bg-gray-50 text-gray-700 font-medium px-4 py-2 border border-gray-300 rounded-lg shadow-sm">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                </svg>
+                {% trans "Retour à la liste" %}
+            </a>
+        </div>
+    </div>
+    
+    <!-- Cartes de statistiques -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <!-- Carte Nombre de zones -->
+        <div class="stat-card bg-white rounded-xl shadow-md p-6 border border-gray-100">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-500">{% trans "Zones" %}</p>
+                    <p class="mt-1 text-3xl font-bold text-blue-600">{{ nb_zones|default:0 }}</p>
+                </div>
+                <div class="p-3 rounded-lg bg-blue-50 text-blue-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                </div>
+            </div>
+            <div class="mt-4">
+                <a href="#zones" class="text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors">
+                    {% trans "Voir toutes les zones" %}
+                    <span aria-hidden="true">→</span>
+                </a>
+            </div>
+        </div>
+        
+        <!-- Carte Nombre de villes -->
+        <div class="stat-card bg-white rounded-xl shadow-md p-6 border border-gray-100">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-500">{% trans "Villes" %}</p>
+                    <p class="mt-1 text-3xl font-bold text-green-600">{{ nb_villes|default:0 }}</p>
+                </div>
+                <div class="p-3 rounded-lg bg-green-50 text-green-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                    </svg>
+                </div>
+            </div>
+            <div class="mt-4">
+                <a href="#villes" class="text-sm font-medium text-green-600 hover:text-green-800 transition-colors">
+                    {% trans "Voir toutes les villes" %}
+                    <span aria-hidden="true">→</span>
+                </a>
+            </div>
+        </div>
+        
+        <!-- Carte Dernière mise à jour -->
+        <div class="stat-card bg-white rounded-xl shadow-md p-6 border border-gray-100">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-500">{% trans "Dernière mise à jour" %}</p>
+                    <p class="mt-1 text-lg font-semibold text-gray-900">
+                        {{ pays.updated_at|date:"d/m/Y"|default:"-" }}
+                    </p>
+                    <p class="text-sm text-gray-500">
+                        {{ pays.updated_at|timesince|default:"-" }}
+                    </p>
+                </div>
+                <div class="p-3 rounded-lg bg-gray-50 text-gray-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+            </div>
+            <div class="mt-4">
+                <a href="#" class="text-sm font-medium text-gray-600 hover:text-gray-800 transition-colors">
+                    {% trans "Voir l'historique" %}
+                    <span aria-hidden="true">→</span>
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Section Zones -->
+    <div id="zones" class="mb-12">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
+            <h2 class="text-xl font-bold text-gray-900 mb-2 sm:mb-0">
+                {% trans "Zones" %}
+                <span class="ml-2 text-sm font-normal text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
+                    {{ zones|length }} {% trans "zone(s)" %}
+                </span>
+            </h2>
+            <a href="#" class="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 font-medium">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                {% trans "Ajouter une zone" %}
+            </a>
+        </div>
+        
+        {% if zones %}
+            <div class="bg-white shadow overflow-hidden sm:rounded-lg divide-y divide-gray-200">
+                {% for zone in zones %}
+                    <div class="zone-card px-4 py-5 sm:px-6 hover:bg-gray-50">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
+                                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                    </svg>
+                                </div>
+                                <div class="ml-4">
+                                    <h3 class="text-lg font-medium text-gray-900">
+                                        <a href="#" class="hover:text-blue-600 transition-colors">
+                                            {{ zone.description|default:_("Zone") }}
+                                        </a>
+                                    </h3>
+                                    <div class="flex items-center mt-1 text-sm text-gray-500">
+                                        <span>{{ zone.nb_villes }} {% trans "ville(s)" %}</span>
+                                        <span class="mx-2">•</span>
+                                        <span>{% trans "Numéro" %} {{ zone.numero }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="ml-4 flex-shrink-0 flex">
+                                <a href="#" class="text-blue-600 hover:text-blue-900 font-medium">
+                                    {% trans "Voir" %}
+                                </a>
+                            </div>
+                        </div>
+
+                        {# Villes de la zone #}
+                        <div class="mt-4 border-t border-gray-200 pt-4">
+                            <h4 class="text-sm font-semibold text-gray-700 mb-2">
+                                {% trans "Villes de cette zone" %}
+                            </h4>
+                            {% with zone.villes.all as villes_zone %}
+                                {% if villes_zone %}
+                                    <ul class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm text-gray-700">
+                                        {% for ville in villes_zone %}
+                                            <li class="bg-gray-50 rounded-lg px-3 py-2">
+                                                <div class="flex justify-between items-center">
+                                                    <span class="font-medium">{{ ville.nom }}</span>
+                                                    <span class="text-xs text-gray-500">
+                                                        {{ ville.localites.count }} {% trans "localité(s)" %}
+                                                    </span>
+                                                </div>
+
+                                                {# Localités de la ville #}
+                                                {% if ville.localites.all %}
+                                                    <ul class="mt-1 text-xs text-gray-600 list-disc list-inside space-y-0.5">
+                                                        {% for localite in ville.localites.all %}
+                                                            <li>{{ localite.nom }}</li>
+                                                        {% endfor %}
+                                                    </ul>
+                                                {% endif %}
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                {% else %}
+                                    <p class="text-sm text-gray-500">
+                                        {% trans "Aucune ville pour cette zone." %}
+                                    </p>
+                                {% endif %}
+                            {% endwith %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state rounded-lg p-12 text-center">
+                <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                </svg>
+                <h3 class="mt-2 text-sm font-medium text-gray-900">{% trans "Aucune zone" %}</h3>
+                <p class="mt-1 text-sm text-gray-500">
+                    {% trans "Commencez par ajouter une zone à ce pays." %}
+                </p>
+                <div class="mt-6">
+                    <a href="#" class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        <svg class="-ml-1 mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                        </svg>
+                        {% trans "Nouvelle zone" %}
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+    
+    <!-- Section Villes (optionnelle) -->
+    <div id="villes" class="mb-12">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
+            <h2 class="text-xl font-bold text-gray-900 mb-2 sm:mb-0">
+                {% trans "Nombre de villes" %}
+                <span class="ml-2 text-sm font-normal text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
+                    {{ nb_villes|default:0 }} {% trans "ville(s)" %}
+                </span>
+            </h2>
+            <a href="#" class="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 font-medium">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                {% trans "Voir toutes les villes" %}
+            </a>
+        </div>
+        
+        {% if nb_villes > 0 %}
+            <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+                <ul class="divide-y divide-gray-200">
+                    {% for ville in villes_principales|slice:":5" %}
+                        <li class="px-4 py-4 sm:px-6">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <div class="flex-shrink-0 h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-500">
+                                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                                        </svg>
+                                    </div>
+                                    <div class="ml-4">
+                                        <div class="text-sm font-medium text-gray-900">{{ ville.nom }}</div>
+                                        <div class="text-sm text-gray-500">{{ ville.zone.nom }}</div>
+                                    </div>
+                                </div>
+                                <div class="ml-4 flex-shrink-0">
+                                    <a href="#" class="text-blue-600 hover:text-blue-900 font-medium">
+                                        {% trans "Voir" %}
+                                    </a>
+                                </div>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+                
+                {% if nb_villes > 5 %}
+                    <div class="px-4 py-4 sm:px-6 border-t border-gray-200 text-center">
+                        <a href="#" class="text-sm font-medium text-blue-600 hover:text-blue-800">
+                            {% blocktrans with reste=nb_villes|add:"-5" %}
+                                Afficher les {{ reste }} autres villes
+                            {% endblocktrans %}
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        {% else %}
+            <div class="empty-state rounded-lg p-12 text-center">
+                <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                </svg>
+                <h3 class="mt-2 text-sm font-medium text-gray-900">{% trans "Aucune ville" %}</h3>
+                <p class="mt-1 text-sm text-gray-500">
+                    {% trans "Ce pays ne contient encore aucune ville." %}
+                </p>
+            </div>
+        {% endif %}
+    </div>
+    
+    <!-- Boutons d'action en bas de page -->
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center pt-6 mt-8 border-t border-gray-200">
+        <div class="text-sm text-gray-500">
+            {% trans "Créé le" %} {{ pays.created_at|date:"d/m/Y" }}
+            {% if pays.created_by %}
+                {% trans "par" %} {{ pays.created_by.get_full_name|default:pays.created_by.username }}
+            {% endif %}
+        </div>
+        <div class="mt-4 sm:mt-0 flex space-x-3">
+            <a href="{% url 'pays-update' pays.pk %}" class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                <svg class="-ml-1 mr-2 h-5 w-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                </svg>
+                {% trans "Modifier" %}
+            </a>
+            <button type="button" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                <svg class="-ml-1 mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                </svg>
+                {% trans "Exporter" %}
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Scripts spécifiques à la page de détail
+    document.addEventListener('DOMContentLoaded', function() {
+        // Animation des cartes de statistiques au chargement de la page
+        const statCards = document.querySelectorAll('.stat-card');
+        statCards.forEach((card, index) => {
+            // Délai d'animation progressif pour chaque carte
+            setTimeout(() => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                
+                // Force un reflow pour s'assurer que l'animation se déclenche
+                void card.offsetWidth;
+                
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, 100 * index);
+        });
+        
+        // Gestion des onglets (si ajoutés plus tard)
+        const tabs = document.querySelectorAll('[data-tab]');
+        if (tabs.length > 0) {
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('data-tab');
+                    const targetContent = document.getElementById(targetId);
+                    
+                    // Masquer tous les contenus d'onglets
+                    document.querySelectorAll('[data-tab-content]').forEach(content => {
+                        content.classList.add('hidden');
+                    });
+                    
+                    // Désactiver tous les onglets
+                    tabs.forEach(t => {
+                        t.classList.remove('border-blue-500', 'text-blue-600');
+                        t.classList.add('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
+                    });
+                    
+                    // Activer l'onglet cliqué
+                    this.classList.remove('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
+                    this.classList.add('border-blue-500', 'text-blue-600');
+                    
+                    // Afficher le contenu cible
+                    if (targetContent) {
+                        targetContent.classList.remove('hidden');
+                    }
+                });
+            });
+            
+            // Activer le premier onglet par défaut
+            if (tabs[0]) {
+                tabs[0].click();
+            }
+        }
+    });
+</script>
+{% endblock %}

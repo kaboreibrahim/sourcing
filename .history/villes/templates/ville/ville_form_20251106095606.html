@@ -1,0 +1,265 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8 max-w-7xl">
+    <!-- Breadcrumb -->
+    <nav class="mb-6 text-sm">
+        <ol class="flex items-center gap-2 text-gray-600">
+            <li><a href="{% url 'ville-list' %}" class="hover:text-blue-600">{% trans "Villes" %}</a></li>
+            <li>
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+                </svg>
+            </li>
+            <li class="text-gray-800 font-semibold">{{ title }}</li>
+        </ol>
+    </nav>
+    
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Formulaire -->
+        <div class="bg-white rounded-xl shadow-lg p-8">
+            <h1 class="text-3xl font-bold text-gray-800 mb-6">{{ title }}</h1>
+            
+            <form method="post" enctype="multipart/form-data" class="space-y-8" id="villeForm">
+                {% csrf_token %}
+                
+                {% if form.non_field_errors %}
+                    <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded">
+                        <div class="flex">
+                            <svg class="w-5 h-5 text-red-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                            </svg>
+                            <div class="text-red-700">
+                                {{ form.non_field_errors }}
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+                
+                <!-- Section: Informations principales -->
+                <div class="border-l-4 border-blue-500 pl-6">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4">
+                        {% trans "Informations principales" %}
+                    </h2>
+                    
+                    <div class="grid grid-cols-1 gap-6">
+                        <!-- Nom de la ville -->
+                        <div>
+                            <label for="{{ form.nom.id_for_label }}" class="block text-sm font-semibold text-gray-700 mb-2">
+                                {{ form.nom.label }} <span class="text-red-500">*</span>
+                            </label>
+                            {{ form.nom }}
+                            {% if form.nom.help_text %}
+                                <p class="mt-1 text-sm text-gray-500">{{ form.nom.help_text }}</p>
+                            {% endif %}
+                            {% if form.nom.errors %}
+                                <p class="mt-1 text-sm text-red-600">{{ form.nom.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Zone -->
+                        <div>
+                            <label for="{{ form.zone.id_for_label }}" class="block text-sm font-semibold text-gray-700 mb-2">
+                                {{ form.zone.label }} <span class="text-red-500">*</span>
+                            </label>
+                            {{ form.zone }}
+                            {% if form.zone.help_text %}
+                                <p class="mt-1 text-sm text-gray-500">{{ form.zone.help_text }}</p>
+                            {% endif %}
+                            {% if form.zone.errors %}
+                                <p class="mt-1 text-sm text-red-600">{{ form.zone.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Ville de référence -->
+                        <div class="flex items-center">
+                            <label class="flex items-center gap-3 cursor-pointer bg-yellow-50 border-2 border-yellow-200 rounded-lg p-4 hover:bg-yellow-100 transition w-full">
+                                {{ form.est_ville_reference }}
+                                <div>
+                                    <span class="text-lg">⭐</span>
+                                    <span class="font-semibold text-gray-800">{{ form.est_ville_reference.label }}</span>
+                                    {% if form.est_ville_reference.help_text %}
+                                        <p class="text-xs text-gray-600 mt-1">{{ form.est_ville_reference.help_text }}</p>
+                                    {% endif %}
+                                </div>
+                            </label>
+                        </div>
+                        
+                        <!-- Description -->
+                        <div>
+                            <label for="{{ form.description.id_for_label }}" class="block text-sm font-semibold text-gray-700 mb-2">
+                                {{ form.description.label }}
+                            </label>
+                            {{ form.description }}
+                            {% if form.description.help_text %}
+                                <p class="mt-1 text-sm text-gray-500">{{ form.description.help_text }}</p>
+                            {% endif %}
+                            {% if form.description.errors %}
+                                <p class="mt-1 text-sm text-red-600">{{ form.description.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Section: Superficie et localisation -->
+                <div class="border-l-4 border-green-500 pl-6">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4">
+                        {% trans "Superficie et localisation" %}
+                    </h2>
+                    
+                    <div class="grid grid-cols-1 gap-6">
+                        <!-- Superficie -->
+                        <div>
+                            <label for="{{ form.superficie.id_for_label }}" class="block text-sm font-semibold text-gray-700 mb-2">
+                                {{ form.superficie.label }}
+                            </label>
+                            <div class="relative">
+                                {{ form.superficie }}
+                                <span class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm">km²</span>
+                            </div>
+                            <p class="mt-1 text-xs text-blue-600">
+                                💡 Dessinez une zone sur la carte pour calculer automatiquement
+                            </p>
+                            {% if form.superficie.errors %}
+                                <p class="mt-1 text-sm text-red-600">{{ form.superficie.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <!-- Coordonnées -->
+                    <div class="grid grid-cols-1 gap-6">
+                        <!-- Latitude -->
+                        <div>
+                            <label for="{{ form.latitude.id_for_label }}" class="block text-sm font-semibold text-gray-700 mb-2">
+                                {{ form.latitude.label }}
+                            </label>
+                            {{ form.latitude }}
+                            {% if form.latitude.help_text %}
+                                <p class="mt-1 text-sm text-gray-500">{{ form.latitude.help_text }}</p>
+                            {% endif %}
+                            {% if form.latitude.errors %}
+                                <p class="mt-1 text-sm text-red-600">{{ form.latitude.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Longitude -->
+                        <div>
+                            <label for="{{ form.longitude.id_for_label }}" class="block text-sm font-semibold text-gray-700 mb-2">
+                                {{ form.longitude.label }}
+                            </label>
+                            {{ form.longitude }}
+                            {% if form.longitude.help_text %}
+                                <p class="mt-1 text-sm text-gray-500">{{ form.longitude.help_text }}</p>
+                            {% endif %}
+                            {% if form.longitude.errors %}
+                                <p class="mt-1 text-sm text-red-600">{{ form.longitude.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Note informative -->
+                <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
+                    <div class="flex">
+                        <svg class="w-5 h-5 text-blue-500 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                        </svg>
+                        <div class="text-sm text-blue-700">
+                            <p class="font-semibold mb-1">{% trans "À propos de la ville de référence" %}</p>
+                            <p>{% trans "Si vous cochez cette option, cette ville deviendra la ville de référence de sa zone. L'ancienne ville de référence perdra automatiquement ce statut." %}</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Boutons -->
+                <div class="flex gap-4 pt-4 border-t">
+                    <button type="submit" id="submitBtn"
+                            class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg shadow-md transition flex items-center justify-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        {{ button_text }}
+                    </button>
+                    <a href="{% url 'ville-list' %}" 
+                       class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold px-6 py-3 rounded-lg text-center transition flex items-center justify-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                        {% trans "Annuler" %}
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    input[type="text"], 
+    input[type="number"],
+    select, 
+    textarea {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 2px solid #e5e7eb;
+        border-radius: 0.5rem;
+        font-size: 1rem;
+        transition: all 0.3s;
+    }
+    
+    input[type="text"]:focus, 
+    input[type="number"]:focus,
+    select:focus, 
+    textarea:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+    
+    input.error, select.error, textarea.error {
+        border-color: #ef4444;
+    }
+    
+    input[type="checkbox"] {
+        width: 1.25rem;
+        height: 1.25rem;
+        cursor: pointer;
+    }
+    
+    textarea {
+        min-height: 100px;
+        resize: vertical;
+    }
+</style>
+
+<script>
+    // Confirmation avant de quitter la page sans enregistrer
+    const form = document.getElementById('villeForm');
+    let isFormDirty = false;
+
+    form.addEventListener('change', () => { isFormDirty = true; });
+
+    window.addEventListener('beforeunload', (e) => {
+        if (isFormDirty) {
+            e.preventDefault();
+            e.returnValue = '';
+        }
+    });
+
+    // Animation du bouton de soumission
+    form.addEventListener('submit', function() {
+        const submitBtn = document.getElementById('submitBtn');
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = `
+            <svg class="w-5 h-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10" stroke-width="4" class="opacity-25"></circle>
+                <path d="M4 12a8 8 0 018-8v8z" stroke-width="4" class="opacity-75"></path>
+            </svg>
+            {% trans "Enregistrement..." %}
+        `;
+    });
+</script>
+
+{% endblock %}

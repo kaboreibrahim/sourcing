@@ -1,0 +1,287 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "Liste des Ports" %}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .port-card {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .port-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #2563eb, #16a34a);
+        transform: scaleX(0);
+        transition: transform 0.3s ease;
+    }
+
+    .port-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+
+    .port-card:hover::before {
+        transform: scaleX(1);
+    }
+
+    .stat-badge {
+        backdrop-filter: blur(10px);
+        background: rgba(255,255,255,0.9);
+    }
+
+    .filter-section {
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    }
+
+    .action-btn {
+        transition: all 0.2s ease;
+    }
+
+    .action-btn:hover {
+        transform: scale(1.1);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- En-tête avec stats globales -->
+    <div class="mb-8">
+        <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
+            <div>
+                <h1 class="text-4xl font-bold text-gray-800 mb-3 flex items-center gap-3">
+                    <svg class="w-10 h-10 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h18M3 12h18M3 17h18"></path>
+                    </svg>
+                    {% trans "Ports" %}
+                </h1>
+                <div class="flex flex-wrap gap-3">
+                    <span class="inline-flex items-center px-4 py-2 rounded-full bg-blue-100 text-blue-700 font-semibold text-sm">
+                        <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10 2a8 8 0 100 16 8 8 0 000-16zm1 11H9v-2h2v2zm0-4H9V5h2v4z"></path>
+                        </svg>
+                        {% blocktrans count counter=total_ports %}
+                            {{ counter }} port
+                        {% plural %}
+                            {{ counter }} ports
+                        {% endblocktrans %}
+                    </span>
+                    <span class="inline-flex items-center px-4 py-2 rounded-full bg-green-100 text-green-700 font-semibold text-sm">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5V4H2v16h5m10 0V10m0 10H7m10-10H7m0 10V10"></path>
+                        </svg>
+                        {% blocktrans count counter=total_villes %}
+                            {{ counter }} ville liée
+                        {% plural %}
+                            {{ counter }} villes liées
+                        {% endblocktrans %}
+                    </span>
+                    <span class="inline-flex items-center px-4 py-2 rounded-full bg-amber-100 text-amber-700 font-semibold text-sm">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path>
+                        </svg>
+                        {% blocktrans count counter=total_localites %}
+                            {{ counter }} localité liée
+                        {% plural %}
+                            {{ counter }} localités liées
+                        {% endblocktrans %}
+                    </span>
+                </div>
+            </div>
+            <div class="flex flex-wrap gap-3">
+                <a href="{% url 'port-create' %}" class="inline-flex items-center gap-3 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-semibold px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                    {% trans "Nouveau port" %}
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filtres & recherche -->
+    <div class="filter-section rounded-2xl shadow-lg p-6 mb-8 border border-gray-200">
+        <form method="get" class="space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+                <!-- Recherche -->
+                <div class="lg:col-span-6">
+                    <label for="search" class="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                        {% trans "Rechercher" %}
+                    </label>
+                    <input type="text" id="search" name="search" value="{{ search_query }}" placeholder="{% trans 'Nom du port...' %}" class="w-full px-5 py-3 border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none transition-all">
+                </div>
+
+                <!-- Filtre par pays -->
+                <div class="lg:col-span-3">
+                    <label for="pays" class="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        {% trans "Pays" %}
+                    </label>
+                    <select id="pays" name="pays" class="w-full px-5 py-3 border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none transition-all bg-white">
+                        <option value="">{% trans "Tous les pays" %}</option>
+                        {% for pays in pays_list %}
+                            <option value="{{ pays.pk }}" {% if selected_pays == pays.pk|stringformat:"s" %}selected{% endif %}>{{ pays.nom }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Filtre par zone -->
+                <div class="lg:col-span-3">
+                    <label for="zone" class="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h7v7H3V3zm0 11h7v7H3v-7zm11-11h7v7h-7V3zm0 11h7v7h-7v-7z" />
+                        </svg>
+                        {% trans "Zone" %}
+                    </label>
+                    <select id="zone" name="zone" class="w-full px-5 py-3 border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none transition-all bg-white">
+                        <option value="">{% trans "Toutes les zones" %}</option>
+                        {% for zone in zones %}
+                            <option value="{{ zone.pk }}" {% if selected_zone == zone.pk|stringformat:"s" %}selected{% endif %}>
+                                {% trans "Zone" %} {{ zone.numero }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="flex gap-3 mt-6">
+                <button type="submit" class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 rounded-xl shadow-md hover:shadow-lg transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                    {% trans "Rechercher" %}
+                </button>
+                <a href="{% url 'port-list' %}" class="inline-flex items-center gap-2 bg-white hover:bg-gray-50 text-gray-700 font-semibold px-8 py-3 rounded-xl border-2 border-gray-300 transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                    </svg>
+                    {% trans "Réinitialiser" %}
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Liste des ports -->
+    {% if ports %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            {% for port in ports %}
+                <div class="port-card bg-white rounded-2xl shadow-md p-6 border border-gray-100">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="flex-1">
+                            <h3 class="text-xl font-bold text-gray-800 mb-1">{{ port.nom }}</h3>
+                            <p class="text-sm text-gray-500">
+                                {% if port.pays %}
+                                    {{ port.pays.nom }}
+                                {% endif %}
+                            </p>
+                        </div>
+                        <span class="text-sm font-semibold text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
+                            {% trans "ID" %} {{ port.id|slice:":8" }}
+                        </span>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-3 mb-5">
+                        <div class="stat-badge rounded-xl p-4 border border-gray-200">
+                            <p class="text-xs font-semibold text-gray-600 uppercase">{% trans "Villes" %}</p>
+                            <p class="text-2xl font-bold text-blue-600 mt-1">{{ port.nb_villes|default:0 }}</p>
+                        </div>
+                        <div class="stat-badge rounded-xl p-4 border border-gray-200">
+                            <p class="text-xs font-semibold text-gray-600 uppercase">{% trans "Localités" %}</p>
+                            <p class="text-2xl font-bold text-green-600 mt-1">{{ port.nb_localites|default:0 }}</p>
+                        </div>
+                        <div class="stat-badge rounded-xl p-4 border border-gray-200">
+                            <p class="text-xs font-semibold text-gray-600 uppercase">{% trans "Coordonnées" %}</p>
+                            {% if port.latitude and port.longitude %}
+                                <p class="text-xs text-gray-700 mt-1">Lat: {{ port.latitude }}</p>
+                                <p class="text-xs text-gray-700">Lon: {{ port.longitude }}</p>
+                            {% else %}
+                                <p class="text-sm text-gray-400 italic mt-2">{% trans "Non définies" %}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="flex justify-between items-center pt-4 border-t border-gray-200">
+                        <div class="flex gap-3">
+                            <a href="{% url 'port-detail' port.pk %}" class="action-btn inline-flex items-center justify-center w-10 h-10 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition-all" title="{% trans 'Voir les détails' %}">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                </svg>
+                            </a>
+                            <a href="{% url 'port-update' port.pk %}" class="action-btn inline-flex items-center justify-center w-10 h-10 rounded-lg bg-gray-50 text-gray-600 hover:bg-gray-100 transition-all" title="{% trans 'Modifier' %}">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                </svg>
+                            </a>
+                        </div>
+                        <a href="{% url 'port-delete' port.pk %}" class="action-btn inline-flex items-center justify-center w-10 h-10 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 transition-all" title="{% trans 'Supprimer' %}">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        {% if is_paginated %}
+            <div class="mt-8 flex justify-center">
+                <nav class="flex items-center gap-2">
+                    {% if page_obj.has_previous %}
+                        <a href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}{% if selected_pays %}&pays={{ selected_pays }}{% endif %}" class="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
+                            {% trans "Premier" %}
+                        </a>
+                        <a href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if selected_pays %}&pays={{ selected_pays }}{% endif %}" class="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
+                            {% trans "Précédent" %}
+                        </a>
+                    {% endif %}
+
+                    <span class="px-4 py-2 bg-blue-600 text-white rounded-lg">
+                        {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}
+                    </span>
+
+                    {% if page_obj.has_next %}
+                        <a href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if selected_pays %}&pays={{ selected_pays }}{% endif %}" class="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
+                            {% trans "Suivant" %}
+                        </a>
+                        <a href="?page={{ page_obj.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}{% if selected_pays %}&pays={{ selected_pays }}{% endif %}" class="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
+                            {% trans "Dernier" %}
+                        </a>
+                    {% endif %}
+                </nav>
+            </div>
+        {% endif %}
+    {% else %}
+        <div class="bg-white rounded-xl shadow-md p-12 text-center">
+            <svg class="w-24 h-24 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h18M3 12h18M3 17h18"></path>
+            </svg>
+            <h3 class="text-xl font-semibold text-gray-700 mb-2">{% trans "Aucun port trouvé" %}</h3>
+            <p class="text-gray-500 mb-6">
+                {% if search_query %}
+                    {% trans "Aucun port ne correspond à votre recherche." %}
+                {% else %}
+                    {% trans "Commencez par créer votre premier port." %}
+                {% endif %}
+            </p>
+            <a href="{% url 'port-create' %}" class="inline-block bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-3 rounded-lg shadow-md transition">
+                {% trans "Créer un port" %}
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

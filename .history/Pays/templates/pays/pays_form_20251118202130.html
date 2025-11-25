@@ -1,0 +1,333 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .form-section {
+        margin-bottom: 2rem;
+    }
+    
+    .form-section h2 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #1f2937;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #e5e7eb;
+    }
+    
+    .form-group {
+        margin-bottom: 1.25rem;
+    }
+    
+    .form-label {
+        display: block;
+        font-weight: 500;
+        color: #374151;
+        margin-bottom: 0.5rem;
+    }
+    
+    .form-input, .form-select, .form-textarea {
+        width: 100%;
+        padding: 0.5rem 0.75rem;
+        border: 1px solid #d1d5db;
+        border-radius: 0.5rem;
+        font-size: 0.875rem;
+        line-height: 1.5;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+    }
+    
+    .form-helper {
+        margin-top: 0.25rem;
+        font-size: 0.75rem;
+        color: #6b7280;
+    }
+    
+    .form-errors {
+        margin-top: 0.25rem;
+        font-size: 0.75rem;
+        color: #dc2626;
+    }
+    
+    .flag-preview {
+        width: 60px;
+        height: 40px;
+        object-fit: cover;
+        border: 1px solid #e5e7eb;
+        border-radius: 0.25rem;
+        margin-top: 0.5rem;
+    }
+    
+    .file-input-container {
+        position: relative;
+        margin-top: 0.5rem;
+    }
+    
+    .file-input-label {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        background-color: #f3f4f6;
+        border: 1px dashed #d1d5db;
+        border-radius: 0.5rem;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    
+    .file-input-label:hover {
+        background-color: #e5e7eb;
+        border-color: #9ca3af;
+    }
+    
+    .file-input {
+        position: absolute;
+        width: 0.1px;
+        height: 0.1px;
+        opacity: 0;
+        overflow: hidden;
+        z-index: -1;
+    }
+    
+    .file-name {
+        margin-top: 0.5rem;
+        font-size: 0.875rem;
+        color: #4b5563;
+    }
+    
+    .code-input {
+        text-transform: uppercase;
+    }
+    
+    .code-preview {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 2.5rem;
+        height: 2.5rem;
+        background-color: #f3f4f6;
+        border-radius: 0.5rem;
+        font-family: monospace;
+        font-weight: 600;
+        font-size: 1.25rem;
+        color: #1f2937;
+        margin-left: 0.5rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8 max-w-4xl">
+    <!-- Fil d'Ariane -->
+    <nav class="mb-6 text-sm">
+        <ol class="flex items-center gap-2 text-gray-600">
+            <li><a href="{% url 'pays-list' %}" class="hover:text-blue-600">{% trans "Pays" %}</a></li>
+            <li class="text-gray-400">/</li>
+            <li class="text-gray-900 font-medium">
+                {% if form.instance.pk %}{% trans "Modifier" %}{% else %}{% trans "Nouveau pays" %}{% endif %}
+            </li>
+        </ol>
+    </nav>
+    
+    <!-- Carte avec les informations du pays -->
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-8">
+        <div class="p-1 bg-gradient-to-r from-blue-500 to-green-500"></div>
+        <div class="p-8">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-8">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-900">{{ title }}</h1>
+                    <p class="text-gray-600 mt-1">
+                        {% trans "Remplissez les informations du pays ci-dessous." %}
+                    </p>
+                </div>
+                <div class="flex-shrink-0">
+                    <div class="flex items-center">
+                        {% if form.instance.flag %}
+                            <img src="{{ form.instance.flag.url }}" alt="{{ form.instance.nom }}" class="w-16 h-12 object-cover rounded border border-gray-200 shadow-sm">
+                        {% else %}
+                            <div class="w-16 h-12 bg-gray-100 rounded border border-gray-200 flex items-center justify-center text-gray-400">
+                                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                            </div>
+                        {% endif %}
+                        <span class="code-preview ml-3">{{ form.instance.code|default:"??" }}</span>
+                    </div>
+                </div>
+            </div>
+            
+            <form method="post" enctype="multipart/form-data" class="space-y-8">
+                {% csrf_token %}
+                
+                {% if form.non_field_errors %}
+                    <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded">
+                        <div class="flex">
+                            <div class="flex-shrink-0">
+                                <svg class="h-5 w-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-sm text-red-700">
+                                    {% for error in form.non_field_errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+                
+                <div class="form-section">
+                    <h2>{% trans "Informations de base" %}</h2>
+                    
+                    <!-- Nom du pays -->
+                    <div class="form-group">
+                        <label for="{{ form.nom.id_for_label }}" class="form-label">
+                            {{ form.nom.label }}
+                            {% if form.nom.field.required %}<span class="text-red-500">*</span>{% endif %}
+                        </label>
+                        {{ form.nom }}
+                        {% if form.nom.help_text %}
+                            <p class="form-helper">{{ form.nom.help_text }}</p>
+                        {% endif %}
+                        {% for error in form.nom.errors %}
+                            <p class="form-errors">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                    
+                    <!-- Code ISO -->
+                    <div class="form-group">
+                        <label for="{{ form.code.id_for_label }}" class="form-label">
+                            {{ form.code.label }}
+                            {% if form.code.field.required %}<span class="text-red-500">*</span>{% endif %}
+                        </label>
+                        <div class="flex items-center">
+                            {{ form.code }}
+                        </div>
+                        {% if form.code.help_text %}
+                            <p class="form-helper">{{ form.code.help_text }}</p>
+                        {% endif %}
+                        {% for error in form.code.errors %}
+                            <p class="form-errors">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                    
+                    <!-- Drapeau du pays -->
+                    <div class="form-group">
+                        <label for="{{ form.flag.id_for_label }}" class="form-label">
+                            {{ form.flag.label }}
+                            {% if not form.flag.field.required %}<span class="text-gray-500 text-sm"> ({% trans "optionnel" %})</span>{% endif %}
+                        </label>
+                        
+                        {% if form.instance.flag %}
+                            <div class="mb-3">
+                                <img src="{{ form.instance.flag.url }}" alt="{{ form.instance.nom }}" class="flag-preview" id="flag-preview">
+                            </div>
+                        {% else %}
+                            <div class="mb-3" id="flag-preview-container" style="display: none;">
+                                <img src="" alt="Aperçu" class="flag-preview" id="flag-preview">
+                            </div>
+                        {% endif %}
+                        
+                        <div class="file-input-container">
+                            <label for="{{ form.flag.id_for_label }}" class="file-input-label">
+                                <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                </svg>
+                                <span id="file-name">
+                                    {% if form.instance.flag %}
+                                        {{ form.instance.flag.name|slice:":20" }}{% if form.instance.flag.name|length > 20 %}...{% endif %}
+                                    {% else %}
+                                        {% trans "Sélectionner un fichier" %}
+                                    {% endif %}
+                                </span>
+                            </label>
+                            {{ form.flag }}
+                        </div>
+                        
+                        {% if form.flag.help_text %}
+                            <p class="form-helper">{{ form.flag.help_text }}</p>
+                        {% endif %}
+                        {% for error in form.flag.errors %}
+                            <p class="form-errors">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                </div>
+                
+                <div class="flex flex-col sm:flex-row gap-3 pt-6 border-t border-gray-200">
+                    <button type="submit" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg shadow-md transition flex items-center justify-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        {{ submit_text|default:"Enregistrer" }}
+                    </button>
+                    
+                    <a href="{% url 'pays-list' %}" class="px-6 py-3 border border-gray-300 rounded-lg font-medium text-gray-700 bg-white hover:bg-gray-50 text-center transition">
+                        {% trans "Annuler" %}
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Mise à jour de l'aperçu du drapeau
+    document.getElementById('{{ form.flag.id_for_label }}').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const preview = document.getElementById('flag-preview');
+                const previewContainer = document.getElementById('flag-preview-container');
+                
+                if (preview) {
+                    preview.src = event.target.result;
+                    if (previewContainer) {
+                        previewContainer.style.display = 'block';
+                    }
+                }
+                
+                // Mettre à jour le nom du fichier
+                const fileName = file.name.length > 20 ? file.name.substring(0, 20) + '...' : file.name;
+                document.getElementById('file-name').textContent = fileName;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+    
+    // Mise en majuscule automatique du code pays
+    const codeInput = document.getElementById('{{ form.code.id_for_label }}');
+    if (codeInput) {
+        codeInput.addEventListener('input', function() {
+            this.value = this.value.toUpperCase();
+            const codePreview = document.querySelector('.code-preview');
+            if (codePreview) {
+                codePreview.textContent = this.value || '??';
+            }
+        });
+    }
+    
+    // Mise à jour du code prévisualisé si le champ est pré-rempli
+    document.addEventListener('DOMContentLoaded', function() {
+        if (codeInput && codeInput.value) {
+            const codePreview = document.querySelector('.code-preview');
+            if (codePreview) {
+                codePreview.textContent = codeInput.value.toUpperCase();
+            }
+        }
+    });
+</script>
+{% endblock %}

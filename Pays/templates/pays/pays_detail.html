@@ -1,0 +1,249 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{{ pays.nom }} - {% trans "Détails" %}{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Animations subtiles */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .fade-in-up {
+        animation: fadeInUp 0.4s ease-out forwards;
+    }
+    
+    /* Transition douce */
+    * {
+        transition: all 0.2s ease;
+    }
+    
+    /* Hover subtil */
+    .hover-lift:hover {
+        transform: translateY(-2px);
+    }
+    
+    /* Bordures minimalistes */
+    .border-light {
+        border: 1px solid #f0f0f0;
+    }
+    
+    /* Ombres douces */
+    .shadow-soft {
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    }
+    
+    .shadow-soft-hover:hover {
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+    
+    <!-- En-tête minimaliste -->
+    <div class="mb-8 fade-in-up">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                {% if pays.flag %}
+                    <img src="{{ pays.flag.url }}" alt="{{ pays.nom }}" class="w-12 h-9 object-cover rounded shadow-soft">
+                {% else %}
+                    <div class="w-12 h-9 bg-gradient-to-br from-blue-500 to-indigo-600 rounded flex items-center justify-center text-white text-xs font-semibold">
+                        {{ pays.code|upper }}
+                    </div>
+                {% endif %}
+                <div>
+                    <h1 class="text-2xl font-semibold text-gray-900">{{ pays.nom }}</h1>
+                    <p class="text-sm text-gray-500 mt-0.5">
+                        {{ nb_zones|default:0 }} {% trans "zones" %} · {{ nb_villes|default:0 }} {% trans "villes" %}
+                    </p>
+                </div>
+            </div>
+            <div class="flex gap-2">
+                <a href="{% url 'pays-update' pays.pk %}" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-lg hover-lift shadow-soft-hover">
+                    {% trans "Modifier" %}
+                </a>
+                <a href="{% url 'pays-list' %}" class="px-4 py-2 text-sm font-medium text-gray-500 hover:text-gray-700">
+                    {% trans "Retour" %}
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Cartes statistiques épurées -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 fade-in-up" style="animation-delay: 0.1s">
+        <div class="bg-white rounded-lg p-5 border-light shadow-soft hover-lift">
+            <div class="text-sm text-gray-500 mb-1">{% trans "Zones" %}</div>
+            <div class="text-3xl font-semibold text-gray-900">{{ nb_zones|default:0 }}</div>
+            <a href="#zones" class="text-xs text-blue-600 hover:text-blue-700 mt-2 inline-block">
+                {% trans "Voir tout" %} →
+            </a>
+        </div>
+        
+        <div class="bg-white rounded-lg p-5 border-light shadow-soft hover-lift">
+            <div class="text-sm text-gray-500 mb-1">{% trans "Villes" %}</div>
+            <div class="text-3xl font-semibold text-gray-900">{{ nb_villes|default:0 }}</div>
+            <a href="{% url 'ville-list' %}?pays={{ pays.pk }}" class="text-xs text-blue-600 hover:text-blue-700 mt-2 inline-block">
+                {% trans "Voir tout" %} →
+            </a>
+        </div>
+        
+        <div class="bg-white rounded-lg p-5 border-light shadow-soft hover-lift">
+            <div class="text-sm text-gray-500 mb-1">{% trans "Mise à jour" %}</div>
+            <div class="text-lg font-medium text-gray-900">{{ pays.updated_at|date:"d/m/Y"|default:"-" }}</div>
+            <div class="text-xs text-gray-400 mt-1">{{ pays.updated_at|timesince|default:"-" }}</div>
+        </div>
+    </div>
+    
+    <!-- Section Zones -->
+    <div id="zones" class="mb-8 fade-in-up" style="animation-delay: 0.2s">
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="text-lg font-semibold text-gray-900">{% trans "Zones" %}</h2>
+            <a href="{% url 'zone-create' %}?pays={{ pays.pk }}" class="text-sm text-blue-600 hover:text-blue-700 font-medium">
+                + {% trans "Ajouter" %}
+            </a>
+        </div>
+        
+        {% if zones %}
+            <div class="bg-white rounded-lg border-light shadow-soft divide-y divide-gray-100">
+                {% for zone in zones %}
+                    <div class="p-5 hover:bg-gray-50">
+                        <div class="flex items-start justify-between">
+                            <div class="flex-1">
+                                <h3 class="font-medium text-gray-900 mb-1">
+                                    {{ zone.description|default:_("Zone") }}
+                                </h3>
+                                <p class="text-sm text-gray-500">
+                                    {{ zone.nb_villes }} {% trans "villes" %} · {% trans "Numéro" %} {{ zone.numero }}
+                                </p>
+                                
+                                <!-- Villes de la zone -->
+                                {% with zone.villes.all as villes_zone %}
+                                    {% if villes_zone %}
+                                        <div class="mt-3 grid grid-cols-1 md:grid-cols-2 gap-2">
+                                            {% for ville in villes_zone %}
+                                                <div class="text-sm text-gray-700 bg-gray-50 px-3 py-1.5 rounded">
+                                                    <span class="font-medium">{{ ville.nom }}</span>
+                                                    <span class="text-gray-400 text-xs ml-2">
+                                                        {{ ville.localites.count }} {% trans "localité(s)" %}
+                                                    </span>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                {% endwith %}
+                            </div>
+                            <a href="{% url 'zone-detail' zone.pk %}" class="text-sm text-blue-600 hover:text-blue-700 ml-4">
+                                {% trans "Voir" %}
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="bg-gray-50 rounded-lg p-12 text-center border-2 border-dashed border-gray-200">
+                <div class="text-gray-400 mb-2">
+                    <svg class="mx-auto h-12 w-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-sm font-medium text-gray-900 mb-1">{% trans "Aucune zone" %}</h3>
+                <p class="text-sm text-gray-500 mb-4">
+                    {% trans "Commencez par ajouter une zone à ce pays." %}
+                </p>
+                <a href="{% url 'zone-create' %}?pays={{ pays.pk }}" class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700">
+                    + {% trans "Nouvelle zone" %}
+                </a>
+            </div>
+        {% endif %}
+    </div>
+    
+    <!-- Section Villes -->
+    <div id="villes" class="mb-8 fade-in-up" style="animation-delay: 0.3s">
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="text-lg font-semibold text-gray-900">{% trans "Toutes les villes" %}</h2>
+            <a href="{% url 'ville-list' %}?pays={{ pays.pk }}" class="text-sm text-blue-600 hover:text-blue-700 font-medium">
+                {% trans "Voir tout" %} →
+            </a>
+        </div>
+        
+        {% if nb_villes > 0 %}
+            <div class="bg-white rounded-lg border-light shadow-soft divide-y divide-gray-100">
+                {% for ville in villes_principales|slice:":5" %}
+                    <div class="p-4 hover:bg-gray-50 flex items-center justify-between">
+                        <div>
+                            <div class="font-medium text-gray-900">{{ ville.nom }}</div>
+                            <div class="text-sm text-gray-500">{{ ville.zone.description|default:ville.zone.numero }}</div>
+                        </div>
+                        <a href="{% url 'ville-detail' ville.pk %}" class="text-sm text-blue-600 hover:text-blue-700">
+                            {% trans "Voir" %}
+                        </a>
+                    </div>
+                {% endfor %}
+                
+                {% if nb_villes > 5 %}
+                    <div class="p-4 text-center">
+                        <a href="{% url 'ville-list' %}?pays={{ pays.pk }}" class="text-sm text-blue-600 hover:text-blue-700 font-medium">
+                            {% blocktrans with reste=nb_villes|add:"-5" %}
+                                Afficher les {{ reste }} autres villes
+                            {% endblocktrans %}
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        {% else %}
+            <div class="bg-gray-50 rounded-lg p-12 text-center border-2 border-dashed border-gray-200">
+                <div class="text-gray-400 mb-2">
+                    <svg class="mx-auto h-12 w-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                    </svg>
+                </div>
+                <h3 class="text-sm font-medium text-gray-900 mb-1">{% trans "Aucune ville" %}</h3>
+                <p class="text-sm text-gray-500">
+                    {% trans "Ce pays ne contient encore aucune ville." %}
+                </p>
+            </div>
+        {% endif %}
+    </div>
+    
+    <!-- Footer minimaliste -->
+    <div class="flex flex-col sm:flex-row items-center justify-between pt-6 border-t border-gray-100 text-sm text-gray-500 gap-4">
+        <div>
+            {% trans "Créé le" %} {{ pays.created_at|date:"d/m/Y" }}
+            {% if pays.created_by %}
+                {% trans "par" %} {{ pays.created_by.get_full_name|default:pays.created_by.username }}
+            {% endif %}
+        </div>
+        <div class="flex gap-4">
+            <a href="{% url 'pays-update' pays.pk %}" class="hover:text-gray-700">{% trans "Modifier" %}</a>
+            <a href="#" class="hover:text-gray-700">{% trans "Partager" %}</a>
+        </div>
+    </div>
+    
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Animation des cartes au chargement
+        const cards = document.querySelectorAll('.fade-in-up');
+        cards.forEach((card, index) => {
+            card.style.opacity = '0';
+            setTimeout(() => {
+                card.style.opacity = '1';
+            }, 100 * index);
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page non trouvée - Erreur 404</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #3b6109ff 0%, #9cf790ff 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Animation de palmiers en arrière-plan */
+        .palm-tree {
+            position: absolute;
+            bottom: 0;
+            opacity: 0.1;
+            animation: sway 3s ease-in-out infinite;
+        }
+
+        .palm-tree:nth-child(1) {
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .palm-tree:nth-child(2) {
+            right: 15%;
+            animation-delay: 1s;
+        }
+
+        @keyframes sway {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(3deg); }
+        }
+
+        .container {
+            text-align: center;
+            color: white;
+            z-index: 10;
+            padding: 20px;
+            max-width: 600px;
+        }
+
+        .error-code {
+            font-size: 8rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            animation: bounce 1s ease-in-out infinite;
+            text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .palm-icon {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 30px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(5deg); }
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 15px;
+            animation: fadeIn 1s ease-in;
+        }
+
+        p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            opacity: 0.9;
+            animation: fadeIn 1.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .btn-home {
+            display: inline-block;
+            padding: 15px 40px;
+            background: white;
+            color: #667eea;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            animation: fadeIn 2s ease-in;
+        }
+
+        .btn-home:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+            background: #f0f0f0;
+        }
+
+        /* Particules flottantes */
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            animation: rise 8s infinite ease-in;
+        }
+
+        @keyframes rise {
+            0% {
+                transform: translateY(100vh) scale(0);
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) scale(1);
+                opacity: 0;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .error-code {
+                font-size: 5rem;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            p {
+                font-size: 1rem;
+            }
+
+            .palm-icon {
+                width: 80px;
+                height: 80px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Palmiers décoratifs -->
+    <svg class="palm-tree" width="200" height="300" viewBox="0 0 100 150">
+        <rect x="45" y="70" width="10" height="80" fill="#8B4513"/>
+        <ellipse cx="50" cy="60" rx="40" ry="15" fill="#228B22"/>
+        <ellipse cx="50" cy="50" rx="35" ry="12" fill="#228B22"/>
+        <ellipse cx="50" cy="40" rx="30" ry="10" fill="#228B22"/>
+    </svg>
+
+    <svg class="palm-tree" width="200" height="300" viewBox="0 0 100 150">
+        <rect x="45" y="70" width="10" height="80" fill="#8B4513"/>
+        <ellipse cx="50" cy="60" rx="40" ry="15" fill="#228B22"/>
+        <ellipse cx="50" cy="50" rx="35" ry="12" fill="#228B22"/>
+        <ellipse cx="50" cy="40" rx="30" ry="10" fill="#228B22"/>
+    </svg>
+
+    <div class="container">
+        <!-- Icône de palmier animée -->
+        <svg class="palm-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="50" cy="50" r="45" fill="rgba(255,255,255,0.2)"/>
+            <rect x="45" y="40" width="10" height="40" fill="white" rx="2"/>
+            <path d="M50 35 Q35 25 30 30 Q25 35 35 40 Z" fill="white"/>
+            <path d="M50 35 Q65 25 70 30 Q75 35 65 40 Z" fill="white"/>
+            <path d="M50 30 Q45 15 50 10 Q55 15 50 30 Z" fill="white"/>
+            <path d="M50 38 Q38 35 35 40 Q38 45 50 42 Z" fill="white"/>
+            <path d="M50 38 Q62 35 65 40 Q62 45 50 42 Z" fill="white"/>
+        </svg>
+
+        <div class="error-code">404</div>
+        <h1>Oups ! Cette page s'est perdue dans la plantation</h1>
+        <p>La page que vous recherchez n'existe pas ou a été déplacée.</p>
+        <a href="{% url 'maps' %}" class="btn-home">🏠 Retour à l'accueil</a>
+    </div>
+
+    <script>
+        // Créer des particules flottantes
+        function createParticles() {
+            const particleCount = 15;
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                const size = Math.random() * 10 + 5;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 8 + 's';
+                particle.style.animationDuration = (Math.random() * 5 + 5) + 's';
+                
+                document.body.appendChild(particle);
+            }
+        }
+
+        createParticles();
+    </script>
+</body>
+</html>
