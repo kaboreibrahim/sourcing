@@ -1,0 +1,298 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "Liaisons Port-Fournisseur" %}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .liaison-row {
+        transition: all 0.2s ease;
+    }
+    
+    .liaison-row:hover {
+        background-color: #f3f4f6;
+        transform: translateX(3px);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- En-tête -->
+    <div class="mb-8">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+                <h1 class="text-4xl font-bold text-gray-800 mb-2">
+                    🔗 {% trans "Liaisons Port-Fournisseur" %}
+                </h1>
+                <p class="text-gray-600">
+                    {% blocktrans count counter=total_liaisons %}
+                        {{ counter }} liaison au total
+                    {% plural %}
+                        {{ counter }} liaisons au total
+                    {% endblocktrans %}
+                </p>
+            </div>                                                  
+            
+            <a href="{% url 'fournisseur-port-add'%}" class="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-3 rounded-lg shadow-md transition duration-300 flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                {% trans "Nouvelle Liaison" %}
+            </a>
+        </div>
+    </div>
+    
+    <!-- Filtres et recherche -->
+    <div class="bg-white rounded-xl shadow-md p-6 mb-8">
+        <form method="get" class="space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <!-- Filtre de recherche -->
+                <div class="md:col-span-2">
+                    <label for="search" class="block text-sm font-semibold text-gray-700 mb-2">
+                        {% trans "Rechercher" %}
+                    </label>
+                    <input type="text" 
+                           id="search"
+                           name="search" 
+                           value="{{ search_query }}"
+                           placeholder="{% trans 'port, fournisseur...' %}"
+                           class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-green-500 focus:outline-none">
+                </div>
+                
+                <!-- Filtre par fournisseur -->
+                <div>
+                    <label for="fournisseur" class="block text-sm font-semibold text-gray-700 mb-2">
+                        {% trans "Fournisseur" %}
+                    </label>
+                    <select id="fournisseur" name="fournisseur" class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-green-500 focus:outline-none">
+                        <option value="">{% trans "Tous" %}</option>
+                        {% for f in fournisseurs %}
+                            <option value="{{ f.pk }}" {% if selected_fournisseur == f.pk|stringformat:"s" %}selected{% endif %}>
+                                {{ f.nom }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <!-- Filtre par port -->
+                <div>
+                    <label for="port" class="block text-sm font-semibold text-gray-700 mb-2">
+                        {% trans "Port" %}
+                    </label>
+                    <select id="port" name="port" class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-green-500 focus:outline-none">
+                        <option value="">{% trans "Tous" %}</option>
+                        {% for port in ports %}
+                            <option value="{{ port.pk }}" {% if selected_port == port.pk|stringformat:"s" %}selected{% endif %}>
+                                {{ port.nom }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <!-- Filtre par zone -->
+                <div>
+                    <label for="zone" class="block text-sm font-semibold text-gray-700 mb-2">
+                        {% trans "Zone" %}
+                    </label>
+                    <select id="zone" name="zone" class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-green-500 focus:outline-none">
+                        <option value="">{% trans "Toutes" %}</option>
+                        {% for zone in zones %}
+                            <option value="{{ zone.pk }}" {% if selected_zone == zone.pk|stringformat:"s" %}selected{% endif %}>
+                                {{ zone.numero }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <!-- Filtre par pays -->
+                <div>
+                    <label for="pays" class="block text-sm font-semibold text-gray-700 mb-2">
+                        {% trans "Pays" %}
+                    </label>
+                    <select id="pays" name="pays" class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-green-500 focus:outline-none">
+                        <option value="">{% trans "Tous" %}</option>
+                        {% for pays in pays_list %}
+                            <option value="{{ pays.pk }}" {% if selected_pays == pays.pk|stringformat:"s" %}selected{% endif %}>
+                                {{ pays.nom }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            
+            <!-- Boutons d'action -->
+            <div class="flex gap-2 pt-2">
+                <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-2 rounded-lg transition flex items-center">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                    {% trans "Filtrer" %}
+                </button>
+                <a href="{{ reset_url }}" class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold px-6 py-2 rounded-lg transition flex items-center">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                    </svg>
+                    {% trans "Réinitialiser" %}
+                </a>
+            </div>
+        </form>
+    </div>
+    
+    <!-- Liste des liaisons -->
+    {% if liaisons %}
+        <div class="bg-white rounded-xl shadow-md overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead class="bg-gray-100 border-b-2 border-gray-200">
+                        <tr>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
+                                {% trans "Port" %}
+                            </th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
+                                {% trans "Fournisseur" %}
+                            </th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
+                                {% trans "Zone" %}
+                            </th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
+                                {% trans "Distance (km)" %}
+                            </th>
+                            <th class="px-6 py-4 text-center text-xs font-bold text-gray-700 uppercase tracking-wider">
+                                {% trans "Actions" %}
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200">
+                        {% for liaison in liaisons %}
+                            <tr class="liaison-row hover:bg-gray-50">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div>
+                                            <div class="text-sm font-medium text-gray-900">
+                                                {{ liaison.port.nom }}
+                                            </div>
+                                            <div class="text-sm text-gray-500">
+                                                {{ liaison.port.pays.nom }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm font-medium text-gray-900">
+                                        {{ liaison.fournisseur.nom }}
+                                    </div>
+                                    <div class="text-sm text-gray-500">
+                                        {{ liaison.fournisseur.ville.nom }}, {{ liaison.fournisseur.ville.zone.numero }}
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                        {{ liaison.fournisseur.ville.zone.numero }}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    {% if liaison.distance %}
+                                        <span class="font-medium">{{ liaison.distance|floatformat:2 }} km</span>
+                                    {% else %}
+                                        <span class="text-gray-400">-</span>
+                                    {% endif %}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                    <div class="flex justify-center space-x-2">
+                                        <a href="{% url 'port-fournisseur-detail' liaison.pk %}" class="text-indigo-600 hover:text-indigo-900" title="{% trans 'voir itineraire' %}">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                            </svg>
+                                        </a>
+                                        {% comment %} <form method="post" action=" " class="inline">
+                                            {% csrf_token %}
+                                            <button type="submit" 
+                                                    class="text-red-600 hover:text-red-900" 
+                                                    title="{% trans 'Supprimer' %}"
+                                                    onclick="return confirm('{% trans 'Êtes-vous sûr de vouloir supprimer cette liaison ?' %}')">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                                </svg>
+                                            </button>
+                                        </form> {% endcomment %}
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Pagination -->
+        {% if is_paginated %}
+            <div class="mt-8 flex justify-center">
+                <nav class="flex items-center gap-2">
+                    {% if page_obj.has_previous %}
+                        <a href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}{% if selected_port %}&port={{ selected_port }}{% endif %}{% if selected_zone %}&zone={{ selected_zone }}{% endif %}{% if selected_fournisseur %}&fournisseur={{ selected_fournisseur }}{% endif %}{% if selected_pays %}&pays={{ selected_pays }}{% endif %}" 
+                           class="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
+                            {% trans "Premier" %}
+                        </a>
+                        <a href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if selected_port %}&port={{ selected_port }}{% endif %}{% if selected_zone %}&zone={{ selected_zone }}{% endif %}{% if selected_fournisseur %}&fournisseur={{ selected_fournisseur }}{% endif %}{% if selected_pays %}&pays={{ selected_pays }}{% endif %}" 
+                           class="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
+                            {% trans "Précédent" %}
+                        </a>
+                    {% endif %}
+                    
+                    <span class="px-4 py-2 bg-green-600 text-white rounded-lg">
+                        {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}
+                    </span>
+                    
+                    {% if page_obj.has_next %}
+                        <a href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if selected_port %}&port={{ selected_port }}{% endif %}{% if selected_zone %}&zone={{ selected_zone }}{% endif %}{% if selected_fournisseur %}&fournisseur={{ selected_fournisseur }}{% endif %}{% if selected_pays %}&pays={{ selected_pays }}{% endif %}" 
+                           class="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
+                            {% trans "Suivant" %}
+                        </a>
+                        <a href="?page={{ page_obj.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}{% if selected_port %}&port={{ selected_port }}{% endif %}{% if selected_zone %}&zone={{ selected_zone }}{% endif %}{% if selected_fournisseur %}&fournisseur={{ selected_fournisseur }}{% endif %}{% if selected_pays %}&pays={{ selected_pays }}{% endif %}" 
+                           class="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
+                            {% trans "Dernier" %}
+                        </a>
+                    {% endif %}
+                </nav>
+            </div>
+        {% endif %}
+    {% else %}
+        <div class="bg-white rounded-xl shadow-md p-12 text-center">
+            <svg class="w-24 h-24 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
+            </svg>
+            <h3 class="text-xl font-semibold text-gray-700 mb-2">{% trans "Aucune liaison trouvée" %}</h3>
+            <p class="text-gray-500 mb-6">
+                {% if search_query or selected_port or selected_zone or selected_fournisseur or selected_pays %}
+                    {% trans "Aucune liaison ne correspond à vos critères de recherche." %}
+                {% else %}
+                    {% trans "Commencez par créer votre première liaison." %}
+                {% endif %}
+            </p>
+            <a href="{% url 'fournisseur-port-add'%}" class="inline-block bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-3 rounded-lg shadow-md transition">
+                {% trans "Créer une liaison" %}
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Soumission automatique du formulaire lors de la sélection d'un filtre
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.querySelector('form');
+        const selects = form.querySelectorAll('select');
+        
+        selects.forEach(select => {
+            select.addEventListener('change', function() {
+                form.submit();
+            });
+        });
+    });
+</script>
+{% endblock %}

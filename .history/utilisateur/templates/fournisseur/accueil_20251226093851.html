@@ -1,0 +1,258 @@
+<!-- templates/fournisseur/accueil.html -->
+{% extends 'layouts/base_fournisseur.html' %}
+{% load humanize %}
+
+{% block content %}
+<style>
+    .commodity-card {
+        border: none;
+        border-radius: 15px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        height: 100%;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    .commodity-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+    }
+    
+    .card-header-colored {
+        padding: 1.5rem;
+        color: white;
+        border: none;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .card-header-colored::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(0,0,0,0.1) 100%);
+    }
+    
+    .card-header-colored h5 {
+        position: relative;
+        z-index: 1;
+        margin: 0;
+        font-weight: 600;
+        font-size: 1.3rem;
+    }
+    
+    .commodity-stats {
+        display: flex;
+        justify-content: space-around;
+        padding: 1.5rem 1rem;
+        background: #f8f9fa;
+        border-bottom: 1px solid #e9ecef;
+    }
+    
+    .stat-item {
+        text-align: center;
+    }
+    
+    .stat-value {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #2c3e50;
+        display: block;
+    }
+    
+    .stat-label {
+        font-size: 0.75rem;
+        color: #6c757d;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-top: 0.25rem;
+    }
+    
+    .recent-samples {
+        padding: 1rem;
+    }
+    
+    .sample-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem;
+        margin-bottom: 0.5rem;
+        background: white;
+        border-radius: 8px;
+        border-left: 4px solid;
+        transition: all 0.2s;
+    }
+    
+    .sample-item:hover {
+        background: #f8f9fa;
+        transform: translateX(5px);
+    }
+    
+    .sample-date {
+        font-weight: 600;
+        color: #495057;
+    }
+    
+    .sample-quantity {
+        color: #28a745;
+        font-weight: 500;
+    }
+    
+    .sample-price {
+        color: #007bff;
+        font-weight: 500;
+    }
+    
+    .view-details-btn {
+        width: 100%;
+        padding: 0.75rem;
+        border: none;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        font-weight: 600;
+        border-radius: 0 0 15px 15px;
+        transition: all 0.3s;
+    }
+    
+    .view-details-btn:hover {
+        background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+        transform: scale(1.02);
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 3rem;
+        color: #6c757d;
+    }
+    
+    .empty-state i {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        opacity: 0.3;
+    }
+    
+    .badge-type {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        z-index: 2;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(10px);
+    }
+</style>
+
+<div class="container-fluid mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">
+            <i class="fas fa-box-open me-2"></i>Mes Commodités
+        </h2>
+        <div class="text-muted">
+            <i class="fas fa-layer-group me-1"></i>{{ commodites|length }} commodité{{ commodites|length|pluralize }}
+        </div>
+    </div>
+
+    <div class="row g-4">
+        {% for commodite in commodites %}
+        <div class="col-lg-4 col-md-6">
+            <div class="commodity-card" onclick="window.location.href='{% url 'fournisseur:detail_commodite' commodite.id %}'">
+                <div class="card-header-colored" style="background: linear-gradient(135deg, {{ commodite.couleur }} 0%, {{ commodite.couleur }}dd 100%);">
+                    <span class="badge-type" style="color: {{ commodite.couleur }};">
+                        {{ commodite.get_type_commodite_display }}
+                    </span>
+                    <h5>{{ commodite.nom }}</h5>
+                </div>
+                
+                <div class="commodity-stats">
+                    <div class="stat-item">
+                        <span class="stat-value">{{ commodite.quantite_totale|floatformat:2|default:"0.00" }}</span>
+                        <span class="stat-label">Tonnes</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">{{ commodite.prix_moyen|floatformat:0|default:"0"|intcomma }}</span>
+                        <span class="stat-label">FCFA/T</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">{{ commodite.echantillonnages.count }}</span>
+                        <span class="stat-label">Échantillon{{ commodite.echantillonnages.count|pluralize }}</span>
+                    </div>
+                </div>
+                
+                <div class="recent-samples">
+                    <h6 class="text-muted mb-3">
+                        <i class="fas fa-flask me-2"></i>Derniers échantillons
+                    </h6>
+                    {% if commodite.echantillonnages.all %}
+                        {% for echantillon in commodite.echantillonnages.all|slice:":3" %}
+                        <div class="sample-item" style="border-left-color: {{ commodite.couleur }};">
+                            <span class="sample-date">
+                                <i class="far fa-calendar me-1"></i>{{ echantillon.date_creation|date:"d/m/Y" }}
+                            </span>
+                            <span class="sample-quantity">
+                                {{ echantillon.quantite|floatformat:2 }} T
+                            </span>
+                            <span class="sample-price">
+                                {{ echantillon.prix|floatformat:0|intcomma }} FCFA
+                            </span>
+                        </div>
+                        {% endfor %}
+                        
+                        {% if commodite.echantillonnages.count > 3 %}
+                        <div class="text-center mt-2">
+                            <small class="text-muted">
+                                <i class="fas fa-plus-circle me-1"></i>
+                                {{ commodite.echantillonnages.count|add:"-3" }} autre{{ commodite.echantillonnages.count|add:"-3"|pluralize }} échantillon{{ commodite.echantillonnages.count|add:"-3"|pluralize }}
+                            </small>
+                        </div>
+                        {% endif %}
+                    {% else %}
+                        <div class="text-center text-muted py-3">
+                            <i class="fas fa-inbox"></i>
+                            <p class="mb-0 mt-2 small">Aucun échantillon</p>
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <button class="view-details-btn">
+                    <i class="fas fa-chart-line me-2"></i>Voir les détails et statistiques
+                </button>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body empty-state">
+                    <i class="fas fa-box-open"></i>
+                    <h5>Aucune commodité enregistrée</h5>
+                    <p class="text-muted mb-0">Vos commodités apparaîtront ici une fois enregistrées dans le système.</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+    // Animation au chargement
+    document.addEventListener('DOMContentLoaded', function() {
+        const cards = document.querySelectorAll('.commodity-card');
+        cards.forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            setTimeout(() => {
+                card.style.transition = 'all 0.5s ease';
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, index * 100);
+        });
+    });
+</script>
+{% endblock %}

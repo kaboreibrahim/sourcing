@@ -1,0 +1,860 @@
+<!-- templates/fournisseur/accueil.html -->
+{% extends 'layouts/base_fournisseur.html' %}
+{% load humanize %}
+
+{% block title %}Tableau de bord - Fournisseur{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Tableau de bord</h1>
+        <p class="page-subtitle">
+            <i class="fas fa-chart-line"></i>
+            Aperçu de vos commodités et statistiques
+        </p>
+    </div>
+    <div class="actions">
+        <a href="" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Nouvel échantillon
+        </a>
+    </div>
+</div>
+
+<!-- Cartes de statistiques -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-card-header">
+            <div>
+                <h3 class="stat-card-title">Total des échantillons</h3>
+                <p class="stat-card-value">{{ total_echantillons|default:0 }}</p>
+            </div>
+            <div class="stat-card-icon primary">
+                <i class="fas fa-boxes"></i>
+            </div>
+        </div>
+        <div class="stat-card-change">
+            <i class="fas fa-arrow-up change-positive"></i>
+            <span class="change-positive">{{ echantillons_mois|default:0 }} ce mois</span>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-card-header">
+            <div>
+                <h3 class="stat-card-title">Commodités suivies</h3>
+                <p class="stat-card-value">{{ commodites|length }}</p>
+            </div>
+            <div class="stat-card-icon success">
+                <i class="fas fa-tags"></i>
+            </div>
+        </div>
+        <div class="stat-card-change">
+            <i class="fas fa-info-circle"></i>
+            <span>Actives</span>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-card-header">
+            <div>
+                <h3 class="stat-card-title">Dernier échantillon</h3>
+                <p class="stat-card-value">
+                    {% if derniers_echantillons.0 %}
+                        {{ derniers_echantillons.0.date_creation|date:"d/m/Y" }}
+                    {% else %}
+                        Aucun
+                    {% endif %}
+                </p>
+            </div>
+            <div class="stat-card-icon warning">
+                <i class="fas fa-history"></i>
+            </div>
+        </div>
+        <div class="stat-card-change">
+            <i class="fas fa-user"></i>
+            <span>
+                {% if derniers_echantillons.0 %}
+                    Par {{ derniers_echantillons.0.utilisateur.get_full_name|default:"Inconnu" }}
+                {% else %}
+                    Aucun enregistrement
+                {% endif %}
+            </span>
+        </div>
+    </div>
+</div>
+
+<!-- Contenu principal -->
+<div class="main-content">
+    <div class="main-panel">
+        <div class="panel-header">
+            <h2>Vos commodités</h2>
+            <p>Liste des produits que vous fournissez et suivez</p>
+        </div>
+
+        {% if commodites %}
+            <div class="commodities-grid">
+                {% for commodite in commodites %}
+                    <div class="commodity-card" style="--card-color: #4f46e5; --card-color-dark: #4338ca;">
+                        <div class="card-header">
+                            <h3 class="commodity-name">{{ commodite.nom }}</h3>
+                            <span class="commodity-type">
+                                <i class="fas fa-tag"></i>
+                                {{ commodite.get_type_display }}
+                            </span>
+                        </div>
+                        
+                        <div class="stats-row">
+                            <div class="stat-item">
+                                <span class="stat-value">{{ commodite.quantite_totale|floatformat:2 }}</span>
+                                <span class="stat-label">Quantité</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-value">{{ commodite.prix_moyen|floatformat:2 }} €</span>
+                                <span class="stat-label">Prix moyen</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-value">{{ commodite.nb_echantillons }}</span>
+                                <span class="stat-label">Échantillons</span>
+                            </div>
+                        </div>
+                        
+                        <div class="samples-section">
+                            <h4 class="section-title">
+                                <i class="fas fa-history"></i>
+                                Derniers prélèvements
+                            </h4>
+                            
+                            {% if commodite.echantillonnages.all %}
+                                <div class="sample-list">
+                                    {% for echantillon in commodite.echantillonnages.all|slice:":3" %}
+                                        <div class="sample-item">
+                                            <span class="sample-date">
+                                                <i class="far fa-calendar-alt"></i>
+                                                {{ echantillon.date_creation|date:"d/m/Y" }}
+                                            </span>
+                                            <span class="sample-quantity">
+                                                {{ echantillon.quantite }} {{ commodite.unite_mesure }}
+                                            </span>
+                                            <span class="sample-price">
+                                                {{ echantillon.prix_unitaire|default:"-" }} €
+                                            </span>
+                                        </div>
+                                    {% endfor %}
+                                    
+                                    {% if commodite.echantillonnages.count > 3 %}
+                                        <div class="more-samples">
+                                            + {{ commodite.echantillonnages.count|add:"-3" }} autres prélèvements
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% else %}
+                                <div class="empty-samples">
+                                    <div class="empty-icon">
+                                        <i class="fas fa-inbox"></i>
+                                    </div>
+                                    <p>Aucun prélèvement enregistré</p>
+                                </div>
+                            {% endif %}
+                            
+                            <a href="{% url 'detail_commodite' commodite.id %}" class="view-btn">
+                                <i class="fas fa-eye"></i> Voir les détails
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <div class="empty-state-icon">
+                    <i class="fas fa-box-open"></i>
+                </div>
+                <h3 class="empty-state-title">Aucune commodité trouvée</h3>
+                <p class="empty-state-description">
+                    Vous ne suivez actuellement aucune commodité. Commencez par ajouter des produits à votre catalogue.
+                </p>
+                <a href="{% url 'commodites:ajouter' %}" class="btn btn-primary mt-3">
+                    <i class="fas fa-plus"></i> Ajouter une commodité
+                </a>
+            </div>
+        {% endif %}
+    </div>
+    
+    <div class="sidebar">
+        <div class="panel">
+            <div class="panel-header">
+                <h3>Dernières activités</h3>
+                <p>Vos échantillons récents</p>
+            </div>
+            
+            {% if derniers_echantillons %}
+                <div class="activity-list">
+                    {% for echantillon in derniers_echantillons %}
+                        <div class="activity-item">
+                            <div class="activity-icon">
+                                <i class="fas fa-flask"></i>
+                            </div>
+                            <div class="activity-content">
+                                <div class="activity-title">
+                                    {{ echantillon.commodite.nom }}
+                                </div>
+                                <div class="activity-meta">
+                                    <span class="text-muted">
+                                        <i class="far fa-calendar-alt"></i>
+                                        {{ echantillon.date_creation|timesince }}
+                                    </span>
+                                    <span class="text-muted">
+                                        <i class="fas fa-user"></i>
+                                        {{ echantillon.utilisateur.get_full_name|default:"Inconnu" }}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="activity-value">
+                                {{ echantillon.quantite }} {{ echantillon.commodite.unite_mesure }}
+                            </div>
+                        </div>
+                    {% endfor %}
+                    
+                    <a href="{% url 'echantillonnages:historique' %}" class="btn btn-outline-secondary btn-block mt-3">
+                        Voir tout l'historique
+                    </a>
+                </div>
+            {% else %}
+                <div class="empty-state empty-state-sm">
+                    <div class="empty-state-icon">
+                        <i class="fas fa-inbox"></i>
+                    </div>
+                    <h4>Aucune activité récente</h4>
+                    <p>Vos échantillons apparaîtront ici</p>
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="panel mt-4">
+            <div class="panel-header">
+                <h3>Statistiques mensuelles</h3>
+                <p>Évolution des prélèvements</p>
+            </div>
+            
+            {% if stats_mensuelles %}
+                <div class="chart-container">
+                    <canvas id="monthlyChart"></canvas>
+                </div>
+                
+                <div class="chart-legend">
+                    <div class="legend-item">
+                        <span class="legend-color" style="background-color: #4f46e5;"></span>
+                        <span>Échantillons</span>
+                    </div>
+                </div>
+            {% else %}
+                <div class="empty-state empty-state-sm">
+                    <div class="empty-state-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h4>Pas assez de données</h4>
+                    <p>Les statistiques apparaîtront après quelques prélèvements</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% if stats_mensuelles %}
+    {% block extra_js %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const ctx = document.getElementById('monthlyChart').getContext('2d');
+            const data = {
+                labels: [
+                    {% for stat in stats_mensuelles %}
+                        '{{ stat.mois_value }}/{{ stat.annee_value }}'{% if not forloop.last %},{% endif %}
+                    {% endfor %}
+                ],
+                datasets: [{
+                    label: 'Échantillons',
+                    data: [
+                        {% for stat in stats_mensuelles %}
+                            {{ stat.total }}{% if not forloop.last %},{% endif %}
+                        {% endfor %}
+                    ],
+                    backgroundColor: 'rgba(79, 70, 229, 0.1)',
+                    borderColor: '#4f46e5',
+                    borderWidth: 2,
+                    tension: 0.3,
+                    fill: true
+                }]
+            };
+            
+            const config = {
+                type: 'line',
+                data: data,
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                drawBorder: false
+                            },
+                            ticks: {
+                                precision: 0
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            };
+            
+            new Chart(ctx, config);
+        });
+    </script>
+    {% endblock %}
+{% endif %}
+
+<style>
+    :root {
+        --primary-color: #4f46e5;
+        --primary-hover: #4338ca;
+        --success-color: #10b981;
+        --warning-color: #f59e0b;
+        --danger-color: #ef4444;
+        --gray-50: #f9fafb;
+        --gray-100: #f3f4f6;
+        --gray-200: #e5e7eb;
+        --gray-300: #d1d5db;
+        --gray-400: #9ca3af;
+        --gray-500: #6b7280;
+        --gray-600: #4b5563;
+        --gray-700: #374151;
+        --gray-800: #1f2937;
+        --gray-900: #111827;
+    }
+    
+    body {
+        background-color: #f3f4f6;
+        color: var(--gray-800);
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+        line-height: 1.5;
+    }
+    
+    /* En-tête de page */
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+        padding: 1.5rem 1.5rem 0;
+    }
+    
+    .page-title {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: var(--gray-900);
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+    
+    .page-subtitle {
+        color: var(--gray-500);
+        font-size: 1rem;
+        font-weight: 400;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    /* Cartes de statistiques */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+        padding: 0 1.5rem;
+    }
+    
+    .stat-card {
+        background: white;
+        border-radius: 0.75rem;
+        padding: 1.5rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        border: 1px solid var(--gray-200);
+        transition: all 0.2s ease;
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+    
+    .stat-card-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+    }
+    
+    .stat-card-icon {
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 0.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+    }
+    
+    .stat-card-icon.primary {
+        background-color: var(--primary-color);
+    }
+    
+    .stat-card-icon.success {
+        background-color: var(--success-color);
+    }
+    
+    .stat-card-icon.warning {
+        background-color: var(--warning-color);
+    }
+    
+    .stat-card-icon.danger {
+        background-color: var(--danger-color);
+    }
+    
+    .stat-card-title {
+        color: var(--gray-500);
+        font-size: 0.875rem;
+        font-weight: 500;
+        margin: 0 0 0.25rem;
+    }
+    
+    .stat-card-value {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--gray-900);
+        margin: 0 0 0.5rem;
+    }
+    
+    .stat-card-change {
+        display: flex;
+        align-items: center;
+        font-size: 0.75rem;
+        font-weight: 500;
+    }
+    
+    .change-positive {
+        color: var(--success-color);
+    }
+    
+    .change-negative {
+        color: var(--danger-color);
+    }
+    
+    /* Section principale */
+    .main-content {
+        padding: 0 1.5rem 2rem;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    @media (min-width: 1280px) {
+        .main-content {
+            grid-template-columns: 2fr 1fr;
+        }
+    }
+    
+    .commodities-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+        gap: 1.5rem;
+    }
+    
+    .commodity-card {
+        background: white;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+        transition: all 0.3s ease;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+    
+    .commodity-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    .card-header {
+        padding: 1.5rem;
+        position: relative;
+        color: white;
+        background: linear-gradient(135deg, var(--card-color) 0%, var(--card-color-dark) 100%);
+    }
+    
+    .card-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 120px;
+        height: 120px;
+        background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+        border-radius: 50%;
+        transform: translate(30%, -30%);
+    }
+    
+    .commodity-name {
+        font-size: 1.3rem;
+        font-weight: 600;
+        margin: 0 0 0.5rem 0;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .commodity-type {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        background: rgba(255, 255, 255, 0.25);
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .stats-row {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        background: #f9fafb;
+        border-bottom: 1px solid #f3f4f6;
+    }
+    
+    .stat-item {
+        padding: 1rem;
+        text-align: center;
+        border-right: 1px solid #f3f4f6;
+    }
+    
+    .stat-item:last-child {
+        border-right: none;
+    }
+    
+    .stat-value {
+        display: block;
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: #111827;
+        margin-bottom: 0.25rem;
+    }
+    
+    .stat-label {
+        font-size: 0.7rem;
+        color: #6b7280;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-weight: 500;
+    }
+    
+    .samples-section {
+        padding: 1rem 1.5rem 1.5rem;
+        flex-grow: 1;
+    }
+    
+    .section-title {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #6b7280;
+        margin: 0 0 1rem 0;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .sample-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .sample-item {
+        display: grid;
+        grid-template-columns: 1fr auto auto;
+        gap: 0.75rem;
+        align-items: center;
+        padding: 0.75rem;
+        background: #f9fafb;
+        border-radius: 8px;
+        transition: all 0.2s;
+    }
+    
+    .sample-item:hover {
+        background: #f3f4f6;
+    }
+    
+    .sample-date {
+        font-size: 0.85rem;
+        color: #6b7280;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+    
+    .sample-quantity {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #16a34a;
+        white-space: nowrap;
+    }
+    
+    .sample-price {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #2563eb;
+        white-space: nowrap;
+    }
+    
+    .more-samples {
+        text-align: center;
+        margin-top: 0.75rem;
+        font-size: 0.8rem;
+        color: #9ca3af;
+    }
+    
+    .empty-samples {
+        text-align: center;
+        padding: 2rem 1rem;
+        color: #9ca3af;
+    }
+    
+    .empty-icon {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+        opacity: 0.3;
+    }
+    
+    .view-btn {
+        width: 100%;
+        padding: 1rem;
+        background: #111827;
+        color: white;
+        border: none;
+        font-weight: 500;
+        font-size: 0.9rem;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+    
+    .view-btn:hover {
+        background: #374151;
+    }
+    
+    .empty-state {
+        background: white;
+        border-radius: 16px;
+        padding: 4rem 2rem;
+        text-align: center;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    }
+    
+    .empty-state-icon {
+        font-size: 4rem;
+        color: #e5e7eb;
+        margin-bottom: 1rem;
+    }
+    
+    .empty-state-title {
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 0.5rem;
+    }
+    
+    .empty-state-text {
+        color: #9ca3af;
+        margin: 0;
+    }
+    
+    @media (max-width: 768px) {
+        .commodities-grid {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+        
+        .stats-row {
+            grid-template-columns: repeat(3, 1fr);
+        }
+        
+        .stat-value {
+            font-size: 1.1rem;
+        }
+        
+        .stat-label {
+            font-size: 0.65rem;
+        }
+        
+        .sample-item {
+            grid-template-columns: 1fr;
+            gap: 0.5rem;
+        }
+        
+        .sample-date,
+        .sample-quantity,
+        .sample-price {
+            font-size: 0.8rem;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .card-header {
+            padding: 1.25rem;
+        }
+        
+        .commodity-name {
+            font-size: 1.1rem;
+        }
+        
+        .samples-section {
+            padding: 1rem;
+        }
+    }
+</style>
+
+<div class="container-fluid px-3 px-md-4 py-4">
+    <div class="page-header">
+        <h1 class="page-title">
+            <i class="fas fa-box-open"></i>
+            <span>Mes Commodités</span>
+        </h1>
+        <div class="page-subtitle">
+            <i class="fas fa-layer-group"></i>
+            <span>{{ commodites|length }} commodité{{ commodites|length|pluralize }}</span>
+        </div>
+    </div>
+
+    <div class="commodities-grid">
+        {% for commodite in commodites %}
+        <div class="commodity-card" 
+             onclick="window.location.href='{% url 'detail_commodite' commodite.id %}'"
+             style="--card-color: {{ commodite.couleur }}; --card-color-dark: {{ commodite.couleur }}dd;">
+            
+            <div class="card-header">
+                <h2 class="commodity-name">{{ commodite.nom }}</h2>
+                <div class="commodity-type">
+                    <i class="fas fa-tag"></i>
+                    <span>{{ commodite.get_type_commodite_display }}</span>
+                </div>
+            </div>
+            
+            <div class="stats-row">
+                <div class="stat-item">
+                    <span class="stat-value">{{ commodite.echantillonnages.first.quantite|floatformat:2|default:"0.00" }}</span>
+                    <span class="stat-label">Tonnes</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value">{{ commodite.echantillonnages.first.prix|floatformat:0|intcomma|default:"0" }}</span>
+                    <span class="stat-label">FCFA/T</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value">{{ commodite.echantillonnages.count }}</span>
+                    <span class="stat-label">Échantillons</span>
+                </div>
+            </div>
+            
+            <div class="samples-section">
+                <h3 class="section-title">
+                    <i class="fas fa-flask"></i>
+                    <span>Derniers Enregistrement...</span>
+                </h3>
+                
+                {% if commodite.echantillonnages.all %}
+                    <div class="sample-list">
+                        {% for echantillon in commodite.echantillonnages.all|slice:":3" %}
+                        <div class="sample-item">
+                            <div class="sample-date">
+                                <i class="far fa-calendar"></i>
+                                <span>{{ echantillon.date_creation|date:"d/m/Y" }}</span>
+                            </div>
+                            <div class="sample-quantity">
+                                {{ echantillon.quantite|floatformat:2 }} T
+                            </div>
+                            <div class="sample-price">
+                                {{ echantillon.prix|floatformat:0|intcomma }} FCFA
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    
+                    {% if commodite.echantillonnages.count > 3 %}
+                    <div class="more-samples">
+                        <i class="fas fa-plus-circle"></i>
+                        {{ commodite.echantillonnages.count|add:"-3" }} autre{{ commodite.echantillonnages.count|add:"-3"|pluralize }}
+                    </div>
+                    {% endif %}
+                {% else %}
+                    <div class="empty-samples">
+                        <div class="empty-icon">
+                            <i class="fas fa-inbox"></i>
+                        </div>
+                        <p style="margin: 0; font-size: 0.85rem;">Aucun Enregistrement...</p>
+                    </div>
+                {% endif %}
+            </div>
+            
+            <button class="view-btn">
+                <i class="fas fa-chart-line"></i>
+                <span>Voir les détails</span>
+            </button>
+        </div>
+        {% empty %}
+        <div class="empty-state">
+            <div class="empty-state-icon">
+                <i class="fas fa-box-open"></i>
+            </div>
+            <h2 class="empty-state-title">Aucune commodité</h2>
+            <p class="empty-state-text">
+                Vos commodités apparaîtront ici une fois enregistrées dans le système.
+            </p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const cards = document.querySelectorAll('.commodity-card');
+    cards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        setTimeout(() => {
+            card.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, index * 80);
+    });
+});
+</script>
+{% endblock %}

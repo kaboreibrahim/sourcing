@@ -1,0 +1,131 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block title %}Détails de la demande {{ demande.ref }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>
+                    <i class="fas fa-file-invoice"></i> Demande de cotation
+                </h2>
+                <div>
+                    <a href="{% url 'cotation_update' demande.pk %}" class="btn btn-warning">
+                        <i class="fas fa-edit"></i> Modifier le statut
+                    </a>
+                    <a href="{% url 'cotation_list' %}" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Retour à la liste
+                    </a>
+                </div>
+            </div>
+
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Référence: {{ demande.ref }}</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h5 class="border-bottom pb-2">Informations client</h5>
+                            <table class="table table-sm">
+                                <tr>
+                                    <th width="40%">Nom du client:</th>
+                                    <td>{{ demande.nom_client }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Contact:</th>
+                                    <td>{{ demande.contact }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Date de demande:</th>
+                                    <td>{{ demande.date_demande|date:"d/m/Y à H:i" }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <h5 class="border-bottom pb-2">Statut</h5>
+                            <div class="mt-3">
+                                {% if demande.statut == 'EN_ATTENTE' %}
+                                    <span class="badge bg-warning text-dark fs-5">
+                                        <i class="fas fa-clock"></i> {{ demande.get_statut_display }}
+                                    </span>
+                                {% elif demande.statut == 'TRAITEE' %}
+                                    <span class="badge bg-success fs-5">
+                                        <i class="fas fa-check-circle"></i> {{ demande.get_statut_display }}
+                                    </span>
+                                {% elif demande.statut == 'REFUSEE' %}
+                                    <span class="badge bg-danger fs-5">
+                                        <i class="fas fa-times-circle"></i> {{ demande.get_statut_display }}
+                                    </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-md-12">
+                            <h5 class="border-bottom pb-2">Détails de la commande</h5>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <table class="table table-sm">
+                                        <tr>
+                                            <th width="40%">Commodité:</th>
+                                            <td><strong>{{ demande.commodite.nom }}</strong></td>
+                                        </tr>
+                                        <tr>
+                                            <th>Quantité:</th>
+                                            <td>{{ demande.quantite }} tonnes</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Conditionnement:</th>
+                                            <td>{{ demande.get_type_conditionnement_display }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Prix cible:</th>
+                                            <td><strong class="text-success">${{ demande.target_price }}</strong></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="col-md-6">
+                                    <table class="table table-sm">
+                                        <tr>
+                                            <th width="40%">Incoterm:</th>
+                                            <td><span class="badge bg-info">{{ demande.incoterm }}</span></td>
+                                        </tr>
+                                        <tr>
+                                            <th>Port de chargement:</th>
+                                            <td>
+                                                <i class="fas fa-ship"></i> {{ demande.pol }}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>Port de déchargement:</th>
+                                            <td>
+                                                <i class="fas fa-anchor"></i> {{ demande.pod }}
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i> 
+                        <strong>Note:</strong> Cette demande a été enregistrée le 
+                        {{ demande.date_demande|date:"d/m/Y à H:i" }}. 
+                        Un email de confirmation a été envoyé au client.
+                    </div>
+                </div>
+                <div class="card-footer text-muted">
+                    <small>
+                        Dernière mise à jour: {{ demande.date_demande|date:"d/m/Y à H:i" }}
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

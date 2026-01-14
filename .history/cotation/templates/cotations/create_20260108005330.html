@@ -1,0 +1,280 @@
+ {% extends 'layouts/base_client.html' %}
+{% load static i18n %}
+
+{% block title %}{% trans "Nouvelle demande de cotation" %}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .form-step {
+        @apply hidden;
+    }
+    
+    .form-step.active {
+        @apply block;
+        animation: fadeIn 0.3s ease-in;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .step-indicator {
+        @apply flex justify-between mb-8 relative;
+    }
+    
+    .step-indicator::before {
+        @apply absolute top-5 left-0 right-0 h-0.5 bg-gray-200 -z-10;
+        content: '';
+    }
+    
+    .step {
+        @apply flex flex-col items-center relative flex-1;
+    }
+    
+    .step-number {
+        @apply w-10 h-10 rounded-full bg-gray-100 text-gray-500 flex items-center justify-center font-bold mb-2 transition-all relative z-10;
+    }
+    
+    .step.active .step-number {
+        @apply bg-blue-600 text-white shadow-md;
+        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.2);
+    }
+    
+    .step.completed .step-number {
+        @apply bg-green-600 text-white;
+    }
+    
+    .step.completed .step-number::after {
+        content: '✓';
+    }
+    
+    .step-label {
+        @apply text-sm text-gray-500 text-center;
+    }
+    
+    .step.active .step-label {
+        @apply text-blue-600 font-semibold;
+    }
+    
+    .form-input:focus, .form-select:focus {
+        @apply ring-2 ring-blue-500 border-blue-500;
+    }
+    
+    .required-field::after {
+        @apply text-red-500 ml-1;
+        content: '*';
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="bg-white rounded-xl shadow-md overflow-hidden">
+        <!-- En-tête -->
+        <div class="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-6 sm:px-8">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                    <h1 class="text-2xl font-bold text-white">
+                        <i class="fas fa-file-invoice mr-2"></i> 
+                        {% trans "Nouvelle demande de cotation" %}
+                    </h1>
+                    <p class="mt-1 text-blue-100">
+                        {% trans "Remplissez le formulaire en quelques étapes simples" %}
+                    </p>
+                </div>
+                <div class="mt-4 sm:mt-0">
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-500 text-white">
+                        <i class="fas fa-clock mr-2"></i>
+                        <span id="form-progress-text">1/3</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Barre de progression -->
+        <div class="h-1.5 bg-gray-100">
+            <div id="progressBar" class="h-full bg-gradient-to-r from-blue-500 to-cyan-400 transition-all duration-300" style="width: 33%"></div>
+        </div>
+
+        <!-- Indicateur d'étapes -->
+        <div class="p-6 sm:px-8">
+            <div class="step-indicator">
+                <div class="step active" data-step="1">
+                    <div class="step-number">1</div>
+                    <div class="step-label">{% trans "Informations client" %}</div>
+                </div>
+                <div class="step" data-step="2">
+                    <div class="step-number">2</div>
+                    <div class="step-label">{% trans "Détails produit" %}</div>
+                </div>
+                <div class="step" data-step="3">
+                    <div class="step-number">3</div>
+                    <div class="step-label">{% trans "Confirmation" %}</div>
+                </div>
+            </div>
+
+            <form method="post" id="cotationForm" class="space-y-6" novalidate>
+                {% csrf_token %}
+                
+                <!-- Étape 1: Informations client -->
+                <div class="form-step active" data-step="1">
+                    <div class="bg-blue-50 rounded-lg p-4 mb-6">
+                        <h2 class="text-lg font-semibold text-blue-800 flex items-center">
+                            <i class="fas fa-user-circle mr-2"></i>
+                            {% trans "Informations client" %}
+                        </h2>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Champ Nom du client -->
+                        <div>
+                            <label for="{{ form.nom_client.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                                {{ form.nom_client.label }}
+                                <span class="text-red-500">*</span>
+                            </label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                                    <i class="fas fa-building"></i>
+                                </div>
+                                {{ form.nom_client|add_class:"form-input pl-10 w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" }}
+                            </div>
+                            {% if form.nom_client.errors %}
+                                <p class="mt-1 text-sm text-red-600">{{ form.nom_client.errors.0 }}</p>
+                            {% else %}
+                                <p class="mt-1 text-xs text-gray-500">{% trans "Nom complet du client ou de l'entreprise" %}</p>
+                            {% endif %}
+                        </div>
+
+                        <!-- Champ Contact -->
+                        <div>
+                            <label for="{{ form.contact.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                                {{ form.contact.label }}
+                                <span class="text-red-500">*</span>
+                            </label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                                    <i class="fas fa-phone"></i>
+                                </div>
+                                {{ form.contact|add_class:"form-input pl-10 w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" }}
+                            </div>
+                            {% if form.contact.errors %}
+                                <p class="mt-1 text-sm text-red-600">{{ form.contact.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+
+                        <!-- Champ Email -->
+                        <div>
+                            <label for="{{ form.mail.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                                {{ form.mail.label }}
+                                <span class="text-red-500">*</span>
+                            </label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                                    <i class="fas fa-envelope"></i>
+                                </div>
+                                {{ form.mail|add_class:"form-input pl-10 w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" }}
+                            </div>
+                            {% if form.mail.errors %}
+                                <p class="mt-1 text-sm text-red-600">{{ form.mail.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+
+                        <!-- Autres champs... -->
+                    </div>
+
+                    <!-- Boutons de navigation -->
+                    <div class="flex justify-between pt-6 border-t border-gray-200 mt-8">
+                        <div>
+                            <!-- Bouton précédent (caché à la première étape) -->
+                            <button type="button" class="btn-prev hidden inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                <i class="fas fa-arrow-left mr-2"></i>
+                                {% trans "Précédent" %}
+                            </button>
+                        </div>
+                        <div>
+                            <!-- Bouton suivant -->
+                            <button type="button" class="btn-next inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                {% trans "Suivant" %}
+                                <i class="fas fa-arrow-right ml-2"></i>
+                            </button>
+                            
+                            <!-- Bouton de soumission (caché jusqu'à la dernière étape) -->
+                            <button type="submit" class="btn-submit hidden items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                                <i class="fas fa-paper-plane mr-2"></i>
+                                {% trans "Envoyer la demande" %}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Les autres étapes seront ajoutées ici -->
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Script pour gérer la navigation entre les étapes
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('cotationForm');
+    const steps = document.querySelectorAll('.form-step');
+    const btnNext = document.querySelectorAll('.btn-next');
+    const btnPrev = document.querySelectorAll('.btn-prev');
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('form-progress-text');
+    let currentStep = 1;
+    const totalSteps = steps.length;
+
+    // Mettre à jour la progression
+    function updateProgress() {
+        const progress = (currentStep / totalSteps) * 100;
+        progressBar.style.width = `${progress}%`;
+        progressText.textContent = `${currentStep}/${totalSteps}`;
+    }
+
+    // Afficher l'étape actuelle
+    function showStep(step) {
+        steps.forEach((s, index) => {
+            if (index + 1 === step) {
+                s.classList.add('active');
+            } else {
+                s.classList.remove('active');
+            }
+        });
+
+        // Mettre à jour les boutons
+        document.querySelector('.btn-submit').classList.toggle('hidden', step !== totalSteps);
+        document.querySelector('.btn-next').classList.toggle('hidden', step === totalSteps);
+        document.querySelector('.btn-prev').classList.toggle('hidden', step === 1);
+    }
+
+    // Événements des boutons
+    btnNext.forEach(btn => {
+        btn.addEventListener('click', () => {
+            if (currentStep < totalSteps) {
+                currentStep++;
+                showStep(currentStep);
+                updateProgress();
+            }
+        });
+    });
+
+    btnPrev.forEach(btn => {
+        btn.addEventListener('click', () => {
+            if (currentStep > 1) {
+                currentStep--;
+                showStep(currentStep);
+                updateProgress();
+            }
+        });
+    });
+
+    // Initialisation
+    showStep(1);
+    updateProgress();
+});
+</script>
+{% endblock %}

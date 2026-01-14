@@ -1,0 +1,1141 @@
+<!-- templates/fournisseur/accueil.html -->
+{% extends 'layouts/base_fournisseur.html' %}
+{% load humanize %}
+
+{% block content %}
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Sora:wght@300;400;600;700;800&display=swap');
+    
+    :root {
+        /* Core Colors - Rich Teal & Warm Accent Palette */
+        --color-primary: #0d7377;
+        --color-primary-light: #14ffec;
+        --color-primary-dark: #053f41;
+        --color-accent: #ff6b35;
+        --color-accent-light: #ff8960;
+        --color-success: #06d6a0;
+        --color-warning: #ffd23f;
+        --color-danger: #ee6055;
+        
+        /* Neutral Palette */
+        --color-text-primary: #0a1931;
+        --color-text-secondary: #2c4251;
+        --color-text-muted: #677d8a;
+        --color-bg-canvas: #f8fafb;
+        --color-bg-elevated: #ffffff;
+        --color-bg-subtle: #eef2f4;
+        --color-border: #d6dfe4;
+        --color-border-light: #e8eef2;
+        
+        /* Shadows & Effects */
+        --shadow-subtle: 0 1px 3px rgba(13, 115, 119, 0.04), 0 1px 2px rgba(13, 115, 119, 0.03);
+        --shadow-moderate: 0 4px 12px rgba(13, 115, 119, 0.08), 0 2px 4px rgba(13, 115, 119, 0.05);
+        --shadow-elevated: 0 12px 28px rgba(13, 115, 119, 0.12), 0 4px 8px rgba(13, 115, 119, 0.08);
+        --shadow-dramatic: 0 24px 48px rgba(13, 115, 119, 0.18), 0 8px 16px rgba(13, 115, 119, 0.12);
+        
+        /* Typography */
+        --font-display: 'Sora', system-ui, -apple-system, sans-serif;
+        --font-mono: 'Space Mono', 'Courier New', monospace;
+        
+        /* Spacing Scale */
+        --space-1: 0.25rem;
+        --space-2: 0.5rem;
+        --space-3: 0.75rem;
+        --space-4: 1rem;
+        --space-5: 1.5rem;
+        --space-6: 2rem;
+        --space-8: 3rem;
+        --space-10: 4rem;
+        
+        /* Border Radius */
+        --radius-sm: 8px;
+        --radius-md: 12px;
+        --radius-lg: 20px;
+        --radius-xl: 28px;
+        --radius-full: 9999px;
+    }
+    
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
+    body {
+        font-family: var(--font-display);
+        background: var(--color-bg-canvas);
+        color: var(--color-text-primary);
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+    
+    /* ========================================
+       HEADER SECTION - User Welcome Area
+    ======================================== */
+    .dashboard-hero {
+        background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+        border-radius: var(--radius-xl);
+        padding: var(--space-8);
+        margin-bottom: var(--space-6);
+        box-shadow: var(--shadow-elevated);
+        position: relative;
+        overflow: hidden;
+        color: white;
+    }
+    
+    .dashboard-hero::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -20%;
+        width: 600px;
+        height: 600px;
+        background: radial-gradient(circle, rgba(20, 255, 236, 0.15) 0%, transparent 60%);
+        border-radius: 50%;
+        animation: float 20s ease-in-out infinite;
+    }
+    
+    .dashboard-hero::after {
+        content: '';
+        position: absolute;
+        bottom: -30%;
+        left: -15%;
+        width: 500px;
+        height: 500px;
+        background: radial-gradient(circle, rgba(255, 107, 53, 0.12) 0%, transparent 65%);
+        border-radius: 50%;
+        animation: float 15s ease-in-out infinite reverse;
+    }
+    
+    @keyframes float {
+        0%, 100% { transform: translate(0, 0) scale(1); }
+        50% { transform: translate(30px, -30px) scale(1.05); }
+    }
+    
+    .hero-content {
+        position: relative;
+        z-index: 2;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: var(--space-6);
+        flex-wrap: wrap;
+    }
+    
+    .welcome-block {
+        flex: 1;
+        min-width: 300px;
+    }
+    
+    .hero-title {
+        font-size: clamp(2rem, 5vw, 3rem);
+        font-weight: 800;
+        margin-bottom: var(--space-3);
+        letter-spacing: -0.03em;
+        line-height: 1.1;
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    }
+    
+    .hero-subtitle {
+        font-size: 1.125rem;
+        font-weight: 300;
+        opacity: 0.9;
+        margin-bottom: var(--space-5);
+        letter-spacing: 0.01em;
+    }
+    
+    .user-profile-card {
+        background: rgba(255, 255, 255, 0.12);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        border-radius: var(--radius-lg);
+        padding: var(--space-5);
+        display: flex;
+        align-items: center;
+        gap: var(--space-4);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    }
+    
+    .user-avatar {
+        width: 72px;
+        height: 72px;
+        border-radius: var(--radius-full);
+        background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-light) 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.75rem;
+        font-weight: 700;
+        font-family: var(--font-mono);
+        color: white;
+        box-shadow: 0 4px 16px rgba(255, 107, 53, 0.4);
+        flex-shrink: 0;
+    }
+    
+    .user-details h3 {
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin-bottom: var(--space-1);
+        color: white;
+    }
+    
+    .user-details h3 small {
+        font-size: 0.875rem;
+        font-weight: 400;
+        opacity: 0.85;
+    }
+    
+    .user-contact {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-3);
+        font-size: 0.875rem;
+        opacity: 0.9;
+    }
+    
+    .user-contact i {
+        margin-right: var(--space-1);
+        opacity: 0.8;
+    }
+    
+    /* Stats Grid */
+    .stats-showcase {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: var(--space-4);
+        margin-top: var(--space-6);
+    }
+    
+    .stat-tile {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: var(--radius-md);
+        padding: var(--space-5);
+        text-align: center;
+        transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    
+    .stat-tile:hover {
+        background: rgba(255, 255, 255, 0.22);
+        transform: translateY(-4px);
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+    }
+    
+    .stat-icon {
+        width: 56px;
+        height: 56px;
+        margin: 0 auto var(--space-3);
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: var(--radius-md);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: white;
+        backdrop-filter: blur(8px);
+    }
+    
+    .stat-value {
+        font-size: 2.25rem;
+        font-weight: 800;
+        font-family: var(--font-mono);
+        color: white;
+        line-height: 1;
+        margin-bottom: var(--space-2);
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    }
+    
+    .stat-label {
+        font-size: 0.813rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.85);
+    }
+    
+    /* ========================================
+       COMMODITIES SECTION
+    ======================================== */
+    .section-header {
+        margin-bottom: var(--space-6);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: var(--space-4);
+    }
+    
+    .section-title {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: var(--color-text-primary);
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+        letter-spacing: -0.02em;
+    }
+    
+    .section-title i {
+        color: var(--color-primary);
+        font-size: 1.5rem;
+    }
+    
+    .section-meta {
+        font-size: 0.938rem;
+        color: var(--color-text-muted);
+        font-weight: 500;
+        padding: var(--space-2) var(--space-4);
+        background: var(--color-bg-subtle);
+        border-radius: var(--radius-full);
+        border: 1px solid var(--color-border-light);
+    }
+    
+    /* Commodities Grid */
+    .commodities-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(min(100%, 380px), 1fr));
+        gap: var(--space-6);
+    }
+    
+    /* Commodity Card */
+    .commodity-card {
+        background: var(--color-bg-elevated);
+        border-radius: var(--radius-xl);
+        overflow: hidden;
+        box-shadow: var(--shadow-moderate);
+        transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        cursor: pointer;
+        border: 1px solid var(--color-border-light);
+        position: relative;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .commodity-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        background: linear-gradient(90deg, var(--commodity-color), var(--commodity-color-dark));
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    
+    .commodity-card:hover {
+        transform: translateY(-8px) scale(1.01);
+        box-shadow: var(--shadow-dramatic);
+        border-color: var(--color-border);
+    }
+    
+    .commodity-card:hover::before {
+        transform: scaleX(1);
+    }
+    
+    /* Card Header with Dynamic Color */
+    .card-header-section {
+        background: linear-gradient(135deg, var(--commodity-color) 0%, var(--commodity-color-dark) 100%);
+        padding: var(--space-6);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .card-header-section::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -25%;
+        width: 300px;
+        height: 300px;
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+        border-radius: 50%;
+    }
+    
+    .card-header-section::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    }
+    
+    .commodity-icon {
+        width: 64px;
+        height: 64px;
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
+        border-radius: var(--radius-md);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        color: white;
+        margin-bottom: var(--space-4);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+    }
+    
+    .commodity-name {
+        font-size: 1.625rem;
+        font-weight: 800;
+        color: white;
+        margin-bottom: var(--space-3);
+        letter-spacing: -0.02em;
+        line-height: 1.2;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .commodity-badges {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-2);
+        position: relative;
+        z-index: 1;
+    }
+    
+    .badge {
+        padding: var(--space-2) var(--space-3);
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        border-radius: var(--radius-full);
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: white;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        display: flex;
+        align-items: center;
+        gap: var(--space-1);
+    }
+    
+    /* Stats Bar */
+    .stats-bar {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        background: var(--color-bg-subtle);
+        border-bottom: 1px solid var(--color-border-light);
+    }
+    
+    .stat-box {
+        padding: var(--space-5) var(--space-4);
+        text-align: center;
+        position: relative;
+        transition: background 0.3s ease;
+    }
+    
+    .stat-box:not(:last-child)::after {
+        content: '';
+        position: absolute;
+        right: 0;
+        top: 20%;
+        height: 60%;
+        width: 1px;
+        background: var(--color-border);
+    }
+    
+    .stat-box:hover {
+        background: var(--color-bg-elevated);
+    }
+    
+    .stat-box-icon {
+        width: 40px;
+        height: 40px;
+        margin: 0 auto var(--space-2);
+        background: linear-gradient(135deg, var(--commodity-color), var(--commodity-color-dark));
+        border-radius: var(--radius-sm);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .stat-box-value {
+        font-size: 1.5rem;
+        font-weight: 700;
+        font-family: var(--font-mono);
+        color: var(--color-text-primary);
+        line-height: 1;
+        margin-bottom: var(--space-1);
+    }
+    
+    .stat-box-label {
+        font-size: 0.688rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        font-weight: 600;
+        color: var(--color-text-muted);
+    }
+    
+    /* Samples Section */
+    .samples-container {
+        padding: var(--space-6);
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .samples-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: var(--space-4);
+    }
+    
+    .samples-title {
+        font-size: 0.938rem;
+        font-weight: 700;
+        color: var(--color-text-primary);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+    }
+    
+    .samples-count {
+        background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+        color: white;
+        padding: var(--space-1) var(--space-3);
+        border-radius: var(--radius-full);
+        font-size: 0.75rem;
+        font-weight: 700;
+        font-family: var(--font-mono);
+    }
+    
+    .samples-list {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-3);
+    }
+    
+    .sample-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: var(--space-4);
+        padding: var(--space-4);
+        background: var(--color-bg-subtle);
+        border-radius: var(--radius-md);
+        border: 1px solid var(--color-border-light);
+        transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    
+    .sample-row:hover {
+        background: var(--color-bg-elevated);
+        border-color: var(--commodity-color);
+        transform: translateX(4px);
+        box-shadow: var(--shadow-subtle);
+    }
+    
+    .sample-date {
+        font-size: 0.875rem;
+        color: var(--color-text-secondary);
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+        font-family: var(--font-mono);
+    }
+    
+    .sample-date i {
+        color: var(--color-text-muted);
+    }
+    
+    .sample-metrics {
+        display: flex;
+        gap: var(--space-3);
+        align-items: center;
+    }
+    
+    .sample-quantity,
+    .sample-price {
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+        padding: var(--space-2) var(--space-3);
+        border-radius: var(--radius-sm);
+        font-size: 0.875rem;
+        font-weight: 700;
+        font-family: var(--font-mono);
+        white-space: nowrap;
+    }
+    
+    .sample-quantity {
+        background: rgba(6, 214, 160, 0.12);
+        color: var(--color-success);
+        border: 1px solid rgba(6, 214, 160, 0.2);
+    }
+    
+    .sample-price {
+        background: rgba(13, 115, 119, 0.12);
+        color: var(--color-primary);
+        border: 1px solid rgba(13, 115, 119, 0.2);
+    }
+    
+    .more-indicator {
+        text-align: center;
+        padding: var(--space-3);
+        background: var(--color-bg-subtle);
+        border-radius: var(--radius-md);
+        font-size: 0.875rem;
+        color: var(--color-text-muted);
+        font-weight: 600;
+        margin-top: var(--space-3);
+        transition: all 0.3s ease;
+        border: 1px dashed var(--color-border);
+    }
+    
+    .more-indicator:hover {
+        background: var(--color-bg-elevated);
+        color: var(--color-primary);
+        border-color: var(--color-primary);
+    }
+    
+    /* Empty States */
+    .empty-samples-state {
+        text-align: center;
+        padding: var(--space-8) var(--space-4);
+        color: var(--color-text-muted);
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    .empty-icon {
+        width: 80px;
+        height: 80px;
+        margin: 0 auto var(--space-4);
+        background: var(--color-bg-subtle);
+        border-radius: var(--radius-full);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.5rem;
+        color: var(--color-text-muted);
+        border: 2px dashed var(--color-border);
+    }
+    
+    .empty-text {
+        font-size: 0.938rem;
+        font-weight: 500;
+        color: var(--color-text-secondary);
+    }
+    
+    /* Action Button */
+    .action-button {
+        width: 100%;
+        padding: var(--space-5);
+        background: linear-gradient(135deg, var(--color-text-primary) 0%, var(--color-text-secondary) 100%);
+        color: white;
+        border: none;
+        font-weight: 700;
+        font-size: 1rem;
+        font-family: var(--font-display);
+        transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: var(--space-3);
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+        letter-spacing: 0.02em;
+    }
+    
+    .action-button::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.2);
+        transform: translate(-50%, -50%);
+        transition: width 0.6s, height 0.6s;
+    }
+    
+    .action-button:hover {
+        background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-elevated);
+    }
+    
+    .action-button:hover::before {
+        width: 300px;
+        height: 300px;
+    }
+    
+    .action-button span,
+    .action-button i {
+        position: relative;
+        z-index: 1;
+    }
+    
+    /* Global Empty State */
+    .global-empty-state {
+        grid-column: 1 / -1;
+        background: var(--color-bg-elevated);
+        border-radius: var(--radius-xl);
+        padding: var(--space-10);
+        text-align: center;
+        box-shadow: var(--shadow-moderate);
+        border: 2px dashed var(--color-border);
+    }
+    
+    .global-empty-icon {
+        width: 120px;
+        height: 120px;
+        margin: 0 auto var(--space-5);
+        background: linear-gradient(135deg, var(--color-bg-subtle) 0%, var(--color-bg-canvas) 100%);
+        border-radius: var(--radius-full);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 4rem;
+        color: var(--color-text-muted);
+        border: 3px dashed var(--color-border);
+    }
+    
+    .global-empty-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--color-text-primary);
+        margin-bottom: var(--space-3);
+        letter-spacing: -0.02em;
+    }
+    
+    .global-empty-description {
+        font-size: 1.125rem;
+        color: var(--color-text-secondary);
+        margin-bottom: var(--space-6);
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+        line-height: 1.7;
+    }
+    
+    .cta-button {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-3);
+        padding: var(--space-4) var(--space-6);
+        background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+        color: white;
+        border-radius: var(--radius-full);
+        font-weight: 700;
+        font-size: 1rem;
+        text-decoration: none;
+        box-shadow: var(--shadow-moderate);
+        transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    
+    .cta-button:hover {
+        transform: translateY(-4px) scale(1.05);
+        box-shadow: var(--shadow-elevated);
+        color: white;
+        text-decoration: none;
+    }
+    
+    /* Animations */
+    @keyframes slideInUp {
+        from {
+            opacity: 0;
+            transform: translateY(40px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+    
+    .animate-in {
+        animation: slideInUp 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        opacity: 0;
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 1024px) {
+        .dashboard-hero {
+            padding: var(--space-6);
+        }
+        
+        .stats-showcase {
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        }
+        
+        .commodities-grid {
+            grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr));
+            gap: var(--space-5);
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .dashboard-hero {
+            padding: var(--space-5);
+        }
+        
+        .hero-title {
+            font-size: 2rem;
+        }
+        
+        .user-profile-card {
+            flex-direction: column;
+            text-align: center;
+        }
+        
+        .stats-showcase {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        
+        .commodities-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .sample-row {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .sample-metrics {
+            width: 100%;
+            justify-content: space-between;
+        }
+        
+        .stats-bar {
+            grid-template-columns: 1fr;
+        }
+        
+        .stat-box:not(:last-child)::after {
+            display: none;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .dashboard-hero {
+            padding: var(--space-4);
+        }
+        
+        .hero-title {
+            font-size: 1.75rem;
+        }
+        
+        .user-avatar {
+            width: 60px;
+            height: 60px;
+            font-size: 1.5rem;
+        }
+        
+        .stats-showcase {
+            grid-template-columns: 1fr;
+        }
+        
+        .section-title {
+            font-size: 1.375rem;
+        }
+    }
+</style>
+
+<div class="container-fluid px-3 px-md-4 py-4">
+    <!-- Dashboard Hero Section -->
+    <div class="dashboard-hero animate-in" style="animation-delay: 0.1s;">
+        <div class="hero-content">
+            <div class="welcome-block">
+                <h1 class="hero-title">Tableau de bord</h1>
+                <p class="hero-subtitle">Bienvenue dans votre espace fournisseur</p>
+                
+                <div class="user-profile-card">
+                    <div class="user-avatar">
+                        {{ user.first_name|first|upper }}{{ user.last_name|first|upper }}
+                    </div>
+                    <div class="user-details">
+                        <h3>
+                            {{ user.get_full_name|default:user.username }}
+                            {% if user.fournisseur_profile %}
+                                <small>{{ user.fournisseur_profile.entreprise_nom }}</small>
+                            {% endif %}
+                        </h3>
+                        <div class="user-contact">
+                            <span>
+                                <i class="fas fa-envelope"></i>
+                                {{ user.email }}
+                            </span>
+                            {% if user.fournisseur_profile and user.phone %}
+                            <span>
+                                <i class="fas fa-phone"></i>
+                                {{ user.phone }}
+                            </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Stats Showcase -->
+        <div class="stats-showcase">
+            <div class="stat-tile">
+                <div class="stat-icon">
+                    <i class="fas fa-boxes"></i>
+                </div>
+                <div class="stat-value">{{ commodites|length }}</div>
+                <div class="stat-label">Commodités</div>
+            </div>
+            
+            <div class="stat-tile">
+                <div class="stat-icon">
+                    <i class="fas fa-flask"></i>
+                </div>
+                <div class="stat-value">{{ total_echantillons|default:0 }}</div>
+                <div class="stat-label">Enregistrement Total</div>
+            </div>
+            
+            <div class="stat-tile">
+                <div class="stat-icon">
+                    <i class="fas fa-calendar-check"></i>
+                </div>
+                <div class="stat-value">{{ echantillons_mois|default:0 }}</div>
+                <div class="stat-label">Enregistrement Ce Mois</div>
+            </div>
+            
+            <div class="stat-tile">
+                <div class="stat-icon">
+                    <i class="far fa-clock"></i>
+                </div>
+                <div class="stat-value" id="live-time" style="font-size: 1.5rem;">{% now "H:i:s" %}</div>
+                <div class="stat-label">{{ now|date:"d M Y" }}</div>
+
+                <!-- Date -->
+                <div class="stat-label">
+                    {% now "d M Y" %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section Header -->
+    <div class="section-header animate-in" style="animation-delay: 0.2s;">
+        <h2 class="section-title">
+            <i class="fas fa-layer-group"></i>
+            <span>Mes Commodités</span>
+        </h2>
+        <div class="section-meta">
+            {{ commodites|length }} commodité{{ commodites|length|pluralize }} disponible{{ commodites|length|pluralize }}
+        </div>
+    </div>
+
+    <!-- Commodities Grid -->
+    <div class="commodities-grid">
+        {% for commodite in commodites %}
+        <div class="commodity-card animate-in" 
+             onclick="window.location.href='{% url 'detail_commodite' commodite.id %}'"
+             style="--commodity-color: {{ commodite.couleur|default:'#0d7377' }}; --commodity-color-dark: {{ commodite.couleur|default:'#053f41' }}; animation-delay: {{ forloop.counter|add:"2" }}00ms;">
+            
+            <!-- Card Header -->
+            <div class="card-header-section">
+                <div class="commodity-icon">
+                    <i class="fas fa-cube"></i>
+                </div>
+                <h3 class="commodity-name">{{ commodite.nom }}</h3>
+                <div class="commodity-badges">
+                    {% comment %}
+                    <div class="badge">
+                        <i class="fas fa-tag"></i>
+                        <span>{{ commodite.get_type_commodite_display|default:"Standard" }}</span>
+                    </div>
+                    {% endcomment %}
+                </div>
+            </div>
+            
+            <!-- Stats Bar -->
+            <div class="stats-bar">
+                <div class="stat-box">
+                    <div class="stat-box-icon">
+                        <i class="fas fa-weight-hanging"></i>
+                    </div>
+                    <div class="stat-box-value">{{ commodite.echantillonnages.first.quantite|default:"0.00"|floatformat:2 }}</div>
+                    <div class="stat-box-label">Tonnes</div>
+                </div>
+                
+                <div class="stat-box">
+                    <div class="stat-box-icon">
+                        <i class="fas fa-coins"></i>
+                    </div>
+                    <div class="stat-box-value">{{ commodite.echantillonnages.first.prix|default:"0"|floatformat:0 }}</div>
+                    <div class="stat-box-label">FCFA/T</div>
+                </div>
+                
+                <div class="stat-box">
+                    <div class="stat-box-icon">
+                        <i class="fas fa-flask"></i>
+                    </div>
+                    <div class="stat-box-value">{{ commodite.echantillonnages.count }}</div>
+                    <div class="stat-box-label">Enregistrement</div>
+                </div>
+            </div>
+            
+            <!-- Samples Section -->
+            <div class="samples-container">
+                <div class="samples-header">
+                    <h4 class="samples-title">
+                        <i class="fas fa-history"></i>
+                        <span>Historique Récent</span>
+                    </h4>
+                    {% if commodite.echantillonnages.all %}
+                    <span class="samples-count">{{ commodite.echantillonnages.count }}</span>
+                    {% endif %}
+                </div>
+                
+                {% if commodite.echantillonnages.all %}
+                    <div class="samples-list">
+                        {% for echantillon in commodite.echantillonnages.all|slice:":3" %}
+                        <div class="sample-row">
+                            <div class="sample-date">
+                                <i class="far fa-calendar-alt"></i>
+                                <span>{{ echantillon.date_creation|date:"d/m/Y" }}</span>
+                            </div>
+                            <div class="sample-metrics">
+                                <div class="sample-quantity">
+                                    <i class="fas fa-weight"></i>
+                                    {{ echantillon.quantite}}T
+                                </div>
+                                <div class="sample-price">
+                                    <i class="fas fa-tag"></i>
+                                    {{ echantillon.prix|floatformat:0|intcomma }}FCFA
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    
+                    {% if commodite.echantillonnages.count > 3 %}
+                    <div class="more-indicator">
+                        <i class="fas fa-plus-circle"></i>
+                        {{ commodite.echantillonnages.count|add:"-3" }} autre{{ commodite.echantillonnages.count|add:"-3"|pluralize }} enregistrement{{ commodite.echantillonnages.count|add:"-3"|pluralize }}
+                    </div>
+                    {% endif %}
+                {% else %}
+                    <div class="empty-samples-state">
+                        <div class="empty-icon">
+                            <i class="fas fa-inbox"></i>
+                        </div>
+                        <p class="empty-text">Aucun enregistrement disponible</p>
+                    </div>
+                {% endif %}
+            </div>
+            
+            <!-- Action Button -->
+            <button class="action-button">
+                <i class="fas fa-chart-line"></i>
+                <span>Voir les détails</span>
+                <i class="fas fa-arrow-right"></i>
+            </button>
+        </div>
+        {% empty %}
+        <div class="global-empty-state animate-in" style="animation-delay: 0.3s;">
+            <div class="global-empty-icon">
+                <i class="fas fa-box-open"></i>
+            </div>
+            <h2 class="global-empty-title">Aucune commodité disponible</h2>
+            <p class="global-empty-description">
+                Vos commodités apparaîtront ici une fois qu'elles seront enregistrées dans le système. 
+                Contactez l'administrateur pour commencer à gérer vos produits.
+            </p>
+            <a href="{% url 'ajouter_commodite' %}" class="cta-button">
+                <i class="fas fa-plus-circle"></i>
+                <span>Ajouter une commodité</span>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Live time update
+    function updateTime() {
+        const timeElement = document.getElementById('live-time');
+        if (timeElement) {
+            const now = new Date();
+            timeElement.textContent = now.toLocaleTimeString('fr-FR', {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+        }
+    }
+    
+    setInterval(updateTime, 1000);
+    updateTime();
+    
+    // Prevent button click propagation
+    const actionButtons = document.querySelectorAll('.action-button');
+    actionButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const card = this.closest('.commodity-card');
+            if (card) {
+                card.click();
+            }
+        });
+    });
+    
+    // Add ripple effect to cards on click
+    const cards = document.querySelectorAll('.commodity-card');
+    cards.forEach(card => {
+        card.addEventListener('click', function(e) {
+            const ripple = document.createElement('div');
+            ripple.style.position = 'absolute';
+            ripple.style.borderRadius = '50%';
+            ripple.style.background = 'rgba(255, 255, 255, 0.5)';
+            ripple.style.width = '20px';
+            ripple.style.height = '20px';
+            ripple.style.left = e.offsetX + 'px';
+            ripple.style.top = e.offsetY + 'px';
+            ripple.style.transform = 'translate(-50%, -50%)';
+            ripple.style.animation = 'ripple-effect 0.6s ease-out';
+            ripple.style.pointerEvents = 'none';
+            
+            this.style.position = 'relative';
+            this.appendChild(ripple);
+            
+            setTimeout(() => ripple.remove(), 600);
+        });
+    });
+});
+
+// Add ripple animation
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes ripple-effect {
+        to {
+            width: 200px;
+            height: 200px;
+            opacity: 0;
+        }
+    }
+`;
+document.head.appendChild(style);
+</script>
+{% endblock %}

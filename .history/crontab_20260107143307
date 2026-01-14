@@ -1,0 +1,137 @@
+# Configuration Crontab pour l'envoi automatique des emails
+# ============================================================
+
+# Pour éditer le crontab:
+# crontab -e
+
+# Pour voir le crontab actuel:
+# crontab -l
+
+# ============================================================
+# CONFIGURATION RECOMMANDÉE
+# ============================================================
+
+# 1. Envoyer les emails toutes les 5 minutes
+*/5 * * * * cd C:\Users\LENOVO\Desktop\PROJET\Sourcing && C:\Users\LENOVO\Desktop\PROJET\Sourcing\env\Scripts\python.exe manage.py send_pending_emails >> C:\var\log\cotations\emails.log 2>&1
+
+# 2. Envoyer les emails toutes les 10 minutes
+#*/10 * * * * cd C:\Users\LENOVO\Desktop\PROJET\Sourcing && C:\Users\LENOVO\Desktop\PROJET\Sourcing\env\Scripts\python.exe manage.py send_pending_emails >> C:\Users\LENOVO\Desktop\PROJET\Sourcing\var\log\cotations\emails.log
+
+# 3. Envoyer les emails toutes les heures à la 5ème minute
+"5 * * * * cd C:\Users\LENOVO\Desktop\PROJET\Sourcing && C:\Users\LENOVO\Desktop\PROJET\Sourcing\env\Scripts\python.exe manage.py send_pending_emails >> C:\Users\LENOVO\Desktop\PROJET\Sourcing\var\log\cotations\emails.log
+
+# 4. Envoyer les emails du lundi au vendredi entre 8h et 18h, toutes les 10 minutes
+*/10 8-18 * * 1-5 cd C:\Users\LENOVO\Desktop\PROJET\Sourcing && C:\Users\LENOVO\Desktop\PROJET\Sourcing\env\Scripts\python.exe manage.py send_pending_emails >> C:\Users\LENOVO\Desktop\PROJET\Sourcing\var\log\cotations\emails.log
+
+
+# ============================================================
+# EXEMPLES AVEC OPTIONS
+# ============================================================
+
+# Limiter à 20 emails maximum par exécution
+*/5 * * * * cd C:\Users\LENOVO\Desktop\PROJET\Sourcing && C:\Users\LENOVO\Desktop\PROJET\Sourcing\env\Scripts\python.exe manage.py send_pending_emails --max-emails=20 >> C:\var\log\cotations\emails.log 2>&1
+
+# Réessayer les emails échoués une fois par heure
+0 * * * * cd C:\Users\LENOVO\Desktop\PROJET\Sourcing && C:\Users\LENOVO\Desktop\PROJET\Sourcing\env\Scripts\python.exe manage.py send_pending_emails --retry-failed >> C:\var\log\cotations\emails.log 2>&1
+
+
+# ============================================================
+# CONFIGURATION COMPLÈTE (RECOMMANDÉE POUR LA PRODUCTION)
+# ============================================================
+
+# Envoi régulier toutes les 5 minutes (50 emails max)
+*/5 * * * * cd /chemin/vers/votre/projet && /chemin/vers/votre/venv/bin/python manage.py send_pending_emails --max-emails=50 >> /var/log/cotations/emails.log 2>&1
+
+# Retry des échecs toutes les heures
+0 * * * * cd /chemin/vers/votre/projet && /chemin/vers/votre/venv/bin/python manage.py send_pending_emails --retry-failed >> /var/log/cotations/emails_retry.log 2>&1
+
+# Nettoyage hebdomadaire (dimanche à 3h du matin)
+# Note: Le nettoyage est déjà intégré dans la commande, mais vous pouvez le faire séparément
+0 3 * * 0 cd /chemin/vers/votre/projet && /chemin/vers/votre/venv/bin/python manage.py shell -c "from cotations.models import EmailQueue; from django.utils import timezone; EmailQueue.objects.filter(sent=True, sent_at__lt=timezone.now() - timezone.timedelta(days=30)).delete()" >> /var/log/cotations/cleanup.log 2>&1
+
+
+# ============================================================
+# EXPLICATIONS DES CHAMPS CRON
+# ============================================================
+# ┌───────────── minute (0 - 59)
+# │ ┌───────────── heure (0 - 23)
+# │ │ ┌───────────── jour du mois (1 - 31)
+# │ │ │ ┌───────────── mois (1 - 12)
+# │ │ │ │ ┌───────────── jour de la semaine (0 - 7, dimanche = 0 ou 7)
+# │ │ │ │ │
+# │ │ │ │ │
+# * * * * * commande à exécuter
+
+# Exemples:
+# */5 * * * * - Toutes les 5 minutes
+# 0 * * * * - Toutes les heures
+# 0 9 * * * - Tous les jours à 9h
+# 0 9 * * 1 - Tous les lundis à 9h
+# 0 0 1 * * - Le 1er de chaque mois à minuit
+
+
+# ============================================================
+# AVANT DE CONFIGURER LE CRONTAB
+# ============================================================
+
+# 1. Créez le dossier de logs:
+# sudo mkdir -p /var/log/cotations
+# sudo chown www-data:www-data /var/log/cotations  # Remplacez par votre utilisateur
+
+# 2. Testez la commande manuellement:
+# cd /chemin/vers/votre/projet
+# source venv/bin/activate
+# python manage.py send_pending_emails
+
+# 3. Vérifiez que ça fonctionne avant d'ajouter au crontab
+
+# 4. Pour installer le crontab:
+# crontab -e
+# Collez une des lignes ci-dessus (adaptée à vos chemins)
+# Sauvegardez et quittez
+
+# 5. Vérifiez que le crontab est installé:
+# crontab -l
+
+# 6. Surveillez les logs:
+# tail -f /var/log/cotations/emails.log
+
+
+# ============================================================
+# CHEMINS À REMPLACER
+# ============================================================
+
+# /chemin/vers/votre/projet
+# Remplacez par le chemin absolu vers votre projet Django
+# Exemple: /home/utilisateur/mon_projet ou /var/www/mon_site
+
+# /chemin/vers/votre/venv/bin/python
+# Remplacez par le chemin vers le Python de votre environnement virtuel
+# Exemple: /home/utilisateur/mon_projet/venv/bin/python
+# ou: /var/www/mon_site/venv/bin/python
+
+# Si vous n'utilisez pas de virtualenv, utilisez simplement:
+# /usr/bin/python3 ou /usr/bin/python
+
+
+# ============================================================
+# EXEMPLE COMPLET AVEC CHEMINS RÉELS
+# ============================================================
+
+# Si votre projet est dans /home/user/cotations_project
+# et votre venv dans /home/user/cotations_project/venv
+# alors la ligne crontab serait:
+
+# */5 * * * * cd /home/user/cotations_project && /home/user/cotations_project/venv/bin/python manage.py send_pending_emails >> /var/log/cotations/emails.log 2>&1
+
+
+# ============================================================
+# TROUBLESHOOTING
+# ============================================================
+
+# Si les emails ne sont pas envoyés:
+# 1. Vérifiez les logs: cat /var/log/cotations/emails.log
+# 2. Testez manuellement la commande
+# 3. Vérifiez les permissions du dossier de logs
+# 4. Vérifiez que le cron est actif: sudo systemctl status cron
+# 5. Vérifiez les logs système: grep CRON /var/log/syslog

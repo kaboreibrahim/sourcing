@@ -1,0 +1,151 @@
+{% extends 'layouts/base_client.html' %}
+{% load static %}
+
+{% block title %}Nouvelle demande de cotation{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">
+                        <i class="fas fa-file-invoice"></i> Nouvelle demande de cotation
+                    </h3>
+                </div>
+                <div class="card-body">
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.nom_client.id_for_label }}" class="form-label">
+                                    {{ form.nom_client.label }} <span class="text-danger">*</span>
+                                </label>
+                                {{ form.nom_client }}
+                                {% if form.nom_client.errors %}
+                                    <div class="text-danger small">{{ form.nom_client.errors }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.contact.id_for_label }}" class="form-label">
+                                    {{ form.contact.label }} <span class="text-danger">*</span>
+                                </label>
+                                {{ form.contact }}
+                                {% if form.contact.errors %}
+                                    <div class="text-danger small">{{ form.contact.errors }}</div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.mail.id_for_label }}" class="form-label">
+                                    {{ form.mail.label }} <span class="text-danger">*</span>
+                                </label>
+                                {{ form.mail }}
+                                {% if form.mail.errors %}
+                                    <div class="text-danger small">{{ form.mail.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.commodite.id_for_label }}" class="form-label">
+                                    {{ form.commodite.label }} <span class="text-danger">*</span>
+                                </label>
+                                {{ form.commodite }}
+                                {% if form.commodite.errors %}
+                                    <div class="text-danger small">{{ form.commodite.errors }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.quantite.id_for_label }}" class="form-label">
+                                    {{ form.quantite.label }} <span class="text-danger">*</span>
+                                </label>
+                                {{ form.quantite }}
+                                {% if form.quantite.errors %}
+                                    <div class="text-danger small">{{ form.quantite.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.type_conditionnement.id_for_label }}" class="form-label">
+                                    {{ form.type_conditionnement.label }} <span class="text-danger">*</span>
+                                </label>
+                                {{ form.type_conditionnement }}
+                                {% if form.type_conditionnement.errors %}
+                                    <div class="text-danger small">{{ form.type_conditionnement.errors }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.incoterm.id_for_label }}" class="form-label">
+                                    {{ form.incoterm.label }} <span class="text-danger">*</span>
+                                </label>
+                                {{ form.incoterm }}
+                                {% if form.incoterm.errors %}
+                                    <div class="text-danger small">{{ form.incoterm.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.pol.id_for_label }}" class="form-label">
+                                    {{ form.pol.label }} <span class="text-danger">*</span>
+                                </label>
+                                {{ form.pol }}
+                                {% if form.pol.errors %}
+                                    <div class="text-danger small">{{ form.pol.errors }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.pod.id_for_label }}" class="form-label">
+                                    {{ form.pod.label }} <span class="text-danger">*</span>
+                                </label>
+                                {{ form.pod }}
+                                {% if form.pod.errors %}
+                                    <div class="text-danger small">{{ form.pod.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.target_price.id_for_label }}" class="form-label">
+                                {{ form.target_price.label }} <span class="text-danger">*</span>
+                            </label>
+                            {{ form.target_price }}
+                            {% if form.target_price.errors %}
+                                <div class="text-danger small">{{ form.target_price.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-paper-plane"></i> Soumettre la demande
+                            </button>
+                            <a href="{% url 'cotation_list' %}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Retour à la liste
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

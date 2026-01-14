@@ -1,0 +1,431 @@
+ 
+
+<style>
+:root {
+    --primary: #2d5c2d;
+    --primary-light: #4a7c4a;
+    --primary-bg: #f0f9f0;
+    --text: #1f2937;
+    --text-light: #6b7280;
+    --bg: #f9fafb;
+    --white: #ffffff;
+    --border: #e5e7eb;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+}
+
+.home-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+}
+
+/* Hero Section */
+.hero-section {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    border-radius: 24px;
+    margin-bottom: 3rem;
+    box-shadow: 0 20px 25px -5px rgba(45, 92, 45, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    opacity: 0.3;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 1;
+}
+
+.hero-title {
+    font-size: 3rem;
+    font-weight: 800;
+    color: white;
+    margin-bottom: 1rem;
+    letter-spacing: -1px;
+    animation: fadeInDown 0.6s ease-out;
+}
+
+.hero-subtitle {
+    font-size: 1.25rem;
+    color: rgba(255, 255, 255, 0.95);
+    margin-bottom: 1rem;
+    animation: fadeInDown 0.6s ease-out 0.2s backwards;
+}
+
+.hero-description {
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.85);
+    max-width: 700px;
+    margin: 0 auto 2rem;
+    animation: fadeInDown 0.6s ease-out 0.4s backwards;
+}
+
+/* Features Grid */
+.features-section {
+    margin-bottom: 3rem;
+}
+
+.section-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text);
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+.feature-card {
+    background: var(--white);
+    border: 2px solid var(--border);
+    border-radius: 20px;
+    padding: 2rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.feature-card:hover::before {
+    transform: scaleX(1);
+}
+
+.feature-card:hover {
+    border-color: var(--primary);
+    transform: translateY(-8px);
+    box-shadow: 0 12px 24px rgba(45, 92, 45, 0.15);
+}
+
+.feature-icon {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, var(--primary-bg), #e8f5e8);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.feature-card:hover .feature-icon {
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    transform: scale(1.1) rotate(5deg);
+}
+
+.feature-card:hover .feature-icon span {
+    filter: brightness(0) invert(1);
+}
+
+.feature-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 0.75rem;
+}
+
+.feature-description {
+    color: var(--text-light);
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+}
+
+.feature-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: var(--primary-bg);
+    color: var(--primary);
+    border: 2px solid var(--primary);
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.feature-btn:hover {
+    background: var(--primary);
+    color: white;
+    transform: translateX(5px);
+}
+
+.feature-btn i {
+    transition: transform 0.3s ease;
+}
+
+.feature-btn:hover i {
+    transform: translateX(3px);
+}
+
+/* CTA Section */
+.cta-section {
+    background: linear-gradient(135deg, var(--primary-bg) 0%, #e8f5e8 100%);
+    border-radius: 24px;
+    padding: 4rem 2rem;
+    text-align: center;
+    border: 2px solid var(--primary);
+    box-shadow: 0 4px 6px rgba(45, 92, 45, 0.1);
+}
+
+.cta-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 1rem;
+}
+
+.cta-description {
+    font-size: 1.1rem;
+    color: var(--text-light);
+    margin-bottom: 2rem;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.cta-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 2rem;
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(45, 92, 45, 0.25);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(45, 92, 45, 0.3);
+}
+
+.btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 2rem;
+    background: var(--white);
+    color: var(--primary);
+    border: 2px solid var(--primary);
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+    background: var(--primary);
+    color: white;
+    transform: translateY(-2px);
+}
+
+/* Animations */
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.feature-card {
+    animation: fadeInUp 0.6s ease-out backwards;
+}
+
+.feature-card:nth-child(1) { animation-delay: 0.1s; }
+.feature-card:nth-child(2) { animation-delay: 0.2s; }
+.feature-card:nth-child(3) { animation-delay: 0.3s; }
+
+/* Responsive */
+@media (max-width: 768px) {
+    .home-container {
+        padding: 2rem 1rem;
+    }
+    
+    .hero-section {
+        padding: 3rem 1.5rem;
+    }
+    
+    .hero-title {
+        font-size: 2rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 1.1rem;
+    }
+    
+    .features-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .cta-buttons {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .btn-primary,
+    .btn-secondary {
+        justify-content: center;
+    }
+}
+</style>
+
+<div class="home-container">
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <div class="hero-content">
+            <h1 class="hero-title">{{ titre|default:"Plateforme Sourcing" }}</h1>
+            <p class="hero-subtitle">{{ sous_titre|default:"Votre solution de gestion complète" }}</p>
+            <p class="hero-description">
+                Gérez efficacement vos fournisseurs, vos commandes et vos échantillons en un seul endroit. 
+                Une plateforme moderne et intuitive pour optimiser votre chaîne d'approvisionnement.
+            </p>
+        </div>
+    </div>
+{% comment %} 
+    <!-- Features Section -->
+    <div class="features-section">
+        <div class="features-grid">
+            <!-- Feature 1: Fournisseurs -->
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <span>🏭</span>
+                </div>
+                <h3 class="feature-title">Gestion des Fournisseurs</h3>
+                <p class="feature-description">
+                    Consultez et gérez tous vos fournisseurs en temps réel. 
+                    Accédez à leurs informations, localisations et commodités proposées.
+                </p>
+                <a href="" class="feature-btn">
+                    <span>Voir les fournisseurs</span>
+                    <i class="ri-arrow-right-line"></i>
+                </a>
+            </div>
+
+            <!-- Feature 2: Échantillons -->
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <span>🧪</span>
+                </div>
+                <h3 class="feature-title">Échantillonnages</h3>
+                <p class="feature-description">
+                    Suivez l'état de vos échantillons et demandes. 
+                    Gérez le processus d'échantillonnage du début à la fin.
+                </p>
+                <a href="" class="feature-btn">
+                    <span>Voir les échantillons</span>
+                    <i class="ri-arrow-right-line"></i>
+                </a>
+            </div>
+
+            <!-- Feature 3: Commodités -->
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <span>📦</span>
+                </div>
+                <h3 class="feature-title">Commodités</h3>
+                <p class="feature-description">
+                    Gérez les différentes commodités proposées par vos fournisseurs. 
+                    Visualisez les disponibilités par région.
+                </p>
+                <a href="" class="feature-btn">
+                    <span>Voir les commodités</span>
+                    <i class="ri-arrow-right-line"></i>
+                </a>
+            </div>
+        </div>
+    </div> {% endcomment %}
+
+    <!-- CTA Section -->
+    <div class="cta-section">
+        <h2 class="cta-title">Prêt à commencer ?</h2>
+        <p class="cta-description">
+            Connectez-vous pour accéder à toutes les fonctionnalités de la plateforme 
+            ou créez un compte pour découvrir nos services.
+        </p>
+        <div class="cta-buttons">
+            <a href="{% url 'login' %}" class="btn-primary">
+                <i class="ri-login-box-line"></i>
+                <span>Se connecter</span>
+            </a>
+            <a href="" class="btn-secondary">
+                <i class="ri-user-add-line"></i>
+                <span>Créer un compte</span>
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Remix Icons -->
+<link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">

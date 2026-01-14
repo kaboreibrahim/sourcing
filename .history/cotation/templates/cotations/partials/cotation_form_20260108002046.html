@@ -1,0 +1,353 @@
+<style>
+    .form-group {
+        margin-bottom: 1.25rem;
+    }
+    .form-control {
+        transition: all 0.3s ease;
+        border: 1px solid #d1d5db;
+        border-radius: 0.375rem;
+        padding: 0.5rem 0.75rem;
+        width: 100%;
+        font-size: 0.875rem;
+        line-height: 1.5;
+        color: #374151;
+        background-color: #fff;
+        background-clip: padding-box;
+    }
+    .form-control:focus {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        outline: none;
+    }
+    .form-label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: #374151;
+        font-size: 0.875rem;
+    }
+    .required-field::after {
+        content: '*';
+        color: #ef4444;
+        margin-left: 0.25rem;
+    }
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.5rem 1rem;
+        border-radius: 0.375rem;
+        font-weight: 500;
+        transition: all 0.2s;
+        cursor: pointer;
+    }
+    .btn-primary {
+        background-color: #3b82f6;
+        color: white;
+        border: 1px solid transparent;
+    }
+    .btn-primary:hover {
+        background-color: #2563eb;
+    }
+    .btn-outline {
+        background-color: white;
+        border: 1px solid #d1d5db;
+        color: #374151;
+    }
+    .btn-outline:hover {
+        background-color: #f9fafb;
+    }
+    .input-group {
+        position: relative;
+        display: flex;
+        width: 100%;
+    }
+    .input-group-text {
+        display: flex;
+        align-items: center;
+        padding: 0.5rem 0.75rem;
+        font-size: 0.875rem;
+        font-weight: 400;
+        line-height: 1.5;
+        color: #6b7280;
+        text-align: center;
+        white-space: nowrap;
+        background-color: #f9fafb;
+        border: 1px solid #d1d5db;
+        border-radius: 0.375rem;
+    }
+    .input-group > :not(:first-child):not(.dropdown-menu) {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+        margin-left: -1px;
+    }
+    .input-group > :not(:last-child) {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+</style>
+
+<form id="cotationForm" method="post" novalidate class="space-y-6">
+    {% csrf_token %}
+    
+    {% if messages %}
+        {% for message in messages %}
+            <div class="p-4 mb-6 rounded-lg {% if message.tags == 'success' %}bg-green-50 text-green-800 border border-green-200{% else %}bg-red-50 text-red-800 border border-red-200{% endif %} flex items-start">
+                <i class="fas {% if message.tags == 'success' %}fa-check-circle{% else %}fa-exclamation-circle{% endif %} mt-0.5 mr-3"></i>
+                <div>
+                    <p class="font-medium">
+                        {% if message.tags == 'success' %}Succès !{% else %}Erreur{% endif %}
+                    </p>
+                    <p class="text-sm">{{ message }}</p>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Nom du client -->
+        <div class="form-group">
+            <label for="{{ form.nom_client.id_for_label }}" class="form-label">
+                <i class="fas fa-user mr-1 text-blue-500"></i>
+                <span class="required-field">{{ form.nom_client.label }}</span>
+            </label>
+            <div class="input-group">
+                {{ form.nom_client }}
+            </div>
+            {% if form.nom_client.errors %}
+                <p class="mt-1.5 text-sm text-red-600 flex items-center">
+                    <i class="fas fa-exclamation-circle mr-1.5"></i>
+                    {{ form.nom_client.errors.0 }}
+                </p>
+            {% endif %}
+        </div>
+
+        <!-- Contact -->
+        <div class="form-group">
+            <label for="{{ form.contact.id_for_label }}" class="form-label">
+                <i class="fas fa-phone-alt mr-1 text-blue-500"></i>
+                <span class="required-field">{{ form.contact.label }}</span>
+            </label>
+            <div class="input-group">
+                <span class="input-group-text">
+                    <i class="fas fa-phone text-gray-400"></i>
+                </span>
+                {{ form.contact }}
+            </div>
+            {% if form.contact.errors %}
+                <p class="mt-1.5 text-sm text-red-600 flex items-center">
+                    <i class="fas fa-exclamation-circle mr-1.5"></i>
+                    {{ form.contact.errors.0 }}
+                </p>
+            {% endif %}
+        </div>
+
+        <!-- Email -->
+        <div class="form-group">
+            <label for="{{ form.mail.id_for_label }}" class="form-label">
+                <i class="fas fa-envelope mr-1 text-blue-500"></i>
+                <span class="required-field">{{ form.mail.label }}</span>
+            </label>
+            <div class="input-group">
+                <span class="input-group-text">
+                    <i class="fas fa-at text-gray-400"></i>
+                </span>
+                {{ form.mail }}
+            </div>
+            {% if form.mail.errors %}
+                <p class="mt-1.5 text-sm text-red-600 flex items-center">
+                    <i class="fas fa-exclamation-circle mr-1.5"></i>
+                    {{ form.mail.errors.0 }}
+                </p>
+            {% endif %}
+        </div>
+
+        <!-- Commodité -->
+        <div class="form-group">
+            <label for="{{ form.commodite.id_for_label }}" class="form-label">
+                <i class="fas fa-boxes mr-1 text-blue-500"></i>
+                <span class="required-field">{{ form.commodite.label }}</span>
+            </label>
+            {{ form.commodite }}
+            {% if form.commodite.errors %}
+                <p class="mt-1.5 text-sm text-red-600 flex items-center">
+                    <i class="fas fa-exclamation-circle mr-1.5"></i>
+                    {{ form.commodite.errors.0 }}
+                </p>
+            {% endif %}
+        </div>
+
+        <!-- Quantité -->
+        <div class="form-group">
+            <label for="{{ form.quantite.id_for_label }}" class="form-label">
+                <i class="fas fa-weight-hanging mr-1 text-blue-500"></i>
+                <span class="required-field">{{ form.quantite.label }}</span>
+            </label>
+            <div class="input-group">
+                {{ form.quantite }}
+                <span class="input-group-text">tonnes</span>
+            </div>
+            {% if form.quantite.errors %}
+                <p class="mt-1.5 text-sm text-red-600 flex items-center">
+                    <i class="fas fa-exclamation-circle mr-1.5"></i>
+                    {{ form.quantite.errors.0 }}
+                </p>
+            {% endif %}
+        </div>
+
+        <!-- Type de conditionnement -->
+        <div class="form-group">
+            <label for="{{ form.type_conditionnement.id_for_label }}" class="form-label">
+                <i class="fas fa-box-open mr-1 text-blue-500"></i>
+                <span class="required-field">{{ form.type_conditionnement.label }}</span>
+            </label>
+            {{ form.type_conditionnement }}
+            {% if form.type_conditionnement.errors %}
+                <p class="mt-1.5 text-sm text-red-600 flex items-center">
+                    <i class="fas fa-exclamation-circle mr-1.5"></i>
+                    {{ form.type_conditionnement.errors.0 }}
+                </p>
+            {% endif %}
+        </div>
+
+        <!-- Incoterm -->
+        <div class="form-group">
+            <label for="{{ form.incoterm.id_for_label }}" class="form-label">
+                <i class="fas fa-shipping-fast mr-1 text-blue-500"></i>
+                <span class="required-field">{{ form.incoterm.label }}</span>
+            </label>
+            {{ form.incoterm }}
+            {% if form.incoterm.errors %}
+                <p class="mt-1.5 text-sm text-red-600 flex items-center">
+                    <i class="fas fa-exclamation-circle mr-1.5"></i>
+                    {{ form.incoterm.errors.0 }}
+                </p>
+            {% endif %}
+        </div>
+
+        <!-- Prix cible -->
+        <div class="form-group">
+            <label for="{{ form.target_price.id_for_label }}" class="form-label">
+                <i class="fas fa-tag mr-1 text-blue-500"></i>
+                <span class="required-field">{{ form.target_price.label }}</span>
+            </label>
+            <div class="input-group">
+                <span class="input-group-text">FCFA</span>
+                {{ form.target_price }}
+            </div>
+            {% if form.target_price.errors %}
+                <p class="mt-1.5 text-sm text-red-600 flex items-center">
+                    <i class="fas fa-exclamation-circle mr-1.5"></i>
+                    {{ form.target_price.errors.0 }}
+                </p>
+            {% endif %}
+        </div>
+
+        <!-- Port de chargement (POL) -->
+        <div class="form-group">
+            <label for="{{ form.pol.id_for_label }}" class="form-label">
+                <i class="fas fa-ship mr-1 text-blue-500"></i>
+                {{ form.pol.label }}
+            </label>
+            {{ form.pol }}
+            {% if form.pol.errors %}
+                <p class="mt-1.5 text-sm text-red-600 flex items-center">
+                    <i class="fas fa-exclamation-circle mr-1.5"></i>
+                    {{ form.pol.errors.0 }}
+                </p>
+            {% endif %}
+        </div>
+
+        <!-- Port de déchargement (POD) -->
+        <div class="form-group">
+            <label for="{{ form.pod.id_for_label }}" class="form-label">
+                <i class="fas fa-anchor mr-1 text-blue-500"></i>
+                {{ form.pod.label }}
+            </label>
+            {{ form.pod }}
+            {% if form.pod.errors %}
+                <p class="mt-1.5 text-sm text-red-600 flex items-center">
+                    <i class="fas fa-exclamation-circle mr-1.5"></i>
+                    {{ form.pod.errors.0 }}
+                </p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="flex flex-col sm:flex-row justify-end space-y-3 sm:space-y-0 sm:space-x-4 mt-8 pt-6 border-t border-gray-200">
+        <button type="button" 
+                onclick="closeCotationModal()" 
+                class="btn btn-outline w-full sm:w-auto">
+            <i class="fas fa-times-circle mr-2"></i>
+            Annuler
+        </button>
+        <button type="submit" 
+                class="btn btn-primary w-full sm:w-auto">
+            <i class="fas fa-paper-plane mr-2"></i>
+            Envoyer la demande
+        </button>
+    </div>
+</form>
+
+<!-- Initialisation de Select2 avec des options améliorées -->
+<script>
+    $(document).ready(function() {
+        $('select').each(function() {
+            const $select = $(this);
+            const placeholder = $select.attr('placeholder') || 'Sélectionnez une option';
+            
+            $select.select2({
+                theme: 'bootstrap-5',
+                width: '100%',
+                placeholder: placeholder,
+                allowClear: true,
+                dropdownParent: $('#cotationModal'),
+                language: {
+                    noResults: function() {
+                        return 'Aucun résultat trouvé';
+                    },
+                    searching: function() {
+                        return 'Recherche en cours...';
+                    }
+                },
+                templateResult: formatOption,
+                templateSelection: formatOption
+            });
+            
+            // Ajouter une classe pour le style personnalisé
+            $select.on('select2:open', function() {
+                $('.select2-dropdown').addClass('shadow-lg rounded-md border border-gray-200');
+                $('.select2-search__field').attr('placeholder', 'Rechercher...');
+            });
+        });
+        
+        // Fonction pour formater les options avec des icônes
+        function formatOption(option) {
+            if (!option.id) return option.text;
+            
+            const $option = $(option.element);
+            const iconClass = $option.data('icon');
+            
+            if (iconClass) {
+                return $(
+                    '<span><i class="' + iconClass + ' mr-2 text-blue-500"></i>' + option.text + '</span>'
+                );
+            }
+            
+            return option.text;
+        }
+        
+        // Gestion des erreurs de formulaire
+        $('#cotationForm').on('submit', function(e) {
+            const $form = $(this);
+            
+            if (!this.checkValidity()) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // Ajouter la classe was-validated pour afficher les messages de validation
+                $form.addClass('was-validated');
+            }
+        });
+    });
+</script>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nouvelle demande de cotation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background-color: #dc3545;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 5px 5px 0 0;
+        }
+        .content {
+            background-color: #f9f9f9;
+            padding: 30px;
+            border: 1px solid #ddd;
+        }
+        .alert {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .info-box {
+            background-color: white;
+            padding: 15px;
+            margin: 20px 0;
+            border-left: 4px solid #dc3545;
+        }
+        .info-row {
+            margin: 10px 0;
+            padding: 8px;
+            background-color: #f8f9fa;
+        }
+        .label {
+            font-weight: bold;
+            color: #555;
+            display: inline-block;
+            width: 180px;
+        }
+        .footer {
+            background-color: #333;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 12px;
+            border-radius: 0 0 5px 5px;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            background-color: #ffc107;
+            color: #000;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🔔 Nouvelle demande de cotation</h1>
+    </div>
+    
+    <div class="content">
+        <div class="alert">
+            <strong>⚠️ Action requise:</strong> Une nouvelle demande de cotation nécessite votre attention.
+        </div>
+        
+        <h3 style="color: #dc3545;">Référence: {{ demande.ref }}</h3>
+        
+        <div class="info-box">
+            <h4 style="margin-top: 0;">Informations client</h4>
+            
+            <div class="info-row">
+                <span class="label">Nom du client:</span> 
+                <strong>{{ demande.nom_client }}</strong>
+            </div>
+            
+            <div class="info-row">
+                <span class="label">Contact:</span> 
+                {{ demande.contact }}
+            </div>
+            
+            <div class="info-row">
+                <span class="label">Date de demande:</span> 
+                {{ demande.date_demande|date:"d/m/Y à H:i" }}
+            </div>
+            
+            <div class="info-row">
+                <span class="label">Statut:</span> 
+                <span class="status-badge">{{ demande.get_statut_display }}</span>
+            </div>
+        </div>
+        
+        <div class="info-box">
+            <h4 style="margin-top: 0;">Détails de la commande</h4>
+            
+            <div class="info-row">
+                <span class="label">Commodité:</span> 
+                <strong>{{ demande.commodite.nom }}</strong>
+            </div>
+            
+            <div class="info-row">
+                <span class="label">Quantité:</span> 
+                {{ demande.quantite }} tonnes
+            </div>
+            
+            <div class="info-row">
+                <span class="label">Conditionnement:</span> 
+                {{ demande.get_type_conditionnement_display }}
+            </div>
+            
+            <div class="info-row">
+                <span class="label">Incoterm:</span> 
+                {{ demande.incoterm }}
+            </div>
+            
+            <div class="info-row">
+                <span class="label">Port de chargement:</span> 
+                {{ demande.pol }}
+            </div>
+            
+            <div class="info-row">
+                <span class="label">Port de déchargement:</span> 
+                {{ demande.pod }}
+            </div>
+            
+            <div class="info-row">
+                <span class="label">Prix cible:</span> 
+                <strong style="color: #28a745; font-size: 1.2em;">${{ demande.target_price }}</strong>
+            </div>
+        </div>
+        
+        <p style="margin-top: 30px;">
+            <strong>Action requise:</strong> Veuillez traiter cette demande dans les plus brefs délais 
+            et contacter le client pour lui fournir une cotation détaillée.
+        </p>
+    </div>
+    
+    <div class="footer">
+        <p>© 2026 Votre Entreprise - Système de gestion des cotations</p>
+        <p>Cet email a été envoyé automatiquement par le système.</p>
+    </div>
+</body>
+</html>

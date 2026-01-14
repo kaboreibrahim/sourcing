@@ -1,0 +1,302 @@
+<!-- echantillonnages/templates/echantillonnages/ajouter_echantillon_modal.html -->
+{% load crispy_forms_tags %}
+
+<!-- MODAL -->
+<div class="modal fade" id="ajouterEchantillonModal" tabindex="-1" aria-labelledby="ajouterEchantillonModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="ajouterEchantillonModalLabel">
+          <i class="fas fa-plus-circle"></i> <span id="modal-title">Ajouter un échantillon</span>
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="echantillon-form" method="post" action="{% url 'ajouter' commodite_id=commodite.id %}" class="js-echantillon-form">
+          <input type="hidden" name="echantillon_id" id="echantillon_id" value="">
+          {% csrf_token %}
+          {{ form.media }}
+          {{ form|crispy }}
+        </form>
+      </div>
+      <p class="text-center">la commission de <span id="commission-percentage"></span>% sur le prix à la tonne sera de <span id="commission-amount"></span> FCFA</p>
+      <script>
+        const percentage = 2;
+        const pricePerTon = {{ commodite.prix_achat|floatformat:2 }};
+        const commissionAmount = pricePerTon * (percentage / 100);
+        document.getElementById('commission-percentage').textContent = percentage;
+        document.getElementById('commission-amount').textContent = commissionAmount.toFixed(2);
+      </script>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          <i class="fas fa-times"></i> Annuler
+        </button>
+        <button type="submit" form="echantillon-form" class="btn btn-primary">
+          <i class="fas fa-save"></i> Enregistrer
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+console.log('Script modal chargé');
+
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM chargé');
+    
+    // Mettre à jour la partie du code qui remplit le formulaire
+    if (data.success) {
+        const echantillon = data.echantillon;
+        for (const [key, value] of Object.entries(echantillon)) {
+            const input = form.querySelector(`[name="${key}"]`);
+            if (input) {
+                if (input.type === 'checkbox') {
+                    input.checked = value;
+                } else if (input.type === 'datetime-local') {
+                    // Formater correctement la date pour les champs datetime-local
+                    input.value = value ? value.replace(' ', 'T') : '';
+                } else {
+                    input.value = value !== null ? value : '';
+                }
+            }
+        }
+    }
+    // Vérifier que Bootstrap est chargé
+    if (typeof bootstrap === 'undefined') {
+        console.error('Bootstrap JS n\'est pas chargé !');
+        alert('Erreur: Bootstrap JS n\'est pas chargé. Vérifiez vos scripts.');
+        return;
+    }
+    
+    // Vérifier que le bouton existe
+    const boutonOuvrir = document.querySelector('[data-bs-target="#ajouterEchantillonModal"]');
+    console.log('Bouton trouvé:', boutonOuvrir);
+    
+    if (!boutonOuvrir) {
+        console.error('Le bouton avec data-bs-target="#ajouterEchantillonModal" n\'a pas été trouvé');
+    }
+    
+    // Vérifier que la modal existe
+    const modalElement = document.getElementById('ajouterEchantillonModal');
+    console.log('Modal trouvée:', modalElement);
+    
+    if (!modalElement) {
+        console.error('La modal avec id="ajouterEchantillonModal" n\'a pas été trouvée');
+        return;
+    }
+    
+    // Test d'ouverture manuelle de la modal
+    if (boutonOuvrir) {
+        boutonOuvrir.addEventListener('click', function(e) {
+            console.log('Clic sur le bouton détecté');
+            e.preventDefault();
+            const modal = new bootstrap.Modal(modalElement);
+            modal.show();
+            console.log('Modal.show() appelé');
+        });
+    }
+    
+    // Gestion du formulaire
+    const form = document.querySelector('.js-echantillon-form');
+    
+    if (form) {
+        console.log('Formulaire trouvé');
+        
+         form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    console.log('Soumission du formulaire');
+    
+    const submitBtn = document.querySelector('button[type="submit"][form="echantillon-form"]');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enregistrement...';
+    
+    const formData = new FormData(this);
+    
+    fetch(this.action, {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Réponse reçue:', data);
+        
+        if (data.success) {
+            // Fermer la modal
+            const modal = bootstrap.Modal.getInstance(modalElement);
+            if (modal) {
+                modal.hide();
+            }
+            
+            // Afficher le message de succès
+            showSuccessMessage(data.message);
+            
+            // Rediriger si une URL de redirection est fournie
+            if (data.redirect_url) {
+                setTimeout(() => {
+                    window.location.href = data.redirect_url;
+                }, 1000);
+            } else {
+                // Sinon, recharger la page
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
+            }
+        } else {
+            // Afficher les erreurs
+            showErrors(data.errors);
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalText;
+        }
+    })
+    .catch(error => {
+        console.error('Erreur:', error);
+        alert('Une erreur est survenue lors de l\\'enregistrement.');
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalText;
+    });
+});
+    }
+    
+    // Fonction pour afficher un message de succès
+    function showSuccessMessage(message) {
+        const alertDiv = document.createElement('div');
+        alertDiv.className = 'alert alert-success alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3';
+        alertDiv.style.zIndex = '9999';
+        alertDiv.innerHTML = `
+            <i class="fas fa-check-circle"></i> ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+        document.body.appendChild(alertDiv);
+        
+        setTimeout(() => {
+            alertDiv.remove();
+        }, 3000);
+    }
+    
+    // Fonction pour afficher les erreurs
+    function showErrors(errors) {
+        document.querySelectorAll('.invalid-feedback').forEach(el => el.remove());
+        document.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+        
+        for (const [field, messages] of Object.entries(errors)) {
+            const input = document.querySelector(`[name="${field}"]`);
+            if (input) {
+                input.classList.add('is-invalid');
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'invalid-feedback d-block';
+                errorDiv.textContent = Array.isArray(messages) ? messages.join(', ') : messages;
+                input.parentElement.appendChild(errorDiv);
+            }
+        }
+    }
+    
+    // Réinitialiser le formulaire à la fermeture
+    modalElement.addEventListener('hidden.bs.modal', function() {
+        console.log('Modal fermée');
+        form.reset();
+        document.querySelectorAll('.invalid-feedback').forEach(el => el.remove());
+        document.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+    });
+    
+    // Log quand la modal s'ouvre
+    modalElement.addEventListener('show.bs.modal', function() {
+        console.log('Modal en train de s\'ouvrir');
+    });
+    
+    modalElement.addEventListener('shown.bs.modal', function() {
+        console.log('Modal ouverte');
+    });
+    
+    // Gérer l'ouverture de la modale en mode édition
+    modalElement.addEventListener('show.bs.modal', function(event) {
+        const button = event.relatedTarget; // Bouton qui a déclenché la modale
+        const form = document.getElementById('echantillon-form');
+        const modalTitle = document.getElementById('modal-title');
+        const echantillonId = button.getAttribute('data-echantillon-id');
+        const actionUrl = button.getAttribute('data-action');
+        
+        if (echantillonId && actionUrl) {
+            // Mode édition
+            document.getElementById('echantillon_id').value = echantillonId;
+            modalTitle.textContent = 'Modifier l\'échantillon';
+            form.action = actionUrl;
+            
+            // Récupérer les données de l'échantillon
+            fetch(actionUrl)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Remplir le formulaire avec les données existantes
+                        const echantillon = data.echantillon;
+                        for (const [key, value] of Object.entries(echantillon)) {
+                            const input = form.querySelector(`[name="${key}"]`);
+                            if (input) {
+                                if (input.type === 'checkbox') {
+                                    input.checked = value;
+                                } else if (input.type === 'select-one') {
+                                    input.value = value;
+                                } else {
+                                    input.value = value || '';
+                                }
+                            }
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Erreur lors du chargement des données:', error);
+                });
+        } else {
+            // Mode ajout
+            document.getElementById('echantillon_id').value = '';
+            modalTitle.textContent = 'Ajouter un échantillon';
+            form.action = form.getAttribute('data-original-action') || form.action;
+        }
+    });
+    
+    // Sauvegarder l'URL d'action originale du formulaire
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('echantillon-form');
+        if (form) {
+            form.setAttribute('data-original-action', form.action);
+        }
+    });
+});
+
+console.log('Données reçues:', data); // Affiche les données reçues de l'API
+console.log('Champs du formulaire:', form.elements); // Affiche tous les champs du formulaire
+</script>
+
+<style>
+/* Styles pour la modal */
+.modal-content {
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+}
+
+.modal-header {
+    background: linear-gradient(135deg, var(--primary-color, #e4e9f0ff) 0%, #e4e7efff 100%);
+    color: white;
+    border-radius: 12px 12px 0 0;
+    border: none;
+}
+
+.modal-header .btn-close {
+    filter: brightness(0) invert(1);
+}
+
+.modal-title {
+    font-weight: 600;
+}
+
+.modal-footer {
+    border-top: 1px solid #e5e7eb;
+    padding: 1rem 1.5rem;
+}
+</style>

@@ -1,0 +1,114 @@
+<!-- Modal Container -->
+<div id="cotationModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+    <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-white">
+        <!-- Modal Header -->
+        <div class="flex justify-between items-center pb-3 border-b">
+            <h3 class="text-xl font-semibold text-gray-800">
+                <i class="fas fa-file-invoice mr-2 text-blue-600"></i> Nouvelle demande de cotation
+            </h3>
+            <button onclick="closeCotationModal()" class="text-gray-500 hover:text-gray-700">
+                <i class="fas fa-times text-2xl"></i>
+            </button>
+        </div>
+
+        <!-- Modal Body -->
+        <div class="mt-4" id="cotationFormContainer">
+            <!-- Le contenu du formulaire sera chargé ici via AJAX -->
+            <div class="text-center py-8">
+                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+                <p class="mt-2 text-gray-600">Chargement du formulaire...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Script pour gérer la modale -->
+<script>
+function openCotationModal() {
+    const modal = document.getElementById('cotationModal');
+    modal.classList.remove('hidden');
+    document.body.classList.add('overflow-hidden');
+    
+    // Charger le formulaire via AJAX
+    fetch("{% url 'cotation_create_modal' %}")
+        .then(response => response.text())
+        .then(html => {
+            document.getElementById('cotationFormContainer').innerHTML = html;
+            initializeForm();
+        })
+        .catch(error => {
+            console.error('Erreur:', error);
+            document.getElementById('cotationFormContainer').innerHTML = `
+                <div class="bg-red-50 border-l-4 border-red-400 p-4">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <i class="h-5 w-5 text-red-400 fas fa-exclamation-circle"></i>
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-sm text-red-700">
+                                Une erreur est survenue lors du chargement du formulaire. 
+                                Veuillez réessayer ou recharger la page.
+                            </p>
+                        </div>
+                    </div>
+                </div>`;
+        });
+}
+
+function closeCotationModal() {
+    const modal = document.getElementById('cotationModal');
+    modal.classList.add('hidden');
+    document.body.classList.remove('overflow-hidden');
+}
+
+// Fermer la modale en cliquant en dehors
+window.onclick = function(event) {
+    const modal = document.getElementById('cotationModal');
+    if (event.target === modal) {
+        closeCotationModal();
+    }
+}
+
+function initializeForm() {
+    // Initialiser les sélecteurs avec des recherches
+    $('select').select2({
+        theme: 'bootstrap-5',
+        width: '100%',
+        placeholder: 'Sélectionnez une option',
+        allowClear: true,
+        dropdownParent: $('#cotationModal')
+    });
+
+    // Gérer la soumission du formulaire
+    const form = document.getElementById('cotationForm');
+    if (form) {
+        form.onsubmit = function(e) {
+            e.preventDefault();
+            const formData = new FormData(form);
+            
+            fetch(form.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Redirection ou affichage d'un message de succès
+                    window.location.href = data.redirect_url;
+                } else {
+                    // Afficher les erreurs de validation
+                    document.getElementById('cotationFormContainer').innerHTML = data.form_html;
+                    initializeForm();
+                }
+            })
+            .catch(error => {
+                console.error('Erreur:', error);
+                alert('Une erreur est survenue lors de la soumission du formulaire.');
+            });
+        };
+    }
+}
+</script>

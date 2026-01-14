@@ -1,0 +1,178 @@
+<!-- echantillonnages/templates/disponibilite/liste_disponibilites.html -->
+{% extends 'layouts/base.html' %}
+
+{% block title %}Disponibilité des commodités{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- En-tête de la page -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-lg border-0">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h4 class="mb-1 text-dark font-weight-bold">
+                                <i class="fas fa-box-open text-primary me-2"></i>
+                                Disponibilité des commodités
+                            </h4>
+                            <p class="text-sm text-muted mb-0">
+                                Vue d'ensemble des quantités disponibles par commodité
+                            </p>
+                        </div>
+                        <div class="text-end">
+                            <span class="badge badge-lg bg-gradient-primary">
+                                {{ disponibilites|length }} commodité{{ disponibilites|length|pluralize }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tableau des disponibilités -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-gradient-primary p-3">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-list text-white me-2"></i>
+                        <h6 class="text-white mb-0 font-weight-bold">Liste des disponibilités</h6>
+                    </div>
+                </div>
+                <div class="card-body px-0 pt-0 pb-2">
+                    {% if disponibilites %}
+                    <div class="table-responsive p-0">
+                        <table class="table align-items-center mb-0">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-4">
+                                        Commodité
+                                    </th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2 text-center">
+                                        Quantité totale
+                                    </th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2 text-center">
+                                        Actions
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for dispo in disponibilites %}
+                                <tr class="border-bottom hover-shadow">
+                                    <td>
+                                        <div class="d-flex px-3 py-1 align-items-center">
+                                            <div class="avatar avatar-sm bg-gradient-primary shadow me-3 rounded-circle d-flex align-items-center justify-content-center">
+                                                <i class="fas fa-cube text-white text-xs"></i>
+                                            </div>
+                                            <div class="d-flex flex-column justify-content-center">
+                                                <h6 class="mb-0 text-sm font-weight-bold text-dark">
+                                                    {{ dispo.commodite.nom }}
+                                                </h6>
+                                                <p class="text-xs text-muted mb-0">
+                                                    Code: {{ dispo.commodite.code|default:"N/A" }}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="d-flex flex-column align-items-center justify-content-center">
+                                            <span class="badge badge-lg bg-gradient-success mb-1">
+                                                <i class="fas fa-weight-hanging me-1"></i>
+                                                {{ dispo.quantite_totale|floatformat:2 }} T
+                                            </span>
+                                            <p class="text-xs text-muted mb-0">tonnes</p>
+                                        </div>
+                                    </td>
+                                    <td class="align-middle text-center">
+                                        <a href="{% url 'disponibilite_commodite' dispo.commodite.id %}" 
+                                           class="btn btn-sm bg-gradient-info text-white shadow-sm mb-0 hover-scale">
+                                            <i class="fas fa-eye me-2"></i>Voir détails
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <!-- État vide avec illustration -->
+                    <div class="text-center py-5">
+                        <div class="icon icon-shape bg-gradient-primary shadow mx-auto mb-4" 
+                             style="width: 100px; height: 100px; border-radius: 50%;">
+                            <i class="fas fa-inbox text-white" style="font-size: 3rem; line-height: 100px;"></i>
+                        </div>
+                        <h5 class="text-dark font-weight-bold mb-2">Aucune donnée disponible</h5>
+                        <p class="text-sm text-muted mb-4">
+                            Il n'y a aucune donnée de disponibilité pour le moment.
+                        </p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Effet de survol sur les lignes du tableau */
+    .hover-shadow:hover {
+        background-color: #f8f9fa;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Effet de survol sur les boutons */
+    .hover-scale {
+        transition: transform 0.2s ease;
+    }
+
+    .hover-scale:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+    }
+
+    /* Style pour les badges */
+    .badge-lg {
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+        font-weight: 600;
+    }
+
+    /* Ombres douces pour les cartes */
+    .shadow-lg {
+        box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.08) !important;
+    }
+
+    /* Avatar avec icône */
+    .avatar {
+        width: 48px;
+        height: 48px;
+    }
+
+    .avatar-sm {
+        width: 36px;
+        height: 36px;
+    }
+
+    /* En-tête de carte avec dégradé */
+    .card-header.bg-gradient-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    /* Transitions douces */
+    .card {
+        transition: all 0.3s ease;
+    }
+
+    /* Bordure subtile pour le tableau */
+    .table tbody tr.border-bottom {
+        border-bottom: 1px solid #e9ecef !important;
+    }
+
+    .table tbody tr:last-child.border-bottom {
+        border-bottom: none !important;
+    }
+</style>
+{% endblock %}

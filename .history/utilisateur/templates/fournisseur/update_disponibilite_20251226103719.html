@@ -1,0 +1,162 @@
+{% extends 'layouts/base_fournisseur.html' %}
+{% load static %}
+
+{% block title %}Mettre à jour la disponibilité - {{ commodite.nom }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm border-0 rounded-3">
+                <div class="card-header bg-primary text-white py-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0">
+                            <i class="fas fa-edit me-2"></i>
+                            Mettre à jour la disponibilité
+                        </h4>
+                        <a href="{% url 'detail_commodite' commodite.id %}" class="btn btn-light btn-sm">
+                            <i class="fas fa-arrow-left me-1"></i> Retour
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="card-body p-4">
+                    <div class="mb-4">
+                        <h5 class="text-primary">{{ commodite.nom }}</h5>
+                        <p class="text-muted mb-0">
+                            <i class="fas fa-info-circle me-1"></i> 
+                            Mettez à jour les informations de disponibilité pour cette commodité.
+                        </p>
+                    </div>
+
+                    <form method="post" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        
+                        {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {% for error in form.non_field_errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+
+                        <div class="row g-3">
+                            <!-- Quantité disponible -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="{{ form.quantite_disponible.id_for_label }}" class="form-label">
+                                        {{ form.quantite_disponible.label }}
+                                        <span class="text-danger">*</span>
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-weight-hanging"></i>
+                                        </span>
+                                        {{ form.quantite_disponible }}
+                                        <span class="input-group-text">tonnes</span>
+                                    </div>
+                                    {% if form.quantite_disponible.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.quantite_disponible.errors.0 }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <!-- Prix unitaire -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="{{ form.prix_unitaire.id_for_label }}" class="form-label">
+                                        {{ form.prix_unitaire.label }}
+                                        <span class="text-danger">*</span>
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-tag"></i>
+                                        </span>
+                                        {{ form.prix_unitaire }}
+                                        <span class="input-group-text">FCFA/tonne</span>
+                                    </div>
+                                    {% if form.prix_unitaire.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.prix_unitaire.errors.0 }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <!-- Disponibilité -->
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="{{ form.disponibilite.id_for_label }}" class="form-label">
+                                        {{ form.disponibilite.label }}
+                                        <span class="text-danger">*</span>
+                                    </label>
+                                    {{ form.disponibilite }}
+                                    {% if form.disponibilite.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.disponibilite.errors.0 }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <!-- Commentaire -->
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="{{ form.commentaire.id_for_label }}" class="form-label">
+                                        {{ form.commentaire.label }}
+                                    </label>
+                                    {{ form.commentaire }}
+                                    <small class="form-text text-muted">
+                                        Vous pouvez ajouter des détails sur la disponibilité ou des conditions particulières.
+                                    </small>
+                                    {% if form.commentaire.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.commentaire.errors.0 }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-4 pt-3 border-top">
+                            <a href="{% url 'detail_commodite' commodite.id %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-times me-1"></i> Annuler
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-1"></i> Enregistrer les modifications
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Activation de la validation des formulaires Bootstrap
+(function () {
+    'use strict'
+    
+    // Récupérer tous les formulaires auxquels nous voulons ajouter la validation
+    var forms = document.querySelectorAll('.needs-validation')
+    
+    // Boucler dessus et empêcher la soumission
+    Array.prototype.slice.call(forms)
+        .forEach(function (form) {
+            form.addEventListener('submit', function (event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                }
+                
+                form.classList.add('was-validated')
+            }, false)
+        })
+})()
+</script>
+{% endblock %}

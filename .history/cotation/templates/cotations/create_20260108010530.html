@@ -1,0 +1,905 @@
+{% extends 'layouts/base_client.html' %}
+{% load static %}
+
+{% block title %}Nouvelle demande de cotation{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Global Styles */
+     body {
+        background: linear-gradient(135deg, #05931c 0%, #099c2e 100%);
+    }
+    
+    
+    /* Glassmorphism Container */
+    .glass-container {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-radius: 24px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+        overflow: hidden;
+    }
+    
+    .glass-header {
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.9) 0%, rgba(118, 75, 162, 0.9) 100%);
+        backdrop-filter: blur(10px);
+        padding: 2rem;
+        text-align: center;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .glass-header h3 {
+        font-size: 1.75rem;
+        font-weight: 700;
+        margin: 0;
+        color: white;
+        letter-spacing: -0.5px;
+    }
+    
+    .glass-header p {
+        margin: 0.5rem 0 0 0;
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 0.95rem;
+    }
+    
+    /* Form Steps */
+    .form-step {
+        display: none;
+        padding: 2rem;
+    }
+    
+    .form-step.active {
+        display: block;
+        animation: fadeInUp 0.4s ease-out;
+    }
+    
+    @keyframes fadeInUp {
+        from { 
+            opacity: 0; 
+            transform: translateY(20px); 
+        }
+        to { 
+            opacity: 1; 
+            transform: translateY(0); 
+        }
+    }
+    
+    /* Progress Bar */
+    .progress-bar-custom {
+        height: 6px;
+        background: rgba(0, 0, 0, 0.05);
+        border-radius: 10px;
+        overflow: hidden;
+        margin: 2rem 2rem 1rem 2rem;
+    }
+    
+    .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+        transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
+    }
+    
+    /* Step Indicator */
+    .step-indicator {
+        display: flex;
+        justify-content: center;
+        gap: 3rem;
+        margin: 2rem 2rem 2rem 2rem;
+        position: relative;
+    }
+    
+    .step {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        position: relative;
+    }
+    
+    .step-number {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: rgba(0, 0, 0, 0.05);
+        color: #9ca3af;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 1.1rem;
+        margin-bottom: 0.75rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        z-index: 1;
+        border: 3px solid transparent;
+    }
+    
+    .step.active .step-number {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        transform: scale(1.1);
+        box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+        border-color: white;
+    }
+    
+    .step.completed .step-number {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+        box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+    }
+    
+    .step.completed .step-number::after {
+        content: '✓';
+        font-size: 1.2rem;
+    }
+    
+    .step-label {
+        font-size: 0.875rem;
+        color: #6b7280;
+        text-align: center;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+    
+    .step.active .step-label {
+        color: #667eea;
+        font-weight: 700;
+    }
+    
+    /* Form Fields - Centered and Clean */
+    .form-field-wrapper {
+        max-width: 600px;
+        margin: 0 auto 1.5rem auto;
+    }
+    
+    .form-label {
+        display: block;
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 0.5rem;
+        text-align: left;
+    }
+    
+    .required-field::after {
+        content: '*';
+        color: #ef4444;
+        margin-left: 4px;
+    }
+    
+    .form-control, .form-select {
+        width: 100%;
+        padding: 0.875rem 1rem;
+        font-size: 0.95rem;
+        border: 2px solid rgba(0, 0, 0, 0.08);
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.8);
+        transition: all 0.3s ease;
+        color: #1f2937;
+    }
+    
+    .form-control:focus, .form-select:focus {
+        outline: none;
+        border-color: #667eea;
+        background: white;
+        box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        transform: translateY(-1px);
+    }
+    
+    .form-control.is-invalid {
+        border-color: #ef4444;
+        background: rgba(239, 68, 68, 0.05);
+    }
+    
+    .has-icon {
+        position: relative;
+    }
+    
+    .input-icon {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #9ca3af;
+        font-size: 1rem;
+        z-index: 1;
+    }
+    
+    .has-icon .form-control,
+    .has-icon .form-select {
+        padding-left: 2.75rem;
+    }
+    
+    .input-group {
+        display: flex;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+    
+    .input-group-text {
+        background: rgba(102, 126, 234, 0.1);
+        border: 2px solid rgba(0, 0, 0, 0.08);
+        color: #667eea;
+        font-weight: 600;
+        padding: 0.875rem 1rem;
+        font-size: 0.9rem;
+    }
+    
+    .input-group .form-control {
+        border-radius: 0;
+    }
+    
+    .input-group .form-control:first-child {
+        border-top-left-radius: 12px;
+        border-bottom-left-radius: 12px;
+    }
+    
+    .input-group .form-control:last-child {
+        border-top-right-radius: 12px;
+        border-bottom-right-radius: 12px;
+    }
+    
+    .form-text {
+        display: block;
+        margin-top: 0.375rem;
+        font-size: 0.8rem;
+        color: #6b7280;
+        text-align: left;
+    }
+    
+    .invalid-feedback {
+        display: block;
+        margin-top: 0.375rem;
+        font-size: 0.8rem;
+        color: #ef4444;
+        text-align: left;
+    }
+    
+    /* Section Headings */
+    .section-title {
+        text-align: center;
+        margin-bottom: 2rem;
+        color: #1f2937;
+        font-size: 1.5rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+    }
+    
+    .section-title i {
+        color: #667eea;
+        font-size: 1.75rem;
+    }
+    
+    /* Summary Section */
+    .summary-section {
+        max-width: 650px;
+        margin: 0 auto;
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+        backdrop-filter: blur(10px);
+        border-radius: 16px;
+        padding: 2rem;
+        border: 1px solid rgba(102, 126, 234, 0.2);
+    }
+    
+    .summary-section h6 {
+        text-align: center;
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #1f2937;
+        margin-bottom: 1.5rem;
+    }
+    
+    .summary-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+        margin-bottom: 0.5rem;
+        background: white;
+        border-radius: 10px;
+        transition: all 0.2s ease;
+    }
+    
+    .summary-item:hover {
+        transform: translateX(4px);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+    
+    .summary-label {
+        font-weight: 600;
+        color: #6b7280;
+        font-size: 0.9rem;
+    }
+    
+    .summary-value {
+        color: #1f2937;
+        font-weight: 700;
+        text-align: right;
+        font-size: 0.95rem;
+    }
+    
+    /* Buttons */
+    .btn-navigation {
+        min-width: 140px;
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+        font-size: 0.95rem;
+        border: none;
+    }
+    
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 25px rgba(102, 126, 234, 0.4);
+    }
+    
+    .btn-success {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+        box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+    }
+    
+    .btn-success:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 25px rgba(16, 185, 129, 0.4);
+    }
+    
+    .btn-outline-secondary {
+        background: rgba(255, 255, 255, 0.8);
+        color: #6b7280;
+        border: 2px solid rgba(0, 0, 0, 0.1);
+        font-weight: 600;
+    }
+    
+    .btn-outline-secondary:hover {
+        background: white;
+        color: #374151;
+        border-color: rgba(0, 0, 0, 0.2);
+        transform: translateY(-1px);
+    }
+    
+    .navigation-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1.5rem 2rem;
+        border-top: 1px solid rgba(0, 0, 0, 0.05);
+        background: rgba(255, 255, 255, 0.5);
+        backdrop-filter: blur(10px);
+    }
+    
+    /* Alerts */
+    .alert {
+        border-radius: 12px;
+        border: none;
+        padding: 1rem 1.25rem;
+        margin: 1rem 2rem;
+        backdrop-filter: blur(10px);
+    }
+    
+    .alert-info {
+        background: rgba(59, 130, 246, 0.1);
+        color: #1e40af;
+        border-left: 4px solid #3b82f6;
+    }
+    
+    .alert-success {
+        background: rgba(16, 185, 129, 0.1);
+        color: #065f46;
+        border-left: 4px solid #10b981;
+    }
+    
+    .alert-danger {
+        background: rgba(239, 68, 68, 0.1);
+        color: #991b1b;
+        border-left: 4px solid #ef4444;
+    }
+    
+    /* Responsive Grid */
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    
+    .form-row.two-columns {
+        grid-template-columns: 1fr 1fr;
+    }
+    
+    @media (max-width: 768px) {
+        .form-row.two-columns {
+            grid-template-columns: 1fr;
+        }
+        
+        .step-indicator {
+            gap: 1.5rem;
+        }
+        
+        .step-number {
+            width: 40px;
+            height: 40px;
+            font-size: 1rem;
+        }
+        
+        .step-label {
+            font-size: 0.75rem;
+        }
+        
+        .section-title {
+            font-size: 1.25rem;
+        }
+    }
+    
+    /* Loading Spinner */
+    .spinner-border-sm {
+        width: 1rem;
+        height: 1rem;
+        border-width: 0.15em;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-11 col-xl-10">
+            <div class="glass-container">
+                <div class="glass-header">
+                    <h3>
+                        <i class="fas fa-file-invoice"></i>
+                        Nouvelle demande de cotation
+                    </h3>
+                    <p>Remplissez le formulaire en quelques étapes simples</p>
+                </div>
+
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                            <i class="fas {% if message.tags == 'success' %}fa-check-circle{% else %}fa-exclamation-circle{% endif %} me-2"></i>
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <!-- Progress Bar -->
+                <div class="progress-bar-custom">
+                    <div class="progress-fill" id="progressBar" style="width: 33.33%"></div>
+                </div>
+
+                <!-- Step Indicator -->
+                <div class="step-indicator">
+                    <div class="step active" data-step="1">
+                        <div class="step-number">1</div>
+                        <div class="step-label">Informations client</div>
+                    </div>
+                    <div class="step" data-step="2">
+                        <div class="step-number">2</div>
+                        <div class="step-label">Détails produit</div>
+                    </div>
+                    <div class="step" data-step="3">
+                        <div class="step-number">3</div>
+                        <div class="step-label">Confirmation</div>
+                    </div>
+                </div>
+
+                <form method="post" id="cotationForm" novalidate>
+                    {% csrf_token %}
+                    
+                    <!-- Step 1: Client Information -->
+                    <div class="form-step active" data-step="1">
+                        <h5 class="section-title">
+                            <i class="fas fa-user-circle"></i>
+                            Informations client
+                        </h5>
+                        
+                        <div class="form-field-wrapper">
+                            <label for="{{ form.nom_client.id_for_label }}" class="form-label required-field">
+                                {{ form.nom_client.label }}
+                            </label>
+                            <div class="has-icon">
+                                <i class="fas fa-building input-icon"></i>
+                                {{ form.nom_client }}
+                            </div>
+                            <small class="form-text">Nom complet du client ou de l'entreprise</small>
+                            {% if form.nom_client.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.nom_client.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-row two-columns">
+                            <div class="form-field-wrapper">
+                                <label for="{{ form.contact.id_for_label }}" class="form-label required-field">
+                                    {{ form.contact.label }}
+                                </label>
+                                <div class="has-icon">
+                                    <i class="fas fa-phone input-icon"></i>
+                                    {{ form.contact }}
+                                </div>
+                                <small class="form-text">Numéro avec indicatif</small>
+                                {% if form.contact.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.contact.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="form-field-wrapper">
+                                <label for="{{ form.mail.id_for_label }}" class="form-label required-field">
+                                    {{ form.mail.label }}
+                                </label>
+                                <div class="has-icon">
+                                    <i class="fas fa-envelope input-icon"></i>
+                                    {{ form.mail }}
+                                </div>
+                                {% if form.mail.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.mail.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Product Details -->
+                    <div class="form-step" data-step="2">
+                        <h5 class="section-title">
+                            <i class="fas fa-box"></i>
+                            Détails du produit
+                        </h5>
+                        
+                        <div class="form-row two-columns">
+                            <div class="form-field-wrapper">
+                                <label for="{{ form.commodite.id_for_label }}" class="form-label required-field">
+                                    {{ form.commodite.label }}
+                                </label>
+                                <div class="has-icon">
+                                    <i class="fas fa-shopping-basket input-icon"></i>
+                                    {{ form.commodite }}
+                                </div>
+                                {% if form.commodite.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.commodite.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="form-field-wrapper">
+                                <label for="{{ form.quantite.id_for_label }}" class="form-label required-field">
+                                    {{ form.quantite.label }}
+                                </label>
+                                <div class="input-group">
+                                    {{ form.quantite }}
+                                    <span class="input-group-text">MT</span>
+                                </div>
+                                {% if form.quantite.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.quantite.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="form-field-wrapper">
+                            <label for="{{ form.type_conditionnement.id_for_label }}" class="form-label required-field">
+                                {{ form.type_conditionnement.label }}
+                            </label>
+                            <div class="has-icon">
+                                <i class="fas fa-boxes input-icon"></i>
+                                {{ form.type_conditionnement }}
+                            </div>
+                            <small class="form-text">Type de conteneur ou de conditionnement</small>
+                            {% if form.type_conditionnement.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.type_conditionnement.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-row two-columns">
+                            <div class="form-field-wrapper">
+                                <label for="{{ form.incoterm.id_for_label }}" class="form-label required-field">
+                                    {{ form.incoterm.label }}
+                                </label>
+                                <div class="has-icon">
+                                    <i class="fas fa-file-contract input-icon"></i>
+                                    {{ form.incoterm }}
+                                </div>
+                                <small class="form-text">Conditions commerciales</small>
+                                {% if form.incoterm.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.incoterm.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="form-field-wrapper">
+                                <label for="{{ form.target_price.id_for_label }}" class="form-label required-field">
+                                    {{ form.target_price.label }}
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    {{ form.target_price }}
+                                    <span class="input-group-text">USD</span>
+                                </div>
+                                <small class="form-text">Prix cible par unité</small>
+                                {% if form.target_price.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.target_price.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="form-row two-columns">
+                            <div class="form-field-wrapper">
+                                <label for="{{ form.pol.id_for_label }}" class="form-label">
+                                    {{ form.pol.label }}
+                                </label>
+                                <div class="has-icon">
+                                    <i class="fas fa-ship input-icon"></i>
+                                    {{ form.pol }}
+                                </div>
+                                <small class="form-text">Port de chargement (optionnel)</small>
+                                {% if form.pol.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.pol.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="form-field-wrapper">
+                                <label for="{{ form.pod.id_for_label }}" class="form-label">
+                                    {{ form.pod.label }}
+                                </label>
+                                <div class="has-icon">
+                                    <i class="fas fa-anchor input-icon"></i>
+                                    {{ form.pod }}
+                                </div>
+                                <small class="form-text">Port de déchargement (optionnel)</small>
+                                {% if form.pod.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.pod.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Confirmation -->
+                    <div class="form-step" data-step="3">
+                        <h5 class="section-title">
+                            <i class="fas fa-check-circle"></i>
+                            Vérification et confirmation
+                        </h5>
+                        
+                        <div class="summary-section">
+                            <h6>Récapitulatif de votre demande</h6>
+                            
+                            <div class="summary-item">
+                                <span class="summary-label">Client:</span>
+                                <span class="summary-value" id="summary-nom-client">-</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">Contact:</span>
+                                <span class="summary-value" id="summary-contact">-</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">Email:</span>
+                                <span class="summary-value" id="summary-mail">-</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">Commodité:</span>
+                                <span class="summary-value" id="summary-commodite">-</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">Quantité:</span>
+                                <span class="summary-value" id="summary-quantite">-</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">Conditionnement:</span>
+                                <span class="summary-value" id="summary-conditionnement">-</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">Incoterm:</span>
+                                <span class="summary-value" id="summary-incoterm">-</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">Port de chargement:</span>
+                                <span class="summary-value" id="summary-pol">-</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">Port de déchargement:</span>
+                                <span class="summary-value" id="summary-pod">-</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">Prix cible:</span>
+                                <span class="summary-value" id="summary-price">-</span>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i>
+                            Veuillez vérifier attentivement les informations ci-dessus avant de soumettre votre demande.
+                        </div>
+                    </div>
+
+                    <!-- Navigation Buttons -->
+                    <div class="navigation-footer">
+                        <button type="button" class="btn btn-outline-secondary btn-navigation" id="prevBtn" style="display: none;">
+                            <i class="fas fa-arrow-left"></i> Précédent
+                        </button>
+                        <div class="ms-auto d-flex gap-2">
+                            <a href="{% url 'cotation_create' %}"class="btn btn-primary btn-navigation">
+                                <i class="fas fa-times"></i> Annuler
+                            </a>
+                            <button type="button" class="btn btn-primary btn-navigation" id="nextBtn">
+                                Suivant <i class="fas fa-arrow-right"></i>
+                            </button>
+                            <button type="submit" class="btn btn-success btn-navigation" id="submitBtn" style="display: none;">
+                                <i class="fas fa-paper-plane"></i> Soumettre
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    let currentStep = 1;
+    const totalSteps = 3;
+    const form = document.getElementById('cotationForm');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const submitBtn = document.getElementById('submitBtn');
+    const progressBar = document.getElementById('progressBar');
+
+    function showStep(step) {
+        document.querySelectorAll('.form-step').forEach(el => {
+            el.classList.remove('active');
+        });
+        
+        document.querySelector(`.form-step[data-step="${step}"]`).classList.add('active');
+        
+        document.querySelectorAll('.step').forEach((el, index) => {
+            el.classList.remove('active', 'completed');
+            if (index + 1 < step) {
+                el.classList.add('completed');
+            } else if (index + 1 === step) {
+                el.classList.add('active');
+            }
+        });
+        
+        const progress = (step / totalSteps) * 100;
+        progressBar.style.width = progress + '%';
+        
+        prevBtn.style.display = step === 1 ? 'none' : 'inline-block';
+        nextBtn.style.display = step === totalSteps ? 'none' : 'inline-block';
+        submitBtn.style.display = step === totalSteps ? 'inline-block' : 'none';
+        
+        if (step === 3) {
+            updateSummary();
+        }
+        
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function updateSummary() {
+        const getFieldValue = (name) => {
+            const field = form.elements[name];
+            if (!field) return '-';
+            
+            if (field.tagName === 'SELECT') {
+                return field.options[field.selectedIndex]?.text || '-';
+            }
+            return field.value || '-';
+        };
+
+        document.getElementById('summary-nom-client').textContent = getFieldValue('nom_client');
+        document.getElementById('summary-contact').textContent = getFieldValue('contact');
+        document.getElementById('summary-mail').textContent = getFieldValue('mail');
+        document.getElementById('summary-commodite').textContent = getFieldValue('commodite');
+        document.getElementById('summary-quantite').textContent = getFieldValue('quantite') + ' MT';
+        document.getElementById('summary-conditionnement').textContent = getFieldValue('type_conditionnement');
+        document.getElementById('summary-incoterm').textContent = getFieldValue('incoterm');
+        document.getElementById('summary-pol').textContent = getFieldValue('pol');
+        document.getElementById('summary-pod').textContent = getFieldValue('pod');
+        document.getElementById('summary-price').textContent = '$ ' + getFieldValue('target_price') + ' USD';
+    }
+
+    function validateStep(step) {
+        let isValid = true;
+        const currentStepEl = document.querySelector(`.form-step[data-step="${step}"]`);
+        const inputs = currentStepEl.querySelectorAll('input[required], select[required]');
+        
+        inputs.forEach(input => input.classList.remove('is-invalid'));
+        
+        inputs.forEach(input => {
+            if (!input.value.trim()) {
+                isValid = false;
+                input.classList.add('is-invalid');
+            }
+            
+            if (input.type === 'email' && input.value) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(input.value)) {
+                    isValid = false;
+                    input.classList.add('is-invalid');
+                }
+            }
+        });
+        
+        return isValid;
+    }
+
+    nextBtn.addEventListener('click', function() {
+        if (validateStep(currentStep)) {
+            if (currentStep < totalSteps) {
+                currentStep++;
+                showStep(currentStep);
+            }
+        } else {
+            const firstInvalid = document.querySelector('.is-invalid');
+            if (firstInvalid) {
+                firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+    });
+
+    prevBtn.addEventListener('click', function() {
+        if (currentStep > 1) {
+            currentStep--;
+            showStep(currentStep);
+        }
+    });
+
+    form.querySelectorAll('input, select').forEach(input => {
+        input.addEventListener('input', function() {
+            this.classList.remove('is-invalid');
+        });
+    });
+    
+    form.addEventListener('submit', function(e) {
+        let allValid = true;
+        const requiredFields = form.querySelectorAll('[required]');
+        
+        requiredFields.forEach(field => {
+            if (!field.value.trim()) {
+                field.classList.add('is-invalid');
+                allValid = false;
+            }
+        });
+        
+        if (!allValid) {
+            e.preventDefault();
+            alert('Veuillez remplir tous les champs obligatoires avant de soumettre le formulaire.');
+            return false;
+        }
+        
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Envoi en cours...';
+    });
+
+    showStep(currentStep);
+});
+</script>
+{% endblock %}

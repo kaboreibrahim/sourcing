@@ -1,0 +1,498 @@
+{% load humanize %}
+
+<style>
+    body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        margin: 0;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    }
+    
+    .hero-section {
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.95) 0%, rgba(118, 75, 162, 0.95) 100%);
+        color: white;
+        padding: 4rem 2rem;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .hero-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg width="60" height="60" xmlns="http://www.w3.org/2000/svg"><circle cx="30" cy="30" r="2" fill="white" opacity="0.1"/></svg>');
+        animation: movePattern 20s linear infinite;
+    }
+    
+    @keyframes movePattern {
+        0% { transform: translateX(0) translateY(0); }
+        100% { transform: translateX(60px) translateY(60px); }
+    }
+    
+    .hero-content {
+        position: relative;
+        z-index: 1;
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+    
+    .logo {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        animation: float 3s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+    }
+    
+    .hero-title {
+        font-size: clamp(2rem, 5vw, 3.5rem);
+        font-weight: 700;
+        margin: 0 0 1rem 0;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    }
+    
+    .hero-subtitle {
+        font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+        margin: 0 0 2rem 0;
+        opacity: 0.95;
+        line-height: 1.6;
+    }
+    
+    .hero-description {
+        font-size: 1.1rem;
+        max-width: 800px;
+        margin: 0 auto 2rem;
+        line-height: 1.8;
+        opacity: 0.9;
+    }
+    
+    .stats-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 2rem;
+        max-width: 900px;
+        margin: 3rem auto 0;
+    }
+    
+    .stat-box {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        padding: 2rem;
+        border-radius: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transition: transform 0.3s ease, background 0.3s ease;
+    }
+    
+    .stat-box:hover {
+        transform: translateY(-5px);
+        background: rgba(255, 255, 255, 0.25);
+    }
+    
+    .stat-icon {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .stat-value {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+    
+    .stat-label {
+        font-size: 0.95rem;
+        opacity: 0.9;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: 500;
+    }
+    
+    .main-content {
+        max-width: 1400px;
+        margin: -3rem auto 0;
+        padding: 0 2rem 4rem;
+        position: relative;
+        z-index: 2;
+    }
+    
+    .features-section {
+        background: white;
+        border-radius: 24px;
+        padding: 3rem;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+        margin-bottom: 3rem;
+    }
+    
+    .section-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #111827;
+        margin: 0 0 1rem 0;
+        text-align: center;
+    }
+    
+    .section-subtitle {
+        text-align: center;
+        color: #6b7280;
+        font-size: 1.1rem;
+        margin-bottom: 3rem;
+        line-height: 1.6;
+    }
+    
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 2rem;
+        margin-top: 2rem;
+    }
+    
+    .feature-card {
+        padding: 2rem;
+        border-radius: 16px;
+        background: linear-gradient(135deg, #f9fafb 0%, #ffffff 100%);
+        border: 2px solid #e5e7eb;
+        transition: all 0.3s ease;
+    }
+    
+    .feature-card:hover {
+        transform: translateY(-5px);
+        border-color: #667eea;
+        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
+    }
+    
+    .feature-icon {
+        font-size: 3rem;
+        margin-bottom: 1.5rem;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
+    .feature-title {
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: #111827;
+        margin-bottom: 0.75rem;
+    }
+    
+    .feature-text {
+        color: #6b7280;
+        line-height: 1.6;
+    }
+    
+    .commodities-preview {
+        background: white;
+        border-radius: 24px;
+        padding: 3rem;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+    }
+    
+    .commodities-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+        gap: 1.5rem;
+        margin-top: 2rem;
+    }
+    
+    .commodity-card {
+        background: white;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+    
+    .commodity-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+    }
+    
+    .card-header {
+        padding: 1.5rem;
+        color: white;
+        background: linear-gradient(135deg, var(--card-color) 0%, var(--card-color-dark) 100%);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .card-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
+        animation: ripple 4s ease-in-out infinite;
+    }
+    
+    @keyframes ripple {
+        0%, 100% { transform: scale(0.8); opacity: 0.3; }
+        50% { transform: scale(1.2); opacity: 0.6; }
+    }
+    
+    .commodity-name {
+        font-size: 1.4rem;
+        font-weight: 600;
+        margin: 0;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .card-body {
+        padding: 1.5rem;
+    }
+    
+    .quantity-display {
+        text-align: center;
+        padding: 1.5rem 0;
+        border-bottom: 2px solid #f3f4f6;
+        margin-bottom: 1rem;
+    }
+    
+    .quantity-value {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #111827;
+        display: block;
+        margin-bottom: 0.25rem;
+    }
+    
+    .quantity-label {
+        color: #6b7280;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-weight: 500;
+    }
+    
+    .info-row {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: #6b7280;
+        font-size: 0.9rem;
+        margin-top: 0.75rem;
+    }
+    
+    .info-row i {
+        color: #9ca3af;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        color: #6b7280;
+    }
+    
+    .empty-state-icon {
+        font-size: 4rem;
+        opacity: 0.3;
+        margin-bottom: 1rem;
+    }
+    
+    @media (max-width: 768px) {
+        .hero-section {
+            padding: 3rem 1.5rem;
+        }
+        
+        .features-section,
+        .commodities-preview {
+            padding: 2rem 1.5rem;
+        }
+        
+        .main-content {
+            padding: 0 1rem 2rem;
+        }
+    }
+</style>
+
+<div class="hero-section">
+    <div class="hero-content">
+        <div class="logo">🌍 🛢️</div>
+        <h1 class="hero-title">Bienvenue sur Oils of Africa</h1>
+        <p class="hero-subtitle">La Plateforme de Cartographie des Commodités Agricoles</p>
+        <p class="hero-description">
+            Nous rassemblons et centralisons les disponibilités des petites unités de production 
+            à travers toute l'Afrique pour offrir une vision claire et en temps réel des ressources 
+            disponibles. Notre mission : connecter les producteurs et valoriser chaque tonne de commodité.
+        </p>
+        
+        <div class="stats-container">
+            <div class="stat-box">
+                <div class="stat-icon">📦</div>
+                <div class="stat-value">{{ total_general|floatformat:0 }}</div>
+                <div class="stat-label">Tonnes Disponibles</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-icon">🏭</div>
+                <div class="stat-value">{{ nombre_commodites }}</div>
+                <div class="stat-label">Commodités Suivies</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-icon">🤝</div>
+                <div class="stat-value">{{ disponibilites|length }}</div>
+                <div class="stat-label">Unités Actives</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="main-content">
+    <div class="features-section">
+        <h2 class="section-title">Notre Mission</h2>
+        <p class="section-subtitle">
+            Une plateforme innovante pour transformer la gestion des commodités agricoles en Afrique
+        </p>
+        
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🗺️</div>
+                <h3 class="feature-title">Cartographie en Temps Réel</h3>
+                <p class="feature-text">
+                    Visualisez instantanément les disponibilités de toutes les petites unités 
+                    de production sur une seule plateforme unifiée.
+                </p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h3 class="feature-title">Données Centralisées</h3>
+                <p class="feature-text">
+                    Accédez à une vue d'ensemble complète des stocks disponibles pour 
+                    optimiser vos décisions d'achat et de logistique.
+                </p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">🔗</div>
+                <h3 class="feature-title">Connexion des Acteurs</h3>
+                <p class="feature-text">
+                    Nous créons des ponts entre producteurs et acheteurs pour valoriser 
+                    chaque unité de production, même les plus petites.
+                </p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h3 class="feature-title">Réactivité Maximale</h3>
+                <p class="feature-text">
+                    Des mises à jour continues pour vous permettre de saisir les opportunités 
+                    dès qu'elles se présentent.
+                </p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">🌱</div>
+                <h3 class="feature-title">Soutien aux Producteurs</h3>
+                <p class="feature-text">
+                    Nous valorisons le travail des petites unités en leur donnant une 
+                    visibilité qu'elles n'auraient jamais eue autrement.
+                </p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">🎯</div>
+                <h3 class="feature-title">Traçabilité Complète</h3>
+                <p class="feature-text">
+                    Suivez l'historique et l'évolution des stocks avec une transparence 
+                    totale pour tous les acteurs de la chaîne.
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="commodities-preview">
+        <h2 class="section-title">Disponibilités Actuelles</h2>
+        <p class="section-subtitle">
+            Découvrez en temps réel les commodités disponibles sur notre plateforme
+        </p>
+        
+        <div class="commodities-grid">
+            {% for disponibilite in disponibilites %}
+            <div class="commodity-card" 
+                 style="--card-color: {{ disponibilite.commodite.couleur }}; 
+                        --card-color-dark: {{ disponibilite.commodite.couleur }}dd;">
+                
+                <div class="card-header">
+                    <h3 class="commodity-name">{{ disponibilite.commodite.nom }}</h3>
+                </div>
+                
+                <div class="card-body">
+                    <div class="quantity-display">
+                        <span class="quantity-value">{{ disponibilite.quantite_totale|floatformat:2 }}</span>
+                        <span class="quantity-label">Tonnes disponibles</span>
+                    </div>
+                    
+                    <div class="info-row">
+                        <i class="fas fa-warehouse"></i>
+                        <span>{{ disponibilite.nombre_fournisseurs }} unité{{ disponibilite.nombre_fournisseurs|pluralize:",s" }} de production</span>
+                    </div>
+                    
+                    <div class="info-row">
+                        <i class="far fa-clock"></i>
+                        <span>Mis à jour le {{ disponibilite.derniere_maj|date:"d/m/Y" }}</span>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="empty-state">
+                <div class="empty-state-icon">
+                    <i class="fas fa-boxes"></i>
+                </div>
+                <h3>En cours de chargement...</h3>
+                <p>Les disponibilités seront bientôt affichées</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Animation des cartes de features
+    const featureCards = document.querySelectorAll('.feature-card');
+    featureCards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(30px)';
+        setTimeout(() => {
+            card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, index * 100);
+    });
+    
+    // Animation des cartes de commodités
+    const commodityCards = document.querySelectorAll('.commodity-card');
+    commodityCards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(30px)';
+        setTimeout(() => {
+            card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, 600 + (index * 100));
+    });
+    
+    // Animation des stats
+    const statBoxes = document.querySelectorAll('.stat-box');
+    statBoxes.forEach((box, index) => {
+        box.style.opacity = '0';
+        box.style.transform = 'scale(0.8)';
+        setTimeout(() => {
+            box.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            box.style.opacity = '1';
+            box.style.transform = 'scale(1)';
+        }, 300 + (index * 150));
+    });
+});
+</script>

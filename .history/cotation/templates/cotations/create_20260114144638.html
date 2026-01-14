@@ -1,0 +1,1945 @@
+{% extends 'layouts/base_client.html' %}
+{% load static %}
+
+{% block title %}Nouvelle demande de cotation{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* ============================================
+       GLOBAL STYLES & CSS VARIABLES
+       ============================================ */
+    :root {
+        --primary-color: #11a741ff;  
+        --primary-dark: #158309ff;
+        --primary-light: #3b82f6;
+        --success-color: #10b981;
+        --error-red: #ef4444;
+        --warning-orange: #f59e0b;
+        --info-blue: #3b82f6;
+        
+        --text-primary: #1f2937;
+        --text-secondary: #4b5563;
+        --text-light: #6b7280;
+        
+        --bg-glass: rgba(255, 255, 255, 0.98);
+        --bg-overlay: rgba(255, 255, 255, 0.6);
+        
+        --border-radius-sm: 6px;
+        --border-radius-md: 10px;
+        --border-radius-lg: 14px;
+        --border-radius-xl: 20px;
+        
+        --transition-fast: 0.15s ease;
+        --transition-normal: 0.25s ease;
+        --transition-slow: 0.35s ease;
+        
+        --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+        --shadow-md: 0 4px 12px rgba(37, 99, 235, 0.15);
+        --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.08);
+    }
+    
+    body {
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        padding: 0;
+        margin: 0;
+        color: var(--text-primary);
+        line-height: 1.5;
+    }
+    
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        width: 100%;
+        padding: 0 15px;
+    }
+    
+    /* ============================================
+       GLASSMORPHISM CONTAINER
+       ============================================ */
+    .glass-container {
+        background: white;
+        border-radius: var(--border-radius-xl);
+        box-shadow: var(--shadow-lg);
+        overflow: hidden;
+        animation: slideInUp 0.4s ease-out;
+        margin: 2rem auto;
+        max-width: 1200px;
+        width: calc(100% - 2rem);
+    }
+    
+    @keyframes slideInUp {
+        from { 
+            opacity: 0; 
+            transform: translateY(40px); 
+        }
+        to { 
+            opacity: 1; 
+            transform: translateY(0); 
+        }
+    }
+    
+    .glass-header {
+        background: white;
+        padding: 1.5rem 2rem;
+        text-align: center;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+    
+    .glass-header h3 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin: 0;
+        color: var(--primary-color);
+        letter-spacing: -0.3px;
+        line-height: 1.3;
+    }
+    
+    .glass-header p {
+        margin: 0.5rem 0 0 0;
+        color: var(--text-secondary);
+        font-size: 0.95rem;
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+        line-height: 1.5;
+    }
+    
+    /* ============================================
+       PROGRESS BAR & STEP INDICATOR
+       ============================================ */
+    .progress-bar-custom {
+        height: 6px;
+        background: rgba(0, 0, 0, 0.05);
+        border-radius: 10px;
+        overflow: hidden;
+        margin: 2rem 2rem 1.5rem 2rem;
+        position: relative;
+    }
+    
+    .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+        transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        border-radius: 10px;
+    }
+    
+    .step-indicator {
+        display: flex;
+        justify-content: center;
+        gap: 3rem;
+        margin: 2rem 2rem 2.5rem 2rem;
+        position: relative;
+    }
+    
+    .step-indicator::before {
+        content: '';
+        position: absolute;
+        top: 25px;
+        left: 25%;
+        right: 25%;
+        height: 2px;
+        background: rgba(0, 0, 0, 0.1);
+        z-index: 0;
+    }
+    
+    .step {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .step-number {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: rgba(0, 0, 0, 0.05);
+        color: var(--text-light);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 1.1rem;
+        margin-bottom: 0.75rem;
+        transition: all var(--transition-normal) cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        border: 3px solid white;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .step.active .step-number {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+        color: white;
+        transform: scale(1.05);
+        box-shadow: 0 2px 8px rgba(37, 99, 235, 0.2);
+    }
+    
+    .step.completed .step-number {
+        background: linear-gradient(135deg, var(--success-color) 0%, #0d9c6b 100%);
+        color: white;
+        box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2);
+    }
+    
+    .step.completed .step-number::after {
+        content: '✓';
+        font-size: 1.3rem;
+        animation: checkmark 0.3s ease-out;
+    }
+    
+    @keyframes checkmark {
+        0% { transform: scale(0) rotate(-45deg); }
+        50% { transform: scale(1.2) rotate(5deg); }
+        100% { transform: scale(1) rotate(0deg); }
+    }
+    
+    .step-label {
+        font-size: 0.875rem;
+        color: var(--text-secondary);
+        text-align: center;
+        font-weight: 500;
+        transition: all var(--transition-normal);
+        max-width: 120px;
+    }
+    
+    .step.active .step-label {
+        color: var(--primary-color);
+        font-weight: 600;
+    }
+    
+    /* ============================================
+       FORM STEPS & ANIMATIONS
+       ============================================ */
+    .form-step {
+        display: none;
+        padding: 2rem;
+        min-height: 400px;
+        background: white;
+    }
+    
+    .form-step.active {
+        display: block;
+        animation: fadeInUp 0.4s ease-out;
+    }
+    
+    @keyframes fadeInUp {
+        from { 
+            opacity: 0; 
+            transform: translateY(20px); 
+        }
+        to { 
+            opacity: 1; 
+            transform: translateY(0); 
+        }
+    }
+    
+    /* ============================================
+       FORM FIELDS
+       ============================================ */
+    .form-field-wrapper {
+        max-width: 600px;
+        margin: 0 auto 1.75rem auto;
+    }
+    
+    .form-label {
+        display: block;
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 0.5rem;
+        text-align: left;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .required-field::after {
+        content: '*';
+        color: var(--error-red);
+        margin-left: 4px;
+        font-size: 1.1rem;
+    }
+    
+    .field-tooltip {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        cursor: help;
+    }
+    
+    .field-tooltip i {
+        color: var(--text-light);
+        font-size: 0.875rem;
+    }
+    
+    .field-tooltip:hover::after {
+        content: attr(data-tooltip);
+        position: absolute;
+        bottom: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--text-primary);
+        color: white;
+        padding: 0.5rem 0.75rem;
+        border-radius: var(--border-radius-sm);
+        font-size: 0.75rem;
+        white-space: nowrap;
+        z-index: 1000;
+        margin-bottom: 0.5rem;
+        box-shadow: var(--shadow-sm);
+        animation: tooltipFadeIn 0.2s ease-out;
+    }
+    
+    @keyframes tooltipFadeIn {
+        from { opacity: 0; transform: translateX(-50%) translateY(5px); }
+        to { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+    
+    .form-control, .form-select {
+        width: 100%;
+        padding: 0.875rem 1rem;
+        font-size: 0.95rem;
+        border: 2px solid rgba(0, 0, 0, 0.08);
+        border-radius: var(--border-radius-md);
+        background: rgba(255, 255, 255, 0.9);
+        transition: all var(--transition-normal);
+        color: var(--text-primary);
+        font-family: inherit;
+    }
+    
+    .form-control:focus, .form-select:focus {
+        outline: none;
+        border-color: var(--primary-green);
+        background: white;
+        box-shadow: 0 0 0 4px rgba(5, 147, 28, 0.1);
+        transform: translateY(-1px);
+    }
+    
+    .form-control:disabled, .form-select:disabled {
+        background: rgba(0, 0, 0, 0.05);
+        cursor: not-allowed;
+        opacity: 0.6;
+    }
+    
+    .form-control.is-invalid, .form-select.is-invalid {
+        border-color: var(--error-red);
+        background: rgba(239, 68, 68, 0.05);
+        animation: shake 0.4s ease-in-out;
+    }
+    
+    .form-control.is-valid, .form-select.is-valid {
+        border-color: var(--success-green);
+        background: rgba(16, 185, 129, 0.05);
+    }
+    
+    @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-10px); }
+        75% { transform: translateX(10px); }
+    }
+    
+    .has-icon {
+        position: relative;
+    }
+    
+    .input-icon {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-light);
+        font-size: 1rem;
+        z-index: 1;
+        pointer-events: none;
+        transition: color var(--transition-fast);
+    }
+    
+    .form-control:focus ~ .input-icon,
+    .form-select:focus ~ .input-icon {
+        color: var(--primary-green);
+    }
+    
+    .has-icon .form-control,
+    .has-icon .form-select {
+        padding-left: 2.75rem;
+    }
+    
+    .input-group {
+        display: flex;
+        border-radius: var(--border-radius-md);
+        overflow: hidden;
+    }
+    
+    .input-group-text {
+        background: rgba(5, 147, 28, 0.1);
+        border: 2px solid rgba(0, 0, 0, 0.08);
+        color: var(--primary-green);
+        font-weight: 600;
+        padding: 0.875rem 1rem;
+        font-size: 0.9rem;
+        white-space: nowrap;
+    }
+    
+    .input-group .form-control {
+        border-radius: 0;
+        border-left: none;
+        border-right: none;
+    }
+    
+    .input-group .form-control:first-child {
+        border-left: 2px solid rgba(0, 0, 0, 0.08);
+        border-top-left-radius: var(--border-radius-md);
+        border-bottom-left-radius: var(--border-radius-md);
+    }
+    
+    .input-group .form-control:last-child {
+        border-right: 2px solid rgba(0, 0, 0, 0.08);
+        border-top-right-radius: var(--border-radius-md);
+        border-bottom-right-radius: var(--border-radius-md);
+    }
+    
+    .form-text {
+        display: block;
+        margin-top: 0.375rem;
+        font-size: 0.8rem;
+        color: var(--text-secondary);
+        text-align: left;
+    }
+    
+    .invalid-feedback {
+        display: none;
+        margin-top: 0.5rem;
+        font-size: 0.8rem;
+        color: var(--error-red);
+        text-align: left;
+        font-weight: 500;
+    }
+    
+    .invalid-feedback.d-block {
+        display: block;
+        animation: slideDown 0.3s ease-out;
+    }
+    
+    .valid-feedback {
+        display: none;
+        margin-top: 0.5rem;
+        font-size: 0.8rem;
+        color: var(--success-green);
+        text-align: left;
+        font-weight: 500;
+    }
+    
+    .valid-feedback.d-block {
+        display: block;
+        animation: slideDown 0.3s ease-out;
+    }
+    
+    @keyframes slideDown {
+        from { 
+            opacity: 0; 
+            transform: translateY(-5px); 
+        }
+        to { 
+            opacity: 1; 
+            transform: translateY(0); 
+        }
+    }
+    
+    /* ============================================
+       SECTION HEADINGS
+       ============================================ */
+    .section-title {
+        text-align: center;
+        margin-bottom: 2.5rem;
+        color: var(--text-primary);
+        font-size: 1.5rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+    }
+    
+    .section-title i {
+        color: var(--primary-green);
+        font-size: 1.75rem;
+    }
+    
+    /* ============================================
+       SUMMARY SECTION
+       ============================================ */
+    .summary-section {
+        max-width: 700px;
+        margin: 0 auto;
+        background: linear-gradient(135deg, rgba(5, 147, 28, 0.05) 0%, rgba(9, 156, 46, 0.05) 100%);
+        backdrop-filter: blur(10px);
+        border-radius: var(--border-radius-lg);
+        padding: 2rem;
+        border: 2px solid rgba(5, 147, 28, 0.2);
+    }
+    
+    .summary-section h6 {
+        text-align: center;
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+    
+    .summary-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 1.25rem;
+        margin-bottom: 0.5rem;
+        background: white;
+        border-radius: var(--border-radius-md);
+        transition: all var(--transition-fast);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+    
+    .summary-item:hover {
+        transform: translateX(4px);
+        box-shadow: var(--shadow-sm);
+        border-color: rgba(5, 147, 28, 0.2);
+    }
+    
+    .summary-label {
+        font-weight: 600;
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .summary-label i {
+        color: var(--primary-green);
+        font-size: 0.875rem;
+    }
+    
+    .summary-value {
+        color: var(--text-primary);
+        font-weight: 700;
+        text-align: right;
+        font-size: 0.95rem;
+    }
+    
+    /* ============================================
+       BUTTONS
+       ============================================ */
+    .btn-navigation {
+        min-width: 140px;
+        padding: 0.875rem 1.75rem;
+        font-weight: 600;
+        border-radius: var(--border-radius-md);
+        transition: all var(--transition-normal);
+        font-size: 0.95rem;
+        border: none;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        text-decoration: none;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .btn-navigation::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.3);
+        transform: translate(-50%, -50%);
+        transition: width 0.6s, height 0.6s;
+    }
+    
+    .btn-navigation:hover::before {
+        width: 300px;
+        height: 300px;
+    }
+    
+    .btn-navigation:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none !important;
+    }
+    
+    .btn-primary {
+        background: linear-gradient(135deg, var(--primary-green) 0%, var(--primary-green-dark) 100%);
+        color: green;
+        box-shadow: var(--shadow-md);
+    }
+    
+    .btn-primary:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 25px rgba(5, 147, 28, 0.4);
+    }
+    
+    .btn-primary:active:not(:disabled) {
+        transform: translateY(0);
+    }
+    
+    .btn-success {
+        background: linear-gradient(135deg, var(--success-green) 0%, var(--success-green-dark) 100%);
+        color: green;
+        box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+    }
+    
+    .btn-success:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 25px rgba(16, 185, 129, 0.4);
+    }
+    
+    .btn-outline-secondary {
+        background: rgba(255, 255, 255, 0.9);
+        color: var(--text-secondary);
+        border: 2px solid rgba(0, 0, 0, 0.1);
+        font-weight: 600;
+    }
+    
+    .btn-outline-secondary:hover:not(:disabled) {
+        background: white;
+        color: var(--text-primary);
+        border-color: rgba(0, 0, 0, 0.2);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-sm);
+    }
+    
+    .navigation-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1.5rem 2rem;
+        border-top: 2px solid rgba(0, 0, 0, 0.05);
+        background: var(--bg-overlay);
+        backdrop-filter: blur(10px);
+    }
+    
+    .button-group {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+    
+    /* ============================================
+       ALERTS & NOTIFICATIONS
+       ============================================ */
+    .alert {
+        border-radius: var(--border-radius-md);
+        border: none;
+        padding: 1rem 1.25rem;
+        margin: 1rem 2rem;
+        backdrop-filter: blur(10px);
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        animation: slideInDown 0.4s ease-out;
+    }
+    
+    @keyframes slideInDown {
+        from { 
+            opacity: 0; 
+            transform: translateY(-20px); 
+        }
+        to { 
+            opacity: 1; 
+            transform: translateY(0); 
+        }
+    }
+    
+    .alert i {
+        font-size: 1.25rem;
+    }
+    
+    .alert-info {
+        background: rgba(59, 130, 246, 0.1);
+        color: #1e40af;
+        border-left: 4px solid var(--info-blue);
+    }
+    
+    .alert-success {
+        background: rgba(16, 185, 129, 0.1);
+        color: #065f46;
+        border-left: 4px solid var(--success-green);
+    }
+    
+    .alert-danger {
+        background: rgba(239, 68, 68, 0.1);
+        color: #991b1b;
+        border-left: 4px solid var(--error-red);
+    }
+    
+    .alert-warning {
+        background: rgba(245, 158, 11, 0.1);
+        color: #92400e;
+        border-left: 4px solid var(--warning-orange);
+    }
+    
+    /* ============================================
+       FORM GRID
+       ============================================ */
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1.75rem;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    
+    .form-row.two-columns {
+        grid-template-columns: 1fr 1fr;
+    }
+    
+    /* ============================================
+       LOADING & SPINNERS
+       ============================================ */
+    .spinner-border-sm {
+        width: 1rem;
+        height: 1rem;
+        border-width: 0.15em;
+        animation: spinner-border 0.75s linear infinite;
+    }
+    
+    @keyframes spinner-border {
+        to { transform: rotate(360deg); }
+    }
+    
+    .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(4px);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+    }
+    
+    .loading-overlay.active {
+        display: flex;
+    }
+    
+    .loading-spinner {
+        width: 60px;
+        height: 60px;
+        border: 4px solid rgba(255, 255, 255, 0.3);
+        border-top-color: white;
+        border-radius: 50%;
+        animation: spinner-border 1s linear infinite;
+    }
+    
+    /* ============================================
+       AUTO-SAVE INDICATOR
+       ============================================ */
+    .autosave-indicator {
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+        background: white;
+        padding: 0.75rem 1.25rem;
+        border-radius: var(--border-radius-lg);
+        box-shadow: var(--shadow-lg);
+        display: none;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.875rem;
+        font-weight: 600;
+        z-index: 1000;
+        animation: slideInUp 0.3s ease-out;
+    }
+    
+    .autosave-indicator.show {
+        display: flex;
+    }
+    
+    .autosave-indicator.saving {
+        color: var(--warning-orange);
+    }
+    
+    .autosave-indicator.saved {
+        color: var(--success-green);
+    }
+    
+    .autosave-indicator i {
+        font-size: 1rem;
+    }
+    
+    /* ============================================
+       RESPONSIVE DESIGN
+       ============================================ */
+    @media (max-width: 768px) {
+        .glass-header h3 {
+            font-size: 1.5rem;
+        }
+        
+        .form-row.two-columns {
+            grid-template-columns: 1fr;
+        }
+        
+        .step-indicator {
+            gap: 1.5rem;
+        }
+        
+        .step-indicator::before {
+            left: 20%;
+            right: 20%;
+        }
+        
+        .step-number {
+            width: 45px;
+            height: 45px;
+            font-size: 1rem;
+        }
+        
+        .step-label {
+            font-size: 0.75rem;
+            max-width: 100px;
+        }
+        
+        .section-title {
+            font-size: 1.25rem;
+        }
+        
+        .form-step {
+            padding: 1.5rem 1rem;
+        }
+        
+        .navigation-footer {
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .button-group {
+            width: 100%;
+            justify-content: center;
+        }
+        
+        .btn-navigation {
+            flex: 1;
+            min-width: auto;
+        }
+        
+        .autosave-indicator {
+            bottom: 1rem;
+            right: 1rem;
+            left: 1rem;
+            justify-content: center;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .glass-container {
+            border-radius: var(--border-radius-lg);
+        }
+        
+        .glass-header {
+            padding: 1.5rem;
+        }
+        
+        .progress-bar-custom,
+        .step-indicator,
+        .alert {
+            margin-left: 1rem;
+            margin-right: 1rem;
+        }
+    }
+    
+    /* ============================================
+       ACCESSIBILITY IMPROVEMENTS
+       ============================================ */
+    .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border-width: 0;
+    }
+    
+    *:focus-visible {
+        outline: 3px solid var(--primary-green);
+        outline-offset: 2px;
+    }
+    
+    /* High contrast mode support */
+    @media (prefers-contrast: high) {
+        .form-control,
+        .form-select {
+            border-width: 3px;
+        }
+        
+        .btn-navigation {
+            border: 3px solid currentColor;
+        }
+    }
+    
+    /* Reduced motion support */
+    @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
+    }
+    
+    /* Print styles */
+    @media print {
+        body {
+            background: white;
+        }
+        
+        .glass-container {
+            box-shadow: none;
+            border: 1px solid #000;
+        }
+        
+        .navigation-footer,
+        .autosave-indicator {
+            display: none;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-12">
+            <div class="glass-container" role="main">
+                <!-- Header -->
+                <header class="glass-header">
+                    <h3>
+                        <i class="fas fa-file-invoice" aria-hidden="true"></i>
+                        Nouvelle demande de cotation
+                    </h3>
+                    <p>Remplissez le formulaire en quelques étapes simples</p>
+                </header>
+
+                <!-- Messages -->
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert" aria-live="polite">
+                            <i class="fas {% if message.tags == 'success' %}fa-check-circle{% elif message.tags == 'danger' %}fa-exclamation-circle{% else %}fa-info-circle{% endif %}" aria-hidden="true"></i>
+                            <span>{{ message }}</span>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer la notification"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <!-- Progress Bar -->
+                <div class="progress-bar-custom" role="progressbar" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100" aria-label="Progression du formulaire">
+                    <div class="progress-fill" id="progressBar" style="width: 33.33%"></div>
+                </div>
+
+                <!-- Step Indicator -->
+                <nav class="step-indicator" aria-label="Étapes du formulaire">
+                    <div class="step active" data-step="1">
+                        <div class="step-number" aria-label="Étape 1">1</div>
+                        <div class="step-label">Informations client</div>
+                    </div>
+                    <div class="step" data-step="2">
+                        <div class="step-number" aria-label="Étape 2">2</div>
+                        <div class="step-label">Détails produit</div>
+                    </div>
+                    <div class="step" data-step="3">
+                        <div class="step-number" aria-label="Étape 3">3</div>
+                        <div class="step-label">Confirmation</div>
+                    </div>
+                </nav>
+
+                <form method="post" id="cotationForm" novalidate aria-label="Formulaire de demande de cotation">
+                    {% csrf_token %}
+                    
+                    <!-- Step 1: Client Information -->
+                    <div class="form-step active" data-step="1" role="tabpanel" aria-labelledby="step-1-label">
+                        <h5 class="section-title" id="step-1-label">
+                            <i class="fas fa-user-circle" aria-hidden="true"></i>
+                            Informations client
+                        </h5>
+                        
+                        <div class="form-field-wrapper">
+                            <label for="{{ form.nom_client.id_for_label }}" class="form-label required-field">
+                                {{ form.nom_client.label }}
+                                <span class="field-tooltip" data-tooltip="Entrez le nom complet du client ou de l'entreprise">
+                                    <i class="fas fa-info-circle" aria-hidden="true"></i>
+                                    <span class="sr-only">Information: Entrez le nom complet du client ou de l'entreprise</span>
+                                </span>
+                            </label>
+                            <div class="has-icon">
+                                <i class="fas fa-building input-icon" aria-hidden="true"></i>
+                                {{ form.nom_client }}
+                            </div>
+                            <small class="form-text">Nom complet du client ou de l'entreprise</small>
+                            {% if form.nom_client.errors %}
+                                <div class="invalid-feedback d-block" role="alert">
+                                    <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
+                                    {{ form.nom_client.errors.0 }}
+                                </div>
+                            {% endif %}
+                            <div class="valid-feedback">
+                                <i class="fas fa-check-circle" aria-hidden="true"></i>
+                                Nom valide
+                            </div>
+                        </div>
+
+                        <div class="form-row two-columns">
+                            <div class="form-field-wrapper">
+                                <label for="{{ form.contact.id_for_label }}" class="form-label required-field">
+                                    {{ form.contact.label }}
+                                    <span class="field-tooltip" data-tooltip="Format: +225 XX XX XX XX XX">
+                                        <i class="fas fa-info-circle" aria-hidden="true"></i>
+                                        <span class="sr-only">Information: Format attendu +225 XX XX XX XX XX</span>
+                                    </span>
+                                </label>
+                                <div class="has-icon">
+                                    <i class="fas fa-phone input-icon" aria-hidden="true"></i>
+                                    {{ form.contact }}
+                                </div>
+                                <small class="form-text">Numéro avec indicatif pays</small>
+                                {% if form.contact.errors %}
+                                    <div class="invalid-feedback d-block" role="alert">
+                                        <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
+                                        {{ form.contact.errors.0 }}
+                                    </div>
+                                {% endif %}
+                                <div class="valid-feedback">
+                                    <i class="fas fa-check-circle" aria-hidden="true"></i>
+                                    Numéro valide
+                                </div>
+                            </div>
+
+                            <div class="form-field-wrapper">
+                                <label for="{{ form.mail.id_for_label }}" class="form-label required-field">
+                                    {{ form.mail.label }}
+                                </label>
+                                <div class="has-icon">
+                                    <i class="fas fa-envelope input-icon" aria-hidden="true"></i>
+                                    {{ form.mail }}
+                                </div>
+                                {% if form.mail.errors %}
+                                    <div class="invalid-feedback d-block" role="alert">
+                                        <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
+                                        {{ form.mail.errors.0 }}
+                                    </div>
+                                {% endif %}
+                                <div class="valid-feedback">
+                                    <i class="fas fa-check-circle" aria-hidden="true"></i>
+                                    Email valide
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Product Details -->
+                    <div class="form-step" data-step="2" role="tabpanel" aria-labelledby="step-2-label">
+                        <h5 class="section-title" id="step-2-label">
+                            <i class="fas fa-box" aria-hidden="true"></i>
+                            Détails du produit
+                        </h5>
+                        
+                        <div class="form-row two-columns">
+                            <div class="form-field-wrapper">
+                                <label for="{{ form.commodite.id_for_label }}" class="form-label required-field">
+                                    {{ form.commodite.label }}
+                                    <span class="field-tooltip" data-tooltip="Sélectionnez le type de produit">
+                                        <i class="fas fa-info-circle" aria-hidden="true"></i>
+                                        <span class="sr-only">Information: Sélectionnez le type de produit</span>
+                                    </span>
+                                </label>
+                                <div class="has-icon">
+                                    <i class="fas fa-shopping-basket input-icon" aria-hidden="true"></i>
+                                    {{ form.commodite }}
+                                </div>
+                                {% if form.commodite.errors %}
+                                    <div class="invalid-feedback d-block" role="alert">
+                                        <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
+                                        {{ form.commodite.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="form-field-wrapper">
+                                <label for="{{ form.quantite.id_for_label }}" class="form-label required-field">
+                                    {{ form.quantite.label }}
+                                </label>
+                                <div class="input-group">
+                                    {{ form.quantite }}
+                                    <span class="input-group-text">Tonnes</span>
+                                </div>
+                                {% if form.quantite.errors %}
+                                    <div class="invalid-feedback d-block" role="alert">
+                                        <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
+                                        {{ form.quantite.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="form-field-wrapper">
+                            <label for="{{ form.type_conditionnement.id_for_label }}" class="form-label required-field">
+                                {{ form.type_conditionnement.label }}
+                                <span class="field-tooltip" data-tooltip="Type de conteneur ou emballage">
+                                    <i class="fas fa-info-circle" aria-hidden="true"></i>
+                                    <span class="sr-only">Information: Type de conteneur ou emballage</span>
+                                </span>
+                            </label>
+                            <div class="has-icon">
+                                <i class="fas fa-boxes input-icon" aria-hidden="true"></i>
+                                {{ form.type_conditionnement }}
+                            </div>
+                            <small class="form-text">Type de conteneur ou de conditionnement</small>
+                            {% if form.type_conditionnement.errors %}
+                                <div class="invalid-feedback d-block" role="alert">
+                                    <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
+                                    {{ form.type_conditionnement.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-row two-columns">
+                            <div class="form-field-wrapper">
+                                <label for="{{ form.incoterm.id_for_label }}" class="form-label required-field">
+                                    {{ form.incoterm.label }}
+                                    <span class="field-tooltip" data-tooltip="Termes commerciaux internationaux (FOB, CIF, etc.)">
+                                        <i class="fas fa-info-circle" aria-hidden="true"></i>
+                                        <span class="sr-only">Information: Termes commerciaux internationaux</span>
+                                    </span>
+                                </label>
+                                <div class="has-icon">
+                                    <i class="fas fa-file-contract input-icon" aria-hidden="true"></i>
+                                    {{ form.incoterm }}
+                                </div>
+                                <small class="form-text">Conditions commerciales internationales</small>
+                                {% if form.incoterm.errors %}
+                                    <div class="invalid-feedback d-block" role="alert">
+                                        <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
+                                        {{ form.incoterm.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="form-field-wrapper">
+                                <label for="{{ form.target_price.id_for_label }}" class="form-label required-field">
+                                    {{ form.target_price.label }}
+                                </label>
+                                <div class="input-group">
+                                    {{ form.target_price }}
+                                    {{ form.target_price_currency }}
+                                </div>
+                                <small class="form-text">Prix cible par tonne</small>
+                                {% if form.target_price.errors %}
+                                    <div class="invalid-feedback d-block" role="alert">
+                                        <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
+                                        {{ form.target_price.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+
+
+                            <div class="form-field-wrapper">
+                                <label for="{{ form.target_price.id_for_label }}" class="form-label required-field">
+                                    {{ form.target_price.label }}
+                                </label>
+                               
+                                <small class="form-text">Prix cible par tonne</small>
+                                {% if form.target_price.errors %}
+                                    <div class="invalid-feedback d-block" role="alert">
+                                        <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
+                                        {{ form.target_price.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="form-row two-columns">
+                            <div class="form-field-wrapper">
+                                <label for="{{ form.pol.id_for_label }}" class="form-label">
+                                    {{ form.pol.label }}
+                                </label>
+                                <div class="has-icon">
+                                    <i class="fas fa-ship input-icon" aria-hidden="true"></i>
+                                    {{ form.pol }}
+                                </div>
+                                <small class="form-text">Port de chargement (optionnel)</small>
+                                {% if form.pol.errors %}
+                                    <div class="invalid-feedback d-block" role="alert">
+                                        <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
+                                        {{ form.pol.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="form-field-wrapper">
+                                <label for="{{ form.pod.id_for_label }}" class="form-label">
+                                    {{ form.pod.label }}
+                                </label>
+                                <div class="has-icon">
+                                    <i class="fas fa-anchor input-icon" aria-hidden="true"></i>
+                                    {{ form.pod }}
+                                </div>
+                                <small class="form-text">Port de déchargement (optionnel)</small>
+                                {% if form.pod.errors %}
+                                    <div class="invalid-feedback d-block" role="alert">
+                                        <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
+                                        {{ form.pod.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Confirmation -->
+                    <div class="form-step" data-step="3" role="tabpanel" aria-labelledby="step-3-label">
+                        <h5 class="section-title" id="step-3-label">
+                            <i class="fas fa-check-circle" aria-hidden="true"></i>
+                            Vérification et confirmation
+                        </h5>
+                        
+                        <div class="summary-section">
+                            <h6>
+                                <i class="fas fa-clipboard-check" aria-hidden="true"></i>
+                                Récapitulatif de votre demande
+                            </h6>
+                            
+                            <div class="summary-item">
+                                <span class="summary-label">
+                                    <i class="fas fa-building" aria-hidden="true"></i>
+                                    Client:
+                                </span>
+                                <span class="summary-value" id="summary-nom-client">-</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">
+                                    <i class="fas fa-phone" aria-hidden="true"></i>
+                                    Contact:
+                                </span>
+                                <span class="summary-value" id="summary-contact">-</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">
+                                    <i class="fas fa-envelope" aria-hidden="true"></i>
+                                    Email:
+                                </span>
+                                <span class="summary-value" id="summary-mail">-</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">
+                                    <i class="fas fa-shopping-basket" aria-hidden="true"></i>
+                                    Commodité:
+                                </span>
+                                <span class="summary-value" id="summary-commodite">-</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">
+                                    <i class="fas fa-weight" aria-hidden="true"></i>
+                                    Quantité:
+                                </span>
+                                <span class="summary-value" id="summary-quantite">-</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">
+                                    <i class="fas fa-boxes" aria-hidden="true"></i>
+                                    Conditionnement:
+                                </span>
+                                <span class="summary-value" id="summary-conditionnement">-</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">
+                                    <i class="fas fa-file-contract" aria-hidden="true"></i>
+                                    Incoterm:
+                                </span>
+                                <span class="summary-value" id="summary-incoterm">-</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">
+                                    <i class="fas fa-ship" aria-hidden="true"></i>
+                                    Port de chargement:
+                                </span>
+                                <span class="summary-value" id="summary-pol">-</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">
+                                    <i class="fas fa-anchor" aria-hidden="true"></i>
+                                    Port de déchargement:
+                                </span>
+                                <span class="summary-value" id="summary-pod">-</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">
+                                    <i class="fas fa-money-bill-wave" aria-hidden="true"></i>
+                                    Prix cible:
+                                </span>
+                                <span class="summary-value" id="summary-price">-</span>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-info" role="alert">
+                            <i class="fas fa-info-circle" aria-hidden="true"></i>
+                            <span>Veuillez vérifier attentivement toutes les informations ci-dessus avant de soumettre votre demande. Une fois soumise, vous recevrez une confirmation par email.</span>
+                        </div>
+                    </div>
+
+                    <!-- Navigation Buttons -->
+                    <footer class="navigation-footer">
+                        <button type="button" class="btn btn-outline-secondary btn-navigation" id="prevBtn" style="display: none;" aria-label="Retour à l'étape précédente">
+                            <i class="fas fa-arrow-left" aria-hidden="true"></i>
+                            <span>Précédent</span>
+                        </button>
+                        <div class="button-group">
+                            <a href="{% url 'cotation_create' %}" class="btn btn-outline-secondary btn-navigation" aria-label="Annuler et retourner">
+                                <i class="fas fa-times" aria-hidden="true"></i>
+                                <span>Annuler</span>
+                            </a>
+                            <button type="button" class="btn btn-primary btn-navigation" id="nextBtn" aria-label="Passer à l'étape suivante">
+                                <span>Suivant</span>
+                                <i class="fas fa-arrow-right" aria-hidden="true"></i>
+                            </button>
+                            <button type="submit" class="btn btn-success btn-navigation" id="submitBtn" style="display: none;" aria-label="Soumettre la demande de cotation">
+                                <i class="fas fa-paper-plane" aria-hidden="true"></i>
+                                <span>Soumettre</span>
+                            </button>
+                        </div>
+                    </footer>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Auto-save Indicator -->
+<div class="autosave-indicator" id="autosaveIndicator" role="status" aria-live="polite">
+    <i class="fas fa-circle-notch fa-spin"></i>
+    <span id="autosaveText">Sauvegarde...</span>
+</div>
+
+<!-- Loading Overlay -->
+<div class="loading-overlay" id="loadingOverlay" role="alert" aria-live="assertive">
+    <div class="loading-spinner"></div>
+</div>
+
+<script>
+(function() {
+    'use strict';
+    
+    // ============================================
+    // CONSTANTS & STATE
+    // ============================================
+    const STORAGE_KEY = 'cotation_form_draft';
+    const AUTOSAVE_DELAY = 2000; // 2 seconds
+    const TOTAL_STEPS = 3;
+    
+    let currentStep = 1;
+    let autosaveTimeout = null;
+    let formData = {};
+    
+    // ============================================
+    // DOM ELEMENTS
+    // ============================================
+    const elements = {
+        form: document.getElementById('cotationForm'),
+        prevBtn: document.getElementById('prevBtn'),
+        nextBtn: document.getElementById('nextBtn'),
+        submitBtn: document.getElementById('submitBtn'),
+        progressBar: document.getElementById('progressBar'),
+        autosaveIndicator: document.getElementById('autosaveIndicator'),
+        autosaveText: document.getElementById('autosaveText'),
+        loadingOverlay: document.getElementById('loadingOverlay'),
+        steps: document.querySelectorAll('.step'),
+        formSteps: document.querySelectorAll('.form-step')
+    };
+    
+    // ============================================
+    // UTILITY FUNCTIONS
+    // ============================================
+    
+    /**
+     * Debounce function to limit rate of function calls
+     */
+    function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
+    
+    /**
+     * Format number with thousand separators
+     */
+    function formatNumber(num) {
+        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+    }
+    
+    /**
+     * Sanitize input to prevent XSS
+     */
+    function sanitizeHTML(str) {
+        const temp = document.createElement('div');
+        temp.textContent = str;
+        return temp.innerHTML;
+    }
+    
+    /**
+     * Show notification
+     */
+    function showNotification(message, type = 'info') {
+        const alert = document.createElement('div');
+        alert.className = `alert alert-${type} alert-dismissible fade show`;
+        alert.setAttribute('role', 'alert');
+        alert.setAttribute('aria-live', 'polite');
+        alert.innerHTML = `
+            <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'danger' ? 'exclamation-circle' : 'info-circle'}" aria-hidden="true"></i>
+            <span>${sanitizeHTML(message)}</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+        `;
+        
+        const container = document.querySelector('.glass-container');
+        const header = container.querySelector('.glass-header');
+        header.insertAdjacentElement('afterend', alert);
+        
+        // Auto-remove after 5 seconds
+        setTimeout(() => {
+            alert.remove();
+        }, 5000);
+    }
+    
+    // ============================================
+    // FORM VALIDATION
+    // ============================================
+    
+    /**
+     * Validate email format
+     */
+    function validateEmail(email) {
+        const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        return regex.test(email);
+    }
+    
+    /**
+     * Validate phone number
+     */
+    function validatePhone(phone) {
+        // Allow international formats
+        const regex = /^[\+]?[(]?[0-9]{1,4}[)]?[-\s\.]?[(]?[0-9]{1,4}[)]?[-\s\.]?[0-9]{1,9}$/;
+        return regex.test(phone.replace(/\s/g, ''));
+    }
+    
+    /**
+     * Validate single field
+     */
+    function validateField(field) {
+        const value = field.value.trim();
+        const fieldType = field.type;
+        const isRequired = field.hasAttribute('required');
+        
+        // Remove previous validation states
+        field.classList.remove('is-invalid', 'is-valid');
+        const feedback = field.parentElement.parentElement.querySelector('.invalid-feedback');
+        const validFeedback = field.parentElement.parentElement.querySelector('.valid-feedback');
+        
+        if (feedback) feedback.classList.remove('d-block');
+        if (validFeedback) validFeedback.classList.remove('d-block');
+        
+        // Check if required field is empty
+        if (isRequired && !value) {
+            field.classList.add('is-invalid');
+            if (feedback) {
+                feedback.textContent = 'Ce champ est obligatoire';
+                feedback.classList.add('d-block');
+            }
+            field.setAttribute('aria-invalid', 'true');
+            return false;
+        }
+        
+        // Skip validation if field is empty and not required
+        if (!value && !isRequired) {
+            field.setAttribute('aria-invalid', 'false');
+            return true;
+        }
+        
+        // Email validation
+        if (fieldType === 'email') {
+            if (!validateEmail(value)) {
+                field.classList.add('is-invalid');
+                if (feedback) {
+                    feedback.innerHTML = '<i class="fas fa-exclamation-triangle" aria-hidden="true"></i> Format d\'email invalide';
+                    feedback.classList.add('d-block');
+                }
+                field.setAttribute('aria-invalid', 'true');
+                return false;
+            }
+        }
+        
+        // Phone validation
+        if (field.name === 'contact') {
+            if (!validatePhone(value)) {
+                field.classList.add('is-invalid');
+                if (feedback) {
+                    feedback.innerHTML = '<i class="fas fa-exclamation-triangle" aria-hidden="true"></i> Format de numéro invalide';
+                    feedback.classList.add('d-block');
+                }
+                field.setAttribute('aria-invalid', 'true');
+                return false;
+            }
+        }
+        
+        // Number validation
+        if (fieldType === 'number') {
+            const num = parseFloat(value);
+            if (isNaN(num) || num <= 0) {
+                field.classList.add('is-invalid');
+                if (feedback) {
+                    feedback.innerHTML = '<i class="fas fa-exclamation-triangle" aria-hidden="true"></i> Veuillez entrer un nombre valide';
+                    feedback.classList.add('d-block');
+                }
+                field.setAttribute('aria-invalid', 'true');
+                return false;
+            }
+        }
+        
+        // Field is valid
+        field.classList.add('is-valid');
+        if (validFeedback) validFeedback.classList.add('d-block');
+        field.setAttribute('aria-invalid', 'false');
+        return true;
+    }
+    
+    /**
+     * Validate current step
+     */
+    function validateStep(step) {
+        const currentStepEl = elements.formSteps[step - 1];
+        const inputs = currentStepEl.querySelectorAll('input[required], select[required], textarea[required]');
+        let isValid = true;
+        
+        inputs.forEach(input => {
+            if (!validateField(input)) {
+                isValid = false;
+            }
+        });
+        
+        return isValid;
+    }
+    
+    // ============================================
+    // STEP NAVIGATION
+    // ============================================
+    
+    /**
+     * Update step indicator and progress bar
+     */
+    function updateStepIndicator(step) {
+        elements.steps.forEach((el, index) => {
+            el.classList.remove('active', 'completed');
+            if (index + 1 < step) {
+                el.classList.add('completed');
+            } else if (index + 1 === step) {
+                el.classList.add('active');
+            }
+        });
+        
+        const progress = (step / TOTAL_STEPS) * 100;
+        elements.progressBar.style.width = progress + '%';
+        elements.progressBar.setAttribute('aria-valuenow', progress);
+    }
+    
+    /**
+     * Show specific step
+     */
+    function showStep(step) {
+        // Hide all steps
+        elements.formSteps.forEach(el => {
+            el.classList.remove('active');
+        });
+        
+        // Show current step
+        const currentStepEl = elements.formSteps[step - 1];
+        currentStepEl.classList.add('active');
+        
+        // Update step indicator
+        updateStepIndicator(step);
+        
+        // Update button visibility
+        elements.prevBtn.style.display = step === 1 ? 'none' : 'inline-flex';
+        elements.nextBtn.style.display = step === TOTAL_STEPS ? 'none' : 'inline-flex';
+        elements.submitBtn.style.display = step === TOTAL_STEPS ? 'inline-flex' : 'none';
+        
+        // Update summary on last step
+        if (step === TOTAL_STEPS) {
+            updateSummary();
+        }
+        
+        // Scroll to top smoothly
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        
+        // Focus on first input of the step for accessibility
+        const firstInput = currentStepEl.querySelector('input, select, textarea');
+        if (firstInput) {
+            setTimeout(() => firstInput.focus(), 300);
+        }
+    }
+    
+    /**
+     * Navigate to next step
+     */
+    function nextStep() {
+        if (validateStep(currentStep)) {
+            if (currentStep < TOTAL_STEPS) {
+                currentStep++;
+                showStep(currentStep);
+                saveFormData(); // Auto-save on step change
+            }
+        } else {
+            // Focus on first invalid field
+            const firstInvalid = elements.formSteps[currentStep - 1].querySelector('.is-invalid');
+            if (firstInvalid) {
+                firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                firstInvalid.focus();
+            }
+            showNotification('Veuillez corriger les erreurs avant de continuer', 'warning');
+        }
+    }
+    
+    /**
+     * Navigate to previous step
+     */
+    function previousStep() {
+        if (currentStep > 1) {
+            currentStep--;
+            showStep(currentStep);
+        }
+    }
+    
+    // ============================================
+    // SUMMARY UPDATE
+    // ============================================
+    
+    /**
+     * Get field value (text for selects, value for inputs)
+     */
+    function getFieldValue(name) {
+        const field = elements.form.elements[name];
+        if (!field) return '-';
+        
+        if (field.tagName === 'SELECT') {
+            const selectedOption = field.options[field.selectedIndex];
+            return selectedOption ? selectedOption.text : '-';
+        }
+        return field.value || '-';
+    }
+    
+    /**
+     * Update summary section
+     */
+    function updateSummary() {
+        const summaryFields = {
+            'summary-nom-client': 'nom_client',
+            'summary-contact': 'contact',
+            'summary-mail': 'mail',
+            'summary-commodite': 'commodite',
+            'summary-quantite': 'quantite',
+            'summary-conditionnement': 'type_conditionnement',
+            'summary-incoterm': 'incoterm',
+            'summary-pol': 'pol',
+            'summary-pod': 'pod',
+            'summary-price': 'target_price'
+        };
+        
+        Object.keys(summaryFields).forEach(summaryId => {
+            const element = document.getElementById(summaryId);
+            const fieldName = summaryFields[summaryId];
+            let value = getFieldValue(fieldName);
+            
+            // Format specific fields
+            if (summaryId === 'summary-quantite') {
+                value = value !== '-' ? `${formatNumber(value)} Tonnes` : '-';
+            } else if (summaryId === 'summary-price') {
+                const currency = getFieldValue('target_price_currency');
+                const currencySymbol = currency === 'USD' ? '$' : currency === 'EUR' ? '€' : 'FCFA';
+                value = value !== '-' ? `${currencySymbol} ${formatNumber(value)}` : '-';
+            }
+            
+            if (element) {
+                element.textContent = value;
+            }
+        });
+    }
+    
+    // ============================================
+    // LOCAL STORAGE (AUTO-SAVE)
+    // ============================================
+    
+    /**
+     * Save form data to localStorage
+     */
+    function saveFormData() {
+        try {
+            const formData = new FormData(elements.form);
+            const data = {};
+            
+            for (let [key, value] of formData.entries()) {
+                if (key !== 'csrfmiddlewaretoken') {
+                    data[key] = value;
+                }
+            }
+            
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+            showAutosaveIndicator('saved');
+        } catch (e) {
+            console.error('Error saving form data:', e);
+        }
+    }
+    
+    /**
+     * Load form data from localStorage
+     */
+    function loadFormData() {
+        try {
+            const savedData = localStorage.getItem(STORAGE_KEY);
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                
+                Object.keys(data).forEach(key => {
+                    const field = elements.form.elements[key];
+                    if (field) {
+                        field.value = data[key];
+                    }
+                });
+                
+                showNotification('Données précédentes restaurées', 'info');
+            }
+        } catch (e) {
+            console.error('Error loading form data:', e);
+        }
+    }
+    
+    /**
+     * Clear saved form data
+     */
+    function clearFormData() {
+        try {
+            localStorage.removeItem(STORAGE_KEY);
+        } catch (e) {
+            console.error('Error clearing form data:', e);
+        }
+    }
+    
+    /**
+     * Show auto-save indicator
+     */
+    function showAutosaveIndicator(status) {
+        const indicator = elements.autosaveIndicator;
+        const icon = indicator.querySelector('i');
+        const text = elements.autosaveText;
+        
+        indicator.classList.remove('saving', 'saved');
+        indicator.classList.add(status, 'show');
+        
+        if (status === 'saving') {
+            icon.className = 'fas fa-circle-notch fa-spin';
+            text.textContent = 'Sauvegarde...';
+        } else if (status === 'saved') {
+            icon.className = 'fas fa-check-circle';
+            text.textContent = 'Sauvegardé';
+        }
+        
+        // Hide after 3 seconds
+        setTimeout(() => {
+            indicator.classList.remove('show');
+        }, 3000);
+    }
+    
+    /**
+     * Debounced auto-save function
+     */
+    const debouncedSave = debounce(() => {
+        showAutosaveIndicator('saving');
+        setTimeout(() => {
+            saveFormData();
+        }, 500);
+    }, AUTOSAVE_DELAY);
+    
+    // ============================================
+    // FORM SUBMISSION
+    // ============================================
+    
+    /**
+     * Handle form submission
+     */
+    function handleSubmit(e) {
+        // Validate all steps
+        let allValid = true;
+        for (let step = 1; step <= TOTAL_STEPS; step++) {
+            if (!validateStep(step)) {
+                allValid = false;
+                // Go to first invalid step
+                currentStep = step;
+                showStep(currentStep);
+                const firstInvalid = elements.formSteps[step - 1].querySelector('.is-invalid');
+                if (firstInvalid) {
+                    firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    firstInvalid.focus();
+                }
+                break;
+            }
+        }
+        
+        if (!allValid) {
+            e.preventDefault();
+            showNotification('Veuillez corriger toutes les erreurs avant de soumettre', 'danger');
+            return false;
+        }
+        
+        // Show loading overlay
+        elements.loadingOverlay.classList.add('active');
+        
+        // Disable submit button
+        elements.submitBtn.disabled = true;
+        elements.submitBtn.innerHTML = `
+            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            <span>Envoi en cours...</span>
+        `;
+        
+        // Clear saved form data on successful submission
+        clearFormData();
+        
+        // Set timeout to re-enable if submission fails
+        setTimeout(() => {
+            if (elements.submitBtn.disabled) {
+                elements.submitBtn.disabled = false;
+                elements.submitBtn.innerHTML = `
+                    <i class="fas fa-paper-plane" aria-hidden="true"></i>
+                    <span>Soumettre</span>
+                `;
+                elements.loadingOverlay.classList.remove('active');
+                showNotification('La soumission prend plus de temps que prévu. Veuillez patienter...', 'warning');
+            }
+        }, 15000); // 15 second timeout
+    }
+    
+    // ============================================
+    // EVENT LISTENERS
+    // ============================================
+    
+    /**
+     * Initialize event listeners
+     */
+    function initEventListeners() {
+        // Navigation buttons
+        elements.nextBtn.addEventListener('click', nextStep);
+        elements.prevBtn.addEventListener('click', previousStep);
+        
+        // Form submission
+        elements.form.addEventListener('submit', handleSubmit);
+        
+        // Real-time validation and auto-save
+        const formInputs = elements.form.querySelectorAll('input, select, textarea');
+        formInputs.forEach(input => {
+            // Remove invalid state on input
+            input.addEventListener('input', function() {
+                validateField(this);
+                debouncedSave(); // Trigger auto-save
+            });
+            
+            // Validate on blur
+            input.addEventListener('blur', function() {
+                if (this.value) {
+                    validateField(this);
+                }
+            });
+        });
+        
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            // Alt + Right Arrow = Next
+            if (e.altKey && e.key === 'ArrowRight' && currentStep < TOTAL_STEPS) {
+                e.preventDefault();
+                nextStep();
+            }
+            // Alt + Left Arrow = Previous
+            if (e.altKey && e.key === 'ArrowLeft' && currentStep > 1) {
+                e.preventDefault();
+                previousStep();
+            }
+        });
+        
+        // Warn before leaving if form has data
+        window.addEventListener('beforeunload', function(e) {
+            const hasData = Array.from(formInputs).some(input => input.value.trim() !== '');
+            if (hasData && !elements.form.submitted) {
+                e.preventDefault();
+                e.returnValue = '';
+                return '';
+            }
+        });
+        
+        // Mark form as submitted to prevent beforeunload warning
+        elements.form.addEventListener('submit', function() {
+            elements.form.submitted = true;
+        });
+    }
+    
+    // ============================================
+    // INITIALIZATION
+    // ============================================
+    
+    /**
+     * Initialize the form
+     */
+    function init() {
+        // Load saved form data if available
+        if (localStorage.getItem(STORAGE_KEY)) {
+            const loadSaved = confirm('Des données précédentes ont été trouvées. Voulez-vous les restaurer ?');
+            if (loadSaved) {
+                loadFormData();
+            } else {
+                clearFormData();
+            }
+        }
+        
+        // Show first step
+        showStep(currentStep);
+        
+        // Initialize event listeners
+        initEventListeners();
+        
+        console.log('Cotation form initialized successfully');
+    }
+    
+    // Wait for DOM to be fully loaded
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+})();
+</script>
+{% endblock %}

@@ -1,0 +1,38 @@
+from django.views.generic import TemplateView
+from echantillonnages.models import Echantionnage
+from commodites.models import Commodite
+from django.db.models import Max
+
+class AccueilView(TemplateView):
+    template_name = 'website/accueil.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        # Récupérer le dernier échantillon pour chaque commodité
+        dernier_echantillon = Echantionnage.objects.values('commidite').annotate(
+            dernier_id=Max('id')
+        ).values_list('dernier_id', flat=True)
+        
+        echantillons = Echantionnage.objects.filter(
+            id__in=dernier_echantillon
+        ).select_related('commidite', 'type_echantion').order_by('commidite__nom')
+        
+        # Préparer les données pour le template
+        commodites_disponibles = []
+        for echantillon in echantillons:
+            commodites_disponibles.append({
+                'nom': echantillon.commidite.nom,
+                'type_echantillon': echantillon.type_echantion.nom if echantillon.type_echantion else 'Non spécifié',
+                'quantite': echantillon.quantite,
+                'unite_mesure': echantillon.unite_mesure,
+                'date_echantillonnage': echantillon.date_echantillonnage,
+                'disponible': echantillon.quantite > 0,
+                'classe_css': 'disponible' if echantillon.quantite > 0 else 'indisponible'
+            })
+        
+        context['commodites'] = commodites_disponibles
+        context['titre'] = "Disponibilité des Commodités"
+        context['sous_titre'] = "Dernières mises à jour des stocks"
+        
+        return context

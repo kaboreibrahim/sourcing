@@ -1,0 +1,201 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Innov-Sourcing OOA - oils of africa">
+    <title>Innov-Sourcing OOA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .font-pacifico { font-family: 'Pacifico', cursive; }
+        .btn-hover { transition: all 0.2s ease; }
+        .btn-hover:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(4, 136, 55, 0.7); }
+        .dropdown-enter { opacity: 0; transform: scale(0.95) translateY(-10px); }
+        .dropdown-enter-active { opacity: 1; transform: scale(1) translateY(0); transition: all 0.15s ease-out; }
+        .nav-link { position: relative; }
+        .nav-link::after { content: ''; position: absolute; bottom: -2px; left: 50%; width: 0; height: 2px; background:rgba(96, 219, 14, 0.48); transition: all 0.3s ease; transform: translateX(-50%); }
+        .nav-link:hover::after { width: 100%; }
+        .badge { position: absolute; top: -8px; right: -8px; background:rgba(44, 220, 38, 0.32); color: white; font-size: 0.75rem; font-weight: 600; padding: 2px 6px; border-radius: 50px; min-width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; }
+        .mobile-menu-enter { transform: translateX(-100%); }
+        .mobile-menu-enter-active { transform: translateX(0); transition: transform 0.3s ease-out; }
+        .glass-effect { 
+            backdrop-filter: blur(10px); 
+            -webkit-backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        
+    </style>
+</head>
+
+<body class="bg-gray-50">
+
+    <header class="glass-header sticky top-0 z-50 text-white">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between h-20">
+                
+                <div class="flex items-center space-x-3">
+                    <a href="/" class="flex items-center space-x-3 group">
+                        <div class="relative">
+                            <img src="{% static 'images/logo.jpg' %}" alt="Logo" class="w-12 h-12 rounded-xl object-cover shadow-lg border-2 border-white/20 group-hover:border-green-400 transition-all">
+                            <div class="absolute inset-0 rounded-xl bg-green-400/20 animate-pulse group-hover:hidden"></div>
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="text-xl font-pacifico text-white leading-tight">Innov-Sourcing</span>
+                            <span class="text-[10px] uppercase tracking-[0.2em] text-green-300 font-bold italic">Oils of Africa</span>
+                        </div>
+                    </a>
+                </div>
+
+                <nav class="hidden lg:flex items-center space-x-6">
+                    <a href="{% url 'maps' %}" class="nav-link-modern text-sm font-medium flex items-center">
+                        <i class="ri-map-pin-2-line mr-1.5 text-green-300"></i> Maps
+                    </a>
+
+                    <div class="relative group">
+                        <button class="nav-link-modern text-sm font-medium flex items-center py-2">
+                            <i class="ri-global-line mr-1.5 text-green-300"></i> Localisation
+                            <i class="ri-arrow-down-s-line ml-1 group-hover:rotate-180 transition-transform"></i>
+                        </button>
+                        <div class="absolute left-0 mt-1 w-48 bg-white rounded-xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible translate-y-2 group-hover:translate-y-0 transition-all duration-200 z-50 border border-gray-100">
+                            <div class="p-2 space-y-1">
+                                <a href="{% url 'zone-list' %}" class="flex items-center px-3 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-700 rounded-lg">
+                                    <i class="ri-layout-grid-line mr-2 opacity-50"></i> Zones
+                                </a>
+                                <a href="{% url 'ville-list' %}" class="flex items-center px-3 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-700 rounded-lg">
+                                    <i class="ri-hotel-line mr-2 opacity-50"></i> Villes
+                                </a>
+                                <a href="{% url 'port-list' %}" class="flex items-center px-3 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-700 rounded-lg">
+                                    <i class="ri-anchor-line mr-2 opacity-50"></i> Ports
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a href="{% url 'fournisseur-list' %}" class="nav-link-modern text-sm font-medium">Fournisseurs</a>
+                    <a href="{% url 'commodite-list' %}" class="nav-link-modern text-sm font-medium">Commodités</a>
+                    
+                    <div class="h-6 w-px bg-white/20 mx-2"></div>
+                    
+                    <a href="{% url 'cotation_list' %}" class="bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg text-sm font-semibold transition-all border border-white/10 flex items-center">
+                        <i class="ri- medalist-line mr-2"></i> Cotation
+                    </a>
+                </nav>
+
+                <div class="flex items-center space-x-4">
+                    {% if user.is_authenticated %}
+                    <div class="relative" id="userMenuContainer">
+                        <button id="userMenuButton" class="flex items-center space-x-2 p-1 pr-3 rounded-full bg-white/10 hover:bg-white/20 transition-all border border-white/10">
+                            <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center border border-white/20 shadow-inner">
+                                <span class="text-xs font-bold uppercase">{{ user.username|slice:":2" }}</span>
+                            </div>
+                            <span class="text-sm font-medium hidden sm:block">{{ user.username }}</span>
+                            <i class="ri-arrow-down-s-line text-white/50"></i>
+                        </button>
+                        
+                        <div id="userDropdown" class="hidden absolute right-0 mt-3 w-56 bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden text-gray-800 animate-in fade-in slide-in-from-top-2 duration-200">
+                            <div class="p-4 bg-gray-50 border-b border-gray-100 text-center">
+                                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Mon Compte</p>
+                                <p class="text-sm font-bold text-green-700 truncate">{{ user.email }}</p>
+                            </div>
+                            <div class="p-2">
+                                <a href="#" class="flex items-center px-4 py-2.5 text-sm hover:bg-gray-50 rounded-xl transition-colors">
+                                    <i class="ri-user-settings-line mr-3 text-gray-400"></i> Profil
+                                </a>
+                                <a href="{% url 'logout' %}" class="flex items-center px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 rounded-xl transition-colors">
+                                    <i class="ri-logout-circle-r-line mr-3"></i> Déconnexion
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <button id="mobileMenuBtn" class="lg:hidden w-10 h-10 flex items-center justify-center rounded-xl bg-white/10 hover:bg-white/20 transition-all">
+                        <i class="ri-menu-3-line text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div id="menuOverlay" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] hidden opacity-0 transition-opacity duration-300"></div>
+
+    <aside id="mobileSidebar" class="fixed top-0 left-0 w-[300px] h-full bg-white z-[70] shadow-2xl transform -translate-x-full transition-transform duration-300 ease-in-out lg:hidden">
+        <div class="flex flex-col h-full">
+            <div class="p-6 border-b border-gray-100 flex items-center justify-between">
+                <span class="font-pacifico text-2xl text-green-700">Innov-Sourcing</span>
+                <button id="closeMenu" class="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-100 text-gray-500">
+                    <i class="ri-close-line"></i>
+                </button>
+            </div>
+
+            <div class="flex-1 overflow-y-auto py-6 px-4 space-y-1">
+                <a href="{% url 'maps' %}" class="flex items-center p-3 text-gray-700 hover:bg-green-50 hover:text-green-700 rounded-xl transition-all">
+                    <i class="ri-map-2-line mr-4 text-xl"></i> Carte Interactive
+                </a>
+                <div class="pt-4 pb-2 px-3 text-[10px] font-bold uppercase tracking-widest text-gray-400">Logistique</div>
+                <a href="{% url 'zone-list' %}" class="flex items-center p-3 text-gray-700 hover:bg-green-50 rounded-xl">
+                    <i class="ri-stack-line mr-4 text-xl opacity-50"></i> Zones
+                </a>
+                <a href="{% url 'ville-list' %}" class="flex items-center p-3 text-gray-700 hover:bg-green-50 rounded-xl">
+                    <i class="ri-community-line mr-4 text-xl opacity-50"></i> Villes
+                </a>
+                </div>
+
+            <div class="p-6 border-t border-gray-100">
+                <p class="text-[10px] text-center text-gray-400 font-medium italic">© 2026 Innov-Sourcing - Oils of Africa</p>
+            </div>
+        </div>
+    </aside>
+
+    <script>
+        // Gestion du menu utilisateur
+        const userBtn = document.getElementById('userMenuButton');
+        const userDropdown = document.getElementById('userDropdown');
+
+        if(userBtn) {
+            userBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                userDropdown.classList.toggle('hidden');
+            });
+        }
+
+        // Fermeture des menus au clic extérieur
+        document.addEventListener('click', () => {
+            if(userDropdown) userDropdown.classList.add('hidden');
+        });
+
+        // Gestion Menu Mobile
+        const mobileBtn = document.getElementById('mobileMenuBtn');
+        const closeBtn = document.getElementById('closeMenu');
+        const sidebar = document.getElementById('mobileSidebar');
+        const overlay = document.getElementById('menuOverlay');
+
+        function toggleMobileMenu(isOpen) {
+            if(isOpen) {
+                sidebar.classList.remove('-translate-x-full');
+                overlay.classList.remove('hidden');
+                setTimeout(() => overlay.classList.add('opacity-100'), 10);
+                document.body.style.overflow = 'hidden';
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.remove('opacity-100');
+                setTimeout(() => overlay.classList.add('hidden'), 300);
+                document.body.style.overflow = '';
+            }
+        }
+
+        mobileBtn.addEventListener('click', () => toggleMobileMenu(true));
+        closeBtn.addEventListener('click', () => toggleMobileMenu(false));
+        overlay.addEventListener('click', () => toggleMobileMenu(false));
+
+    </script>
+
+</body>
+</html>

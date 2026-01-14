@@ -1,0 +1,686 @@
+<!-- echantillonnages/templates/disponibilite/liste_disponibilites.html -->
+{% extends 'layouts/base.html' %}
+
+{% block title %}Disponibilité des commodités{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- En-tête avec statistiques -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3">
+                <div class="mb-3 mb-md-0">
+                    <h4 class="mb-1">Disponibilité des commodités</h4>
+                    <p class="text-sm text-muted mb-0">Suivi en temps réel des stocks par commodité</p>
+                </div>
+                <div class="d-flex gap-2 flex-wrap">
+                    <button class="btn btn-outline-primary btn-sm" onclick="window.print()" 
+                            data-bs-toggle="tooltip" title="Imprimer la liste">
+                        <i class="fas fa-print me-1"></i> Imprimer
+                    </button>
+                    <button class="btn btn-outline-success btn-sm" onclick="exportToExcel()"
+                            data-bs-toggle="tooltip" title="Exporter en Excel">
+                        <i class="fas fa-file-export me-1"></i> Exporter
+                    </button>
+                    <button class="btn btn-primary btn-sm" id="refreshBtn">
+                        <i class="fas fa-sync-alt me-1"></i> Actualiser
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cartes de statistiques rapides -->
+    <div class="row mb-4 g-3">
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-0 shadow-sm h-100 hover-lift">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="icon-shape icon-lg bg-gradient-primary text-white rounded-3 me-3">
+                            <i class="fas fa-boxes"></i>
+                        </div>
+                        <div>
+                            <span class="text-sm text-muted">Total commodités</span>
+                            <h3 class="mb-0">{{ disponibilites|length }}</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-0 shadow-sm h-100 hover-lift">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="icon-shape icon-lg bg-gradient-success text-white rounded-3 me-3">
+                            <i class="fas fa-weight-hanging"></i>
+                        </div>
+                        <div>
+                            <span class="text-sm text-muted">Quantité totale</span>
+                                <h3 class="mb-0">
+                                    {{ total_general|floatformat:2 }} T
+                                </h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-0 shadow-sm h-100 hover-lift">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="icon-shape icon-lg bg-gradient-warning text-white rounded-3 me-3">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div>
+                            <span class="text-sm text-muted">Stock faible</span>
+                            <h3 class="mb-0">
+                                {{ disponibilites|selectattr('quantite_totale', 'le', 50)|list|length }}
+                            </h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-0 shadow-sm h-100 hover-lift">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="icon-shape icon-lg bg-gradient-info text-white rounded-3 me-3">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div>
+                            <span class="text-sm text-muted">Évolution (7j)</span>
+                            <div class="d-flex align-items-center">
+                                <h3 class="mb-0 me-2">12%</h3>
+                                <span class="badge bg-success bg-opacity-10 text-success">
+                                    <i class="fas fa-arrow-up me-1"></i> 2.5%
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Barre de recherche et filtres -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body p-3">
+            <div class="row g-3 align-items-center">
+                <div class="col-md-4 mb-2 mb-md-0">
+                    <div class="input-group input-group-merge">
+                        <span class="input-group-text bg-transparent border-end-0">
+                            <i class="fas fa-search text-muted"></i>
+                        </span>
+                        <input type="text" 
+                               class="form-control form-control-flush" 
+                               id="searchInput" 
+                               placeholder="Rechercher une commodité...">
+                        <button class="btn btn-outline-secondary" type="button" id="clearSearch">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="d-flex flex-wrap gap-2 justify-content-md-end">
+                        <div class="flex-grow-1 flex-md-grow-0">
+                            <select class="form-select form-select-sm" id="filterStatus">
+                                <option value="">Tous les statuts</option>
+                                <option value="eleve">Stock élevé</option>
+                                <option value="normal">Stock normal</option>
+                                <option value="faible">Stock faible</option>
+                                <option value="critique">Stock critique</option>
+                            </select>
+                        </div>
+                        <div class="flex-grow-1 flex-md-grow-0">
+                            <select class="form-select form-select-sm" id="sortBy">
+                                <option value="nom_asc">Trier par: Nom (A-Z)</option>
+                                <option value="nom_desc">Trier par: Nom (Z-A)</option>
+                                <option value="quantite_asc">Quantité: Croissant</option>
+                                <option value="quantite_desc">Quantité: Décroissant</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-outline-secondary btn-sm" id="resetFilters">
+                            <i class="fas fa-undo me-1"></i> Réinitialiser
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tableau des disponibilités -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-transparent border-bottom py-3">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center">
+                <h6 class="mb-2 mb-md-0">Liste des commodités</h6>
+                <div class="d-flex align-items-center">
+                    <span class="badge bg-soft-primary text-primary me-2" id="filterBadge">
+                        {{ disponibilites|length }} résultat(s)
+                    </span>
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" 
+                                id="exportDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-download me-1"></i> Exporter
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="exportDropdown">
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-file-excel me-2 text-success"></i>Excel</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-file-pdf me-2 text-danger"></i>PDF</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-print me-2 text-primary"></i>Imprimer</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0" id="disponibilitesTable">
+                    <thead class="bg-light">
+                        <tr>
+                            <th class="ps-4 text-uppercase text-secondary text-xxs font-weight-bolder">
+                                <div class="d-flex align-items-center">
+                                    <span>Commodité</span>
+                                    <div class="ms-2 d-flex flex-column sortable" data-sort="nom">
+                                        <i class="fas fa-caret-up sort-asc"></i>
+                                        <i class="fas fa-caret-down sort-desc"></i>
+                                    </div>
+                                </div>
+                            </th>
+                            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder">
+                                <div class="d-flex align-items-center justify-content-center">
+                                    <span>Quantité</span>
+                                    <div class="ms-2 d-flex flex-column sortable" data-sort="quantite">
+                                        <i class="fas fa-caret-up sort-asc"></i>
+                                        <i class="fas fa-caret-down sort-desc"></i>
+                                    </div>
+                                </div>
+                            </th>
+                            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder">Statut</th>
+                            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder">Tendance</th>
+                            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="border-0">
+                        {% for dispo in disponibilites %}
+                        <tr class="commodity-row" 
+                            data-nom="{{ dispo.commodite.nom|lower }}"
+                            data-quantite="{{ dispo.quantite_totale }}"
+                            data-statut="{% if dispo.quantite_totale > 100 %}eleve{% elif dispo.quantite_totale > 50 %}normal{% elif dispo.quantite_totale > 20 %}faible{% else %}critique{% endif %}">
+                            <td>
+                                <div class="d-flex align-items-center ps-3">
+                                    <div class="icon-shape icon-md bg-soft-primary text-primary rounded-3 me-3">
+                                        <i class="fas fa-cube"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-0 text-sm font-weight-bold">{{ dispo.commodite.nom }}</h6>
+                                        <p class="text-xs text-muted mb-0">Code: {{ dispo.commodite.id|truncatechars:8 }}</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="text-center">
+                                <div class="d-flex flex-column align-items-center">
+                                    <span class="text-sm font-weight-bold mb-0">{{ dispo.quantite_totale|floatformat:2 }} T</span>
+                                    <div class="progress w-75 mt-1" style="height: 4px;">
+                                        <div class="progress-bar" 
+                                             style="width: {{ dispo.quantite_totale|div:200|mul:100|floatformat:0 }}%; 
+                                                    background-color: {% if dispo.quantite_totale > 100 %}#2dce89{% elif dispo.quantite_totale > 50 %}#11cdef{% elif dispo.quantite_totale > 20 %}#fb6340{% else %}#f5365c{% endif %};">
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="text-center">
+                                {% if dispo.quantite_totale > 100 %}
+                                    <span class="badge bg-soft-success text-success">
+                                        <i class="fas fa-check-circle me-1"></i> Stock élevé
+                                    </span>
+                                {% elif dispo.quantite_totale > 50 %}
+                                    <span class="badge bg-soft-info text-info">
+                                        <i class="fas fa-info-circle me-1"></i> Stock normal
+                                    </span>
+                                {% elif dispo.quantite_totale > 20 %}
+                                    <span class="badge bg-soft-warning text-warning">
+                                        <i class="fas fa-exclamation-triangle me-1"></i> Stock faible
+                                    </span>
+                                {% else %}
+                                    <span class="badge bg-soft-danger text-danger">
+                                        <i class="fas fa-exclamation-circle me-1"></i> Stock critique
+                                    </span>
+                                {% endif %}
+                            </td>
+                            <td class="text-center">
+                                <div class="d-flex align-items-center justify-content-center">
+                                    {% if dispo.quantite_totale > 100 %}
+                                        <i class="fas fa-arrow-up text-success me-1"></i>
+                                        <span class="text-success">Élevé</span>
+                                    {% elif dispo.quantite_totale > 50 %}
+                                        <i class="fas fa-arrow-up text-info me-1"></i>
+                                        <span class="text-info">Stable</span>
+                                    {% elif dispo.quantite_totale > 20 %}
+                                        <i class="fas fa-arrow-down text-warning me-1"></i>
+                                        <span class="text-warning">En baisse</span>
+                                    {% else %}
+                                        <i class="fas fa-exclamation-triangle text-danger me-1"></i>
+                                        <span class="text-danger">Critique</span>
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td class="text-center">
+                                <div class="d-flex justify-content-center gap-2">
+                                    <a href="{% url 'disponibilite_commodite' dispo.commodite.id %}" 
+                                       class="btn btn-sm btn-outline-primary rounded-pill px-3"
+                                       data-bs-toggle="tooltip" 
+                                       title="Voir les détails">
+                                        <i class="fas fa-eye me-1"></i> Détails
+                                    </a>
+                                    <button class="btn btn-sm btn-outline-secondary rounded-circle"
+                                            data-bs-toggle="tooltip"
+                                            title="Actions rapides">
+                                        <i class="fas fa-ellipsis-v"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center py-5">
+                                <div class="d-flex flex-column align-items-center text-muted">
+                                    <i class="fas fa-inbox fa-3x mb-3 opacity-25"></i>
+                                    <h5 class="mb-2">Aucune donnée disponible</h5>
+                                    <p class="mb-0 text-sm">Commencez par ajouter des échantillons pour voir les données apparaître ici</p>
+                                    <a href="{% url 'ajouter' %}" class="btn btn-sm btn-primary mt-3">
+                                        <i class="fas fa-plus me-1"></i> Ajouter un échantillon
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer bg-transparent border-top py-3">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-center">
+                <div class="mb-2 mb-md-0">
+                    <p class="mb-0 text-sm text-muted">
+                        Affichage de <span class="font-weight-bold">1</span> à 
+                        <span class="font-weight-bold">{{ disponibilites|length }}</span> sur 
+                        <span class="font-weight-bold">{{ disponibilites|length }}</span> résultats
+                    </p>
+                </div>
+                <nav aria-label="Pagination">
+                    <ul class="pagination pagination-sm mb-0">
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">
+                                <i class="fas fa-chevron-left"></i>
+                            </a>
+                        </li>
+                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                        <li class="page-item">
+                            <a class="page-link" href="#">
+                                <i class="fas fa-chevron-right"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modale de chargement -->
+<div class="modal fade" id="loadingModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 bg-transparent shadow-none">
+            <div class="modal-body text-center">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Chargement...</span>
+                </div>
+                <p class="mt-3 mb-0 text-dark">Chargement des données...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Styles améliorés */
+    :root {
+        --primary: #5e72e4;
+        --secondary: #6c757d;
+        --success: #2dce89;
+        --info: #11cdef;
+        --warning: #fb6340;
+        --danger: #f5365c;
+        --light: #f8f9fa;
+        --dark: #32325d;
+    }
+
+    .hover-lift {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    
+    .hover-lift:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.075) !important;
+    }
+
+    .icon-shape {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 3rem;
+        height: 3rem;
+    }
+
+    .icon-shape i {
+        font-size: 1.25rem;
+    }
+
+    .commodity-row {
+        transition: all 0.2s ease;
+    }
+
+    .commodity-row:hover {
+        background-color: rgba(94, 114, 228, 0.05) !important;
+    }
+
+    .sortable {
+        cursor: pointer;
+        position: relative;
+        padding-left: 0.5rem;
+    }
+
+    .sortable .sort-asc,
+    .sortable .sort-desc {
+        font-size: 0.6rem;
+        line-height: 0.6rem;
+        opacity: 0.3;
+    }
+
+    .sortable.active .sort-asc,
+    .sortable.active.desc .sort-desc {
+        opacity: 1;
+        color: var(--primary);
+    }
+
+    .sortable .sort-asc {
+        margin-bottom: -2px;
+    }
+
+    .sortable .sort-desc {
+        margin-top: -2px;
+    }
+
+    .progress {
+        height: 4px;
+        border-radius: 2px;
+    }
+
+    .progress-bar {
+        border-radius: 2px;
+    }
+
+    .badge {
+        font-weight: 500;
+        padding: 0.35em 0.65em;
+    }
+
+    .bg-soft-primary {
+        background-color: rgba(94, 114, 228, 0.1) !important;
+        color: var(--primary) !important;
+    }
+
+    .bg-soft-success {
+        background-color: rgba(45, 206, 137, 0.1) !important;
+        color: var(--success) !important;
+    }
+
+    .bg-soft-info {
+        background-color: rgba(17, 205, 239, 0.1) !important;
+        color: var(--info) !important;
+    }
+
+    .bg-soft-warning {
+        background-color: rgba(251, 99, 64, 0.1) !important;
+        color: var(--warning) !important;
+    }
+
+    .bg-soft-danger {
+        background-color: rgba(245, 54, 92, 0.1) !important;
+        color: var(--danger) !important;
+    }
+
+    .form-control-flush {
+        border: 0;
+        background-color: transparent;
+        box-shadow: none;
+        padding-left: 0;
+    }
+
+    .form-control-flush:focus {
+        box-shadow: none;
+    }
+
+    .table > :not(:last-child) > :last-child > * {
+        border-bottom-color: #e9ecef;
+    }
+
+    @media (max-width: 767.98px) {
+        .card-header {
+            padding: 1rem;
+        }
+        
+        .table-responsive {
+            border-radius: 0.5rem;
+            border: 1px solid #e9ecef;
+        }
+        
+        .table thead {
+            display: none;
+        }
+        
+        .table, 
+        .table tbody, 
+        .table tr, 
+        .table td {
+            display: block;
+            width: 100%;
+        }
+        
+        .table tr {
+            margin-bottom: 1rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        }
+        
+        .table td {
+            padding: 0.75rem;
+            text-align: right;
+            position: relative;
+            padding-left: 50%;
+        }
+        
+        .table td::before {
+            content: attr(data-label);
+            position: absolute;
+            left: 1rem;
+            width: 45%;
+            padding-right: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: #495057;
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialisation des tooltips
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+
+        // Gestion de la recherche
+        const searchInput = document.getElementById('searchInput');
+        const clearSearch = document.getElementById('clearSearch');
+        const filterStatus = document.getElementById('filterStatus');
+        const sortBy = document.getElementById('sortBy');
+        const resetFilters = document.getElementById('resetFilters');
+        const rows = document.querySelectorAll('.commodity-row');
+        const filterBadge = document.getElementById('filterBadge');
+
+        function filterAndSort() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const statusFilter = filterStatus.value;
+            const sortValue = sortBy.value;
+            let visibleCount = 0;
+
+            rows.forEach(row => {
+                const name = row.getAttribute('data-nom');
+                const status = row.getAttribute('data-statut');
+                const quantity = parseFloat(row.getAttribute('data-quantite'));
+                
+                const matchesSearch = name.includes(searchTerm);
+                const matchesStatus = !statusFilter || status === statusFilter;
+                
+                if (matchesSearch && matchesStatus) {
+                    row.style.display = '';
+                    visibleCount++;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+
+            // Mise à jour du badge de résultat
+            filterBadge.textContent = `${visibleCount} résultat(s)`;
+
+            // Tri des lignes
+            const tableBody = document.querySelector('tbody');
+            const sortedRows = Array.from(rows)
+                .filter(row => row.style.display !== 'none')
+                .sort((a, b) => {
+                    const aQuantity = parseFloat(a.getAttribute('data-quantite'));
+                    const bQuantity = parseFloat(b.getAttribute('data-quantite'));
+                    const aName = a.getAttribute('data-nom');
+                    const bName = b.getAttribute('data-nom');
+                    
+                    switch(sortValue) {
+                        case 'nom_asc': return aName.localeCompare(bName);
+                        case 'nom_desc': return bName.localeCompare(aName);
+                        case 'quantite_asc': return aQuantity - bQuantity;
+                        case 'quantite_desc': return bQuantity - aQuantity;
+                        default: return 0;
+                    }
+                });
+
+            // Réorganisation des lignes dans le DOM
+            sortedRows.forEach(row => tableBody.appendChild(row));
+        }
+
+        // Événements
+        searchInput.addEventListener('input', filterAndSort);
+        clearSearch.addEventListener('click', () => {
+            searchInput.value = '';
+            filterAndSort();
+        });
+        filterStatus.addEventListener('change', filterAndSort);
+        sortBy.addEventListener('change', filterAndSort);
+        resetFilters.addEventListener('click', () => {
+            searchInput.value = '';
+            filterStatus.value = '';
+            sortBy.value = 'nom_asc';
+            filterAndSort();
+        });
+
+        // Gestion du tri par colonne
+        document.querySelectorAll('.sortable').forEach(header => {
+            header.addEventListener('click', function() {
+                const sortField = this.getAttribute('data-sort');
+                const isActive = this.classList.contains('active');
+                const isDesc = this.classList.contains('desc');
+                
+                // Réinitialiser les autres tris
+                document.querySelectorAll('.sortable').forEach(h => {
+                    h.classList.remove('active', 'asc', 'desc');
+                });
+                
+                // Appliquer le nouveau tri
+                this.classList.add('active');
+                if (isActive && !isDesc) {
+                    this.classList.add('desc');
+                    sortBy.value = `${sortField}_desc`;
+                } else {
+                    this.classList.add('asc');
+                    sortBy.value = `${sortField}_asc`;
+                }
+                
+                filterAndSort();
+            });
+        });
+
+        // Gestion du bouton d'actualisation
+        document.getElementById('refreshBtn').addEventListener('click', function() {
+            const btn = this;
+            const icon = btn.querySelector('i');
+            
+            // Désactiver le bouton et afficher l'animation
+            btn.disabled = true;
+            icon.classList.add('fa-spin');
+            
+            // Simuler un rechargement (remplacer par un appel AJAX réel si nécessaire)
+            setTimeout(() => {
+                // Réactiver le bouton et arrêter l'animation
+                btn.disabled = false;
+                icon.classList.remove('fa-spin');
+                
+                // Afficher une notification
+                const toast = new bootstrap.Toast(document.getElementById('refreshToast'));
+                toast.show();
+            }, 1500);
+        });
+
+        // Gestion de l'export Excel
+        window.exportToExcel = function() {
+            // Afficher la modale de chargement
+            const loadingModal = new bootstrap.Modal(document.getElementById('loadingModal'));
+            loadingModal.show();
+            
+            // Simuler un export (remplacer par un appel AJAX réel si nécessaire)
+            setTimeout(() => {
+                loadingModal.hide();
+                
+                // Afficher une notification de succès
+                const toast = new bootstrap.Toast(document.getElementById('exportToast'));
+                toast.show();
+            }, 2000);
+        };
+    });
+</script>
+
+<!-- Toasts de notification -->
+<div class="position-fixed bottom-1 end-1" style="z-index: 11">
+    <div id="refreshToast" class="toast align-items-center text-white bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                <i class="fas fa-sync-alt me-2"></i> Données actualisées avec succès
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+    
+    <div id="exportToast" class="toast align-items-center text-white bg-success border-0 mt-2" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                <i class="fas fa-file-export me-2"></i> Export réussi
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+{% endblock %}

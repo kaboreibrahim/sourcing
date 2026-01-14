@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Demande envoyée avec succès{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg border-0">
+                <div class="card-body text-center p-5">
+                    <div class="mb-4">
+                        <i class="fas fa-check-circle text-success" style="font-size: 5rem;"></i>
+                    </div>
+                    
+                    <h2 class="card-title text-success mb-4">
+                        Demande envoyée avec succès !
+                    </h2>
+                    
+                    <p class="card-text lead mb-4">
+                        Votre demande de cotation a été enregistrée avec succès dans notre système.
+                    </p>
+                    
+                    <div class="alert alert-info text-start">
+                        <h5><i class="fas fa-info-circle"></i> Prochaines étapes:</h5>
+                        <ul class="mb-0">
+                            <li>Un email de confirmation vous sera envoyé sous peu</li>
+                            <li>Notre équipe examinera votre demande dans les plus brefs délais</li>
+                            <li>Vous recevrez une réponse détaillée par email</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="d-grid gap-2 col-md-6 mx-auto mt-4">
+                        <a href="{% url 'cotation_create' %}" class="btn btn-primary btn-lg">
+                            <i class="fas fa-plus"></i> Nouvelle demande
+                        </a>
+                        <a href="{% url 'cotation_list' %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-list"></i> Voir toutes les demandes
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-4">
+                <p class="text-muted">
+                    <i class="fas fa-question-circle"></i> 
+                    Besoin d'aide ? Contactez-nous à 
+                    <a href="mailto:support@example.com">support@example.com</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

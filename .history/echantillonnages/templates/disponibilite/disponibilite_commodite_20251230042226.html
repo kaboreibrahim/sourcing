@@ -1,0 +1,172 @@
+<!-- echantillonnages/templates/echantillonnages/disponibilite_commodite.html -->
+{% extends 'layouts/base.html' %}
+
+{% block title %}{{ titre_page }}{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- En-tête avec informations de la commodité -->
+    <div class="mb-8">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-800 mb-2">
+                    Détails de la commodité
+                </h1>
+                <div class="flex items-center gap-4">
+                    <span class="px-4 py-2 rounded-full text-white font-medium" 
+                          style="background-color: {{ commodite.couleur }}">
+                        {{ commodite.nom }}
+                    </span>
+                    {% comment %} <span class="text-gray-600">
+                        Code: {{ commodite.code|default:"N/A" }}
+                    </span> {% endcomment %}
+                </div>
+            </div>
+            
+            <div class="bg-white p-4 rounded-xl shadow-md">
+                <p class="text-sm text-gray-600">Quantité totale disponible</p>
+                <div class="flex items-baseline gap-2">
+                    <span class="text-3xl font-bold" style="color: {{ commodite.couleur }}">
+                        {{ quantite_totale|floatformat:2 }}
+                    </span>
+                    <span class="text-gray-500">tonnes</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Liste des échantillons -->
+    <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-100">
+            <h2 class="text-lg font-semibold text-gray-800">Détails des disponibilités</h2>
+        </div>
+        
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Fournisseur
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Quantité (tonnes)
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Prix (FCFA/Tonne)
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Date
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    {% for echantillon in echantillons %}
+                    <tr class="hover:bg-gray-50 transition-colors duration-150">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 h-10 w-10 flex items-center justify-center rounded-full" 
+                                     style="background-color: {{ commodite.couleur }}20; color: {{ commodite.couleur }}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                                    </svg>
+                                </div>
+                                <div class="ml-4">
+                                    <div class="text-sm font-medium text-gray-900">{{ echantillon.fournisseur.nom }}</div>
+                                    <div class="text-sm text-gray-500">{{ echantillon.fournisseur.ville.nom }}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm text-gray-900 font-medium">{{ echantillon.quantite|floatformat:2 }}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                      {% if echantillon.prix %}bg-green-100 text-green-800{% else %}bg-gray-100 text-gray-800{% endif %}">
+                                {{ echantillon.prix|default:"Non spécifié"|floatformat:0 }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {{ echantillon.date_creation|date:"d/m/Y" }}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="px-6 py-12 text-center">
+                            <div class="flex flex-col items-center justify-center text-gray-400">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                                </svg>
+                                <p class="text-gray-600">Aucun échantillon disponible pour cette commodité</p>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Pagination ou informations supplémentaires -->
+        <div class="px-6 py-4 border-t border-gray-100 flex items-center justify-between">
+            <div class="text-sm text-gray-500">
+                Affichage de <span class="font-medium">{{ echantillons|length }}</span> échantillon{{ echantillons|pluralize }}
+            </div>
+            <!-- Ici vous pourriez ajouter une pagination si nécessaire -->
+        </div>
+    </div>
+    
+    <!-- Bouton de retour -->
+    <div class="mt-6">
+        <a href="{% url 'liste_disponibilites' %}" 
+           class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white"
+           style="background-color: {{ commodite.couleur }}">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Retour à la liste
+        </a>
+    </div>
+</div>
+
+<style>
+    /* Animation pour les lignes du tableau */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    tbody tr {
+        animation: fadeIn 0.3s ease-out forwards;
+        opacity: 0;
+    }
+    
+    tbody tr:nth-child(1) { animation-delay: 0.1s; }
+    tbody tr:nth-child(2) { animation-delay: 0.2s; }
+    tbody tr:nth-child(3) { animation-delay: 0.3s; }
+    /* Ajoutez plus de lignes si nécessaire */
+    
+    /* Effet de survol sur les lignes */
+    tbody tr {
+        transition: all 0.2s ease;
+    }
+    
+    /* Style personnalisé pour la barre de défilement */
+    ::-webkit-scrollbar {
+        height: 8px;
+        width: 8px;
+    }
+    
+    ::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 4px;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+        background: #c1c1c1;
+        border-radius: 4px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+        background: #a8a8a8;
+    }
+</style>
+{% endblock %}

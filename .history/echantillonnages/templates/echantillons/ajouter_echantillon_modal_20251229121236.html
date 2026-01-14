@@ -1,0 +1,52 @@
+<!-- echantillonnages/templates/echantillonnages/ajouter_echantillon_modal.html -->
+<div class="modal fade" id="ajouterEchantillonModal" tabindex="-1" aria-labelledby="ajouterEchantillonModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="ajouterEchantillonModalLabel">Ajouter un échantillon</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form id="echantillon-form" method="post" action="{% url 'echantillonnages:ajouter' commodite_id=commodite.id %}" class="js-echantillon-form">
+        {% csrf_token %}
+        {{ form.media }}
+        {{ form|crispy }}
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('.js-echantillon-form');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            
+            fetch(this.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Afficher un message de succès
+                    alert(data.message);
+                    // Recharger la page ou mettre à jour le tableau
+                    window.location.reload();
+                } else {
+                    // Afficher les erreurs de validation
+                    console.error('Erreurs:', data.errors);
+                }
+            })
+            .catch(error => {
+                console.error('Erreur:', error);
+            });
+        });
+    }
+});
+</script>

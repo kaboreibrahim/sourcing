@@ -1,0 +1,618 @@
+{% extends 'layouts/base_client.html' %}
+{% load static %}
+
+{% block title %}Nouvelle demande de cotation{% endblock %}
+
+{% block extra_css %}
+<style>
+    .form-step {
+        display: none;
+    }
+    
+    .form-step.active {
+        display: block;
+        animation: fadeIn 0.3s ease-in;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .step-indicator {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 2rem;
+        position: relative;
+    }
+    
+    .step-indicator::before {
+        content: '';
+        position: absolute;
+        top: 20px;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: #e9ecef;
+        z-index: -1;
+    }
+    
+    .step {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        position: relative;
+        flex: 1;
+    }
+    
+    .step-number {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #e9ecef;
+        color: #6c757d;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+        transition: all 0.3s ease;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .step.active .step-number {
+        background: #0d6efd;
+        color: white;
+        box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.2);
+    }
+    
+    .step.completed .step-number {
+        background: #198754;
+        color: white;
+    }
+    
+    .step.completed .step-number::after {
+        content: '✓';
+    }
+    
+    .step-label {
+        font-size: 0.875rem;
+        color: #6c757d;
+        text-align: center;
+    }
+    
+    .step.active .step-label {
+        color: #0d6efd;
+        font-weight: 600;
+    }
+    
+    .form-control:focus, .form-select:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15);
+    }
+    
+    .required-field::after {
+        content: '*';
+        color: #dc3545;
+        margin-left: 4px;
+    }
+    
+    .info-tooltip {
+        cursor: help;
+        margin-left: 5px;
+        color: #6c757d;
+    }
+    
+    .card {
+        border: none;
+        border-radius: 12px;
+    }
+    
+    .card-header {
+        border-radius: 12px 12px 0 0 !important;
+        padding: 1.5rem;
+    }
+    
+    .progress-bar-custom {
+        height: 4px;
+        background: #e9ecef;
+        border-radius: 2px;
+        overflow: hidden;
+        margin-bottom: 2rem;
+    }
+    
+    .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #0d6efd 0%, #0dcaf0 100%);
+        transition: width 0.3s ease;
+    }
+    
+    .btn-navigation {
+        min-width: 120px;
+    }
+    
+    .form-floating-custom {
+        position: relative;
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-floating-custom input,
+    .form-floating-custom select {
+        padding: 1rem 0.75rem;
+        height: calc(3.5rem + 2px);
+    }
+    
+    .input-icon {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #6c757d;
+    }
+    
+    .has-icon input,
+    .has-icon select {
+        padding-left: 2.5rem;
+    }
+    
+    .summary-section {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-top: 1rem;
+    }
+    
+    .summary-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #dee2e6;
+    }
+    
+    .summary-item:last-child {
+        border-bottom: none;
+    }
+    
+    .summary-label {
+        font-weight: 500;
+        color: #495057;
+    }
+    
+    .summary-value {
+        color: #212529;
+        font-weight: 600;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10 col-xl-9">
+            <div class="card shadow-lg">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">
+                        <i class="fas fa-file-invoice"></i> Nouvelle demande de cotation
+                    </h3>
+                    <p class="mb-0 mt-2 opacity-75">Remplissez le formulaire en quelques étapes simples</p>
+                </div>
+                <div class="card-body p-4">
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                <i class="fas {% if message.tags == 'success' %}fa-check-circle{% else %}fa-exclamation-circle{% endif %} me-2"></i>
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    <!-- Progress Bar -->
+                    <div class="progress-bar-custom">
+                        <div class="progress-fill" id="progressBar" style="width: 33.33%"></div>
+                    </div>
+
+                    <!-- Step Indicator -->
+                    <div class="step-indicator">
+                        <div class="step active" data-step="1">
+                            <div class="step-number">1</div>
+                            <div class="step-label">Informations client</div>
+                        </div>
+                        <div class="step" data-step="2">
+                            <div class="step-number">2</div>
+                            <div class="step-label">Détails produit</div>
+                        </div>
+                        <div class="step" data-step="3">
+                            <div class="step-number">3</div>
+                            <div class="step-label">Confirmation</div>
+                        </div>
+                    </div>
+
+                    <form method="post" id="cotationForm" novalidate>
+                        {% csrf_token %}
+                        
+                        <!-- Step 1: Client Information -->
+                        <div class="form-step active" data-step="1">
+                            <h5 class="mb-4">
+                                <i class="fas fa-user-circle text-primary"></i> Informations client
+                            </h5>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-4">
+                                    <label for="{{ form.nom_client.id_for_label }}" class="form-label required-field">
+                                        {{ form.nom_client.label }}
+                                    </label>
+                                    <div class="has-icon">
+                                        <i class="fas fa-building input-icon"></i>
+                                        {{ form.nom_client }}
+                                    </div>
+                                    <small class="form-text text-muted">Nom complet du client ou de l'entreprise</small>
+                                    {% if form.nom_client.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.nom_client.errors.0 }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="col-md-6 mb-4">
+                                    <label for="{{ form.contact.id_for_label }}" class="form-label required-field">
+                                        {{ form.contact.label }}
+                                    </label>
+                                    <div class="has-icon">
+                                        <i class="fas fa-phone input-icon"></i>
+                                        {{ form.contact }}
+                                    </div>
+                                    <small class="form-text text-muted">Numéro de téléphone avec indicatif</small>
+                                    {% if form.contact.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.contact.errors.0 }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="col-md-6 mb-4">
+                                    <label for="{{ form.mail.id_for_label }}" class="form-label required-field">
+                                        {{ form.mail.label }}
+                                    </label>
+                                    <div class="has-icon">
+                                        <i class="fas fa-envelope input-icon"></i>
+                                        {{ form.mail }}
+                                    </div>
+                                    {% if form.mail.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.mail.errors.0 }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 2: Product Details -->
+                        <div class="form-step" data-step="2">
+                            <h5 class="mb-4">
+                                <i class="fas fa-box text-primary"></i> Détails du produit et livraison
+                            </h5>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-4">
+                                    <label for="{{ form.commodite.id_for_label }}" class="form-label required-field">
+                                        {{ form.commodite.label }}
+                                    </label>
+                                    <div class="has-icon">
+                                        <i class="fas fa-shopping-basket input-icon"></i>
+                                        {{ form.commodite }}
+                                    </div>
+                                    {% if form.commodite.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.commodite.errors.0 }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="col-md-3 mb-4">
+                                    <label for="{{ form.quantite.id_for_label }}" class="form-label required-field">
+                                        {{ form.quantite.label }}
+                                    </label>
+                                    <div class="input-group">
+                                        {{ form.quantite }}
+                                        <span class="input-group-text">MT</span>
+                                    </div>
+                                    {% if form.quantite.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.quantite.errors.0 }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="col-md-6 mb-4">
+                                    <label for="{{ form.type_conditionnement.id_for_label }}" class="form-label required-field">
+                                        {{ form.type_conditionnement.label }}
+                                    </label>
+                                    <div class="has-icon">
+                                        <i class="fas fa-boxes input-icon"></i>
+                                        {{ form.type_conditionnement }}
+                                    </div>
+                                    <small class="form-text text-muted">Type de conteneur ou de conditionnement</small>
+                                    {% if form.type_conditionnement.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.type_conditionnement.errors.0 }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-4">
+                                    <label for="{{ form.incoterm.id_for_label }}" class="form-label required-field">
+                                        {{ form.incoterm.label }}
+                                    </label>
+                                    <div class="has-icon">
+                                        <i class="fas fa-file-contract input-icon"></i>
+                                        {{ form.incoterm }}
+                                    </div>
+                                    <small class="form-text text-muted">Conditions commerciales internationales</small>
+                                    {% if form.incoterm.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.incoterm.errors.0 }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="col-md-6 mb-4">
+                                    <label for="{{ form.target_price.id_for_label }}" class="form-label required-field">
+                                        {{ form.target_price.label }}
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        {{ form.target_price }}
+                                        <span class="input-group-text">USD</span>
+                                    </div>
+                                    <small class="form-text text-muted">Prix cible par unité</small>
+                                    {% if form.target_price.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.target_price.errors.0 }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-4">
+                                    <label for="{{ form.pol.id_for_label }}" class="form-label">
+                                        {{ form.pol.label }}
+                                    </label>
+                                    <div class="has-icon">
+                                        <i class="fas fa-ship input-icon"></i>
+                                        {{ form.pol }}
+                                    </div>
+                                    <small class="form-text text-muted">Port de chargement (optionnel)</small>
+                                    {% if form.pol.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.pol.errors.0 }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="col-md-6 mb-4">
+                                    <label for="{{ form.pod.id_for_label }}" class="form-label">
+                                        {{ form.pod.label }}
+                                    </label>
+                                    <div class="has-icon">
+                                        <i class="fas fa-anchor input-icon"></i>
+                                        {{ form.pod }}
+                                    </div>
+                                    <small class="form-text text-muted">Port de déchargement (optionnel)</small>
+                                    {% if form.pod.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.pod.errors.0 }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 3: Confirmation -->
+                        <div class="form-step" data-step="3">
+                            <h5 class="mb-4">
+                                <i class="fas fa-check-circle text-primary"></i> Vérification et confirmation
+                            </h5>
+                            
+                            <div class="summary-section">
+                                <h6 class="mb-3">Récapitulatif de votre demande</h6>
+                                
+                                <div class="summary-item">
+                                    <span class="summary-label">Client:</span>
+                                    <span class="summary-value" id="summary-nom-client">-</span>
+                                </div>
+                                <div class="summary-item">
+                                    <span class="summary-label">Contact:</span>
+                                    <span class="summary-value" id="summary-contact">-</span>
+                                </div>
+                                <div class="summary-item">
+                                    <span class="summary-label">Email:</span>
+                                    <span class="summary-value" id="summary-mail">-</span>
+                                </div>
+                                <div class="summary-item">
+                                    <span class="summary-label">Commodité:</span>
+                                    <span class="summary-value" id="summary-commodite">-</span>
+                                </div>
+                                <div class="summary-item">
+                                    <span class="summary-label">Quantité:</span>
+                                    <span class="summary-value" id="summary-quantite">-</span>
+                                </div>
+                                <div class="summary-item">
+                                    <span class="summary-label">Conditionnement:</span>
+                                    <span class="summary-value" id="summary-conditionnement">-</span>
+                                </div>
+                                <div class="summary-item">
+                                    <span class="summary-label">Incoterm:</span>
+                                    <span class="summary-value" id="summary-incoterm">-</span>
+                                </div>
+                                <div class="summary-item">
+                                    <span class="summary-label">Port de chargement:</span>
+                                    <span class="summary-value" id="summary-pol">-</span>
+                                </div>
+                                <div class="summary-item">
+                                    <span class="summary-label">Port de déchargement:</span>
+                                    <span class="summary-value" id="summary-pod">-</span>
+                                </div>
+                                <div class="summary-item">
+                                    <span class="summary-label">Prix cible:</span>
+                                    <span class="summary-value" id="summary-price">-</span>
+                                </div>
+                            </div>
+
+                            <div class="alert alert-info mt-4">
+                                <i class="fas fa-info-circle"></i>
+                                Veuillez vérifier attentivement les informations ci-dessus avant de soumettre votre demande.
+                            </div>
+                        </div>
+
+                        <!-- Navigation Buttons -->
+                        <div class="d-flex justify-content-between mt-4 pt-3 border-top">
+                            <button type="button" class="btn btn-outline-secondary btn-navigation" id="prevBtn" style="display: none;">
+                                <i class="fas fa-arrow-left"></i> Précédent
+                            </button>
+                            <div class="ms-auto d-flex gap-2">
+                                <a href="{% url 'cotation_list' %}" class="btn btn-outline-secondary">
+                                    <i class="fas fa-times"></i> Annuler
+                                </a>
+                                <button type="button" class="btn btn-primary btn-navigation" id="nextBtn">
+                                    Suivant <i class="fas fa-arrow-right"></i>
+                                </button>
+                                <button type="submit" class="btn btn-success btn-navigation" id="submitBtn" style="display: none;">
+                                    <i class="fas fa-paper-plane"></i> Soumettre
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize tooltips
+    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+
+    let currentStep = 1;
+    const totalSteps = 3;
+    const form = document.getElementById('cotationForm');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const submitBtn = document.getElementById('submitBtn');
+    const progressBar = document.getElementById('progressBar');
+
+    function showStep(step) {
+        // Hide all steps
+        document.querySelectorAll('.form-step').forEach(el => {
+            el.classList.remove('active');
+        });
+        
+        // Show current step
+        document.querySelector(`.form-step[data-step="${step}"]`).classList.add('active');
+        
+        // Update step indicators
+        document.querySelectorAll('.step').forEach((el, index) => {
+            el.classList.remove('active', 'completed');
+            if (index + 1 < step) {
+                el.classList.add('completed');
+            } else if (index + 1 === step) {
+                el.classList.add('active');
+            }
+        });
+        
+        // Update progress bar
+        const progress = (step / totalSteps) * 100;
+        progressBar.style.width = progress + '%';
+        
+        // Update buttons
+        prevBtn.style.display = step === 1 ? 'none' : 'inline-block';
+        nextBtn.style.display = step === totalSteps ? 'none' : 'inline-block';
+        submitBtn.style.display = step === totalSteps ? 'inline-block' : 'none';
+        
+        // Update summary on last step
+        if (step === 3) {
+            updateSummary();
+        }
+        
+        // Scroll to top
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function updateSummary() {
+        const getFieldValue = (name) => {
+            const field = form.elements[name];
+            if (!field) return '-';
+            
+            if (field.tagName === 'SELECT') {
+                return field.options[field.selectedIndex]?.text || '-';
+            }
+            return field.value || '-';
+        };
+
+        document.getElementById('summary-nom-client').textContent = getFieldValue('nom_client');
+        document.getElementById('summary-contact').textContent = getFieldValue('contact');
+        document.getElementById('summary-mail').textContent = getFieldValue('mail');
+        document.getElementById('summary-commodite').textContent = getFieldValue('commodite');
+        document.getElementById('summary-quantite').textContent = getFieldValue('quantite');
+        document.getElementById('summary-conditionnement').textContent = getFieldValue('type_conditionnement');
+        document.getElementById('summary-incoterm').textContent = getFieldValue('incoterm');
+        document.getElementById('summary-pol').textContent = getFieldValue('pol');
+        document.getElementById('summary-pod').textContent = getFieldValue('pod');
+        document.getElementById('summary-price').textContent = getFieldValue('target_price');
+    }
+
+    function validateStep(step) {
+        let isValid = true;
+        const currentStepEl = document.querySelector(`.form-step[data-step="${step}"]`);
+        const inputs = currentStepEl.querySelectorAll('input[required], select[required]');
+        
+        inputs.forEach(input => {
+            if (!input.value.trim()) {
+                isValid = false;
+                input.classList.add('is-invalid');
+            } else {
+                input.classList.remove('is-invalid');
+            }
+        });
+        
+        return isValid;
+    }
+
+    nextBtn.addEventListener('click', function() {
+        if (validateStep(currentStep)) {
+            if (currentStep < totalSteps) {
+                currentStep++;
+                showStep(currentStep);
+            }
+        } else {
+            alert('Veuillez remplir tous les champs obligatoires avant de continuer.');
+        }
+    });
+
+    prevBtn.addEventListener('click', function() {
+        if (currentStep > 1) {
+            currentStep--;
+            showStep(currentStep);
+        }
+    });
+
+    // Add input event listeners to remove invalid class
+    form.querySelectorAll('input, select').forEach(input => {
+        input.addEventListener('input', function() {
+            this.classList.remove('is-invalid');
+        });
+    });
+
+    // Initialize
+    showStep(currentStep);
+});
+</script>
+{% endblock %}

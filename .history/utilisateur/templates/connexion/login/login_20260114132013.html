@@ -1,0 +1,154 @@
+{% extends 'connexion/base_login.html' %}
+{% load static %}
+{% block content %}
+
+<div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-8 transform transition-all duration-500 ease-in-out hover:scale-105">
+        <!-- Logo avec animation -->
+        <div class="flex justify-center transform transition-transform duration-500 hover:scale-105">
+            <a href="" class="flex items-center">
+                <img class="h-20 sm:h-24 md:h-32 lg:h-40 xl:h-56 w-auto animate-float" 
+                src="{% static 'images/logo.png' %}" 
+                alt="Logo Sourcing">
+            </a>
+        </div>
+        <div class="text-center text-lg font-semibold text-gray-700">Innov-Sourcing OOA</div>
+        <!-- Titre avec animation -->
+        <div class="text-center mt-2 transform transition-all duration-700 ease-in-out animate-fadeIn">
+            <h2 class="text-2xl font-bold text-gray-900 transform transition-all duration-500 hover:text-primary">
+                Connexion à votre compte
+            </h2>
+            <p class="mt-1 text-sm text-gray-600 transform transition-all duration-500 hover:text-gray-900">
+                Entrez vos identifiants pour accéder à votre espace
+            </p>
+        </div>
+
+        {% comment %} {% if form.non_field_errors %}
+            <div class="rounded-md bg-red-50 p-4 mb-4">
+                {% for error in form.non_field_errors %}
+                    <p class="text-sm text-red-700">{{ error|escape }}</p>
+                {% endfor %}
+            </div>
+        {% endif %} {% endcomment %}
+
+        <form class="mt-8 space-y-6 transform transition-all duration-500 ease-in-out hover:shadow-lg rounded-lg p-6 bg-white" method="POST" action="{% url 'login' %}">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ next }}">
+            
+            <div class="space-y-4">
+                <div>
+                    <label for="username" class="block text-sm font-medium text-gray-700">Nom d'utilisateur ou email</label>
+                    <div class="mt-1 relative rounded-md shadow-sm">
+                        <input id="username" name="username" type="text" required 
+                               class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+                               placeholder="Entrez votre email ou nom d'utilisateur">
+                        <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                            <i class="ri-user-line text-gray-400"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <label for="password" class="block text-sm font-medium text-gray-700">Mot de passe</label>
+                    <div class="mt-1 relative rounded-md shadow-sm">
+                        <input id="password" name="password" type="password" required 
+                               class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+                               placeholder="Votre mot de passe">
+                        <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                            <button type="button" id="togglePassword" class="text-gray-400 hover:text-gray-500 focus:outline-none">
+                                <i class="ri-eye-line"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="mt-2 text-right">
+                        <a href="" class="text-sm text-primary hover:text-opacity-80 transition-colors duration-300">
+                            Mot de passe oublié ?
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="remember-forgot">
+                <div class="flex items-center justify-between mt-6">
+                    <div class="flex items-center">
+                        <input id="remember_me" name="remember_me" type="checkbox" 
+                               class="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded">
+                        <label for="remember_me" class="ml-2 block text-sm text-gray-700">
+                            Se souvenir de moi
+                        </label>
+                    </div>
+                </div>
+                <br>
+
+                <div>
+                    <button type="submit"
+                            class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-primary hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transform transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-md active:scale-95">
+                        <span class="relative">
+                            <span class="opacity-100 group-hover:opacity-0 transition-opacity duration-300">se connecter</span>
+                            <span class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                <i class="ri-send-plane-fill mr-2"></i> C'est parti !
+                            </span>
+                        </span>
+                    </button>
+                </div>
+            </form>
+             <button type="submit"
+                            class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-primary hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transform transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-md active:scale-95">
+                        <span class="relative">
+                            <span class="opacity-100 group-hover:opacity-0 transition-opacity duration-300">se connecter</span>
+                            <span class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                <i class="ri-send-plane-fill mr-2"></i> C'est parti !
+                            </span>
+                        </span>
+                    </button> <hr>
+                    <a href=""
+                       class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-white hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transform transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-md active:scale-95">
+                        <span class="relative">
+                            <span class="opacity-100 group-hover:opacity-0 transition-opacity duration-300">créer un compte</span>
+                            <span class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                <i class="ri-add-user-line mr-2"></i> cree un compte 
+                            </span>
+                        </span>
+                    </a>
+{% comment %} 
+            <div class="mt-6">
+                <div class="relative">
+                    <div class="absolute inset-0 flex items-center">
+                        <div class="w-full border-t border-gray-300"></div>
+                    </div>
+                    <div class="relative flex justify-center text-sm">
+                        <span class="px-2 bg-white text-gray-500">Pas encore de compte ?</span>
+                    </div>
+                </div>
+
+                <div class="mt-6 text-center">
+                    <a href="" class="font-medium text-primary hover:text-opacity-80 transition-colors duration-300">
+                        Créer un compte
+                    </a>
+                </div>
+            </div> {% endcomment %}
+        </div>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const togglePassword = document.getElementById("togglePassword");
+            const passwordInput = document.getElementById("password");
+    
+            togglePassword.addEventListener("click", function () {
+                const type = passwordInput.getAttribute("type") === "password" ? "text" : "password";
+                passwordInput.setAttribute("type", type);
+    
+                // Change l’icône selon l’état
+                const icon = this.querySelector("i");
+                if (type === "text") {
+                    icon.classList.remove("ri-eye-line");
+                    icon.classList.add("ri-eye-off-line");
+                } else {
+                    icon.classList.remove("ri-eye-off-line");
+                    icon.classList.add("ri-eye-line");
+                }
+            });
+        });
+    </script>
+    
+ {% endblock content %}
+ 

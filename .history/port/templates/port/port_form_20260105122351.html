@@ -1,0 +1,355 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block extra_css %}
+<link href='https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css' rel='stylesheet' />
+<link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.css" type="text/css">
+<style>
+    /* Base styles */
+    #map {
+        width: 100%;
+        height: 500px;
+        border-radius: 0.75rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Mapbox Geocoder styles */
+    .mapboxgl-ctrl-geocoder {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-shadow: none !important;
+        border: 2px solid #e5e7eb !important;
+        border-radius: 0.5rem !important;
+    }
+
+    .mapboxgl-ctrl-geocoder--input {
+        height: 44px !important;
+        padding: 0.5rem 2.5rem 0.5rem 1rem !important;
+        font-size: 1rem !important;
+    }
+
+    .mapboxgl-ctrl-geocoder--icon-search {
+        top: 10px !important;
+        right: 10px !important;
+        left: auto !important;
+    }
+
+    /* Marker info box */
+    .marker-info {
+        background: white;
+        border-radius: 0.5rem;
+        padding: 0.75rem;
+        margin-top: 0.5rem;
+        border: 2px solid #3b82f6;
+        display: none;
+    }
+
+    .marker-info.active {
+        display: block;
+    }
+
+    .coordinate-display {
+        font-family: monospace;
+        background: #f3f4f6;
+        padding: 0.5rem;
+        border-radius: 0.25rem;
+        font-size: 0.875rem;
+        margin-top: 0.5rem;
+    }
+
+    /* Button styles */
+    .location-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.5rem 1rem;
+        border-radius: 0.375rem;
+        font-weight: 500;
+        font-size: 0.875rem;
+        transition: all 0.2s;
+        cursor: pointer;
+        margin-right: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .location-btn.primary {
+        background-color: #3b82f6;
+        color: white;
+        border: 1px solid transparent;
+    }
+
+    .location-btn.primary:hover {
+        background-color: #2563eb;
+    }
+
+    .location-btn.secondary {
+        background-color: white;
+        color: #4b5563;
+        border: 1px solid #d1d5db;
+    }
+
+    .location-btn.secondary:hover {
+        background-color: #f9fafb;
+        border-color: #9ca3af;
+    }
+
+    .location-btn.danger {
+        background-color: #ef4444;
+        color: white;
+        border: 1px solid transparent;
+    }
+
+    .location-btn.danger:hover {
+        background-color: #dc2626;
+    }
+
+    .location-btn svg {
+        width: 1.25rem;
+        height: 1.25rem;
+        margin-right: 0.5rem;
+    }
+
+    /* Card styles */
+    .card {
+        background: white;
+        border-radius: 0.75rem;
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        overflow: hidden;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+
+    .card-header {
+        padding: 1.25rem 1.5rem;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    .card-body {
+        padding: 1.5rem;
+    }
+
+    /* Form styles */
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+        display: block;
+        font-weight: 500;
+        color: #374151;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-control {
+        display: block;
+        width: 100%;
+        padding: 0.625rem;
+        font-size: 0.9375rem;
+        line-height: 1.5;
+        color: #4b5563;
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 1px solid #d1d5db;
+        border-radius: 0.5rem;
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    }
+
+    .form-control:focus {
+        border-color: #3b82f6;
+        outline: 0;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+    }
+
+    .form-text {
+        display: block;
+        margin-top: 0.25rem;
+        font-size: 0.8125rem;
+        color: #6b7280;
+    }
+
+    .invalid-feedback {
+        display: block;
+        width: 100%;
+        margin-top: 0.25rem;
+        font-size: 0.8125rem;
+        color: #ef4444;
+    }
+
+    .is-invalid {
+        border-color: #ef4444;
+        padding-right: calc(1.5em + 0.75rem);
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%23ef4444' viewBox='0 0 12 12'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23ef4444' stroke='none'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right calc(0.375em + 0.1875rem) center;
+        background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+    }
+
+    .is-invalid:focus {
+        border-color: #ef4444;
+        box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+    }
+
+    /* Alert styles */
+    .alert {
+        padding: 1rem;
+        margin-bottom: 1rem;
+        border: 1px solid transparent;
+        border-radius: 0.5rem;
+    }
+
+    .alert-danger {
+        color: #991b1b;
+        background-color: #fee2e2;
+        border-color: #fecaca;
+    }
+
+    .alert-success {
+        color: #065f46;
+        background-color: #d1fae5;
+        border-color: #a7f3d0;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8 max-w-3xl">
+    <nav class="mb-6 text-sm">
+        <ol class="flex items-center gap-2 text-gray-600">
+            <li><a href="{% url 'port-list' %}" class="hover:text-blue-600">{% trans "Ports" %}</a></li>
+            <li class="text-gray-400">/</li>
+            <li class="text-gray-900 font-medium">
+                {% if form.instance.pk %}{% trans "Modifier" %}{% else %}{% trans "Nouveau port" %}{% endif %}
+            </li>
+        </ol>
+    </nav>
+
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-8">
+        <div class="p-1 bg-gradient-to-r from-blue-500 to-green-500"></div>
+        <div class="p-8">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-8">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-900">{{ title }}</h1>
+                    <p class="text-gray-600 mt-1">
+                        {% trans "Renseignez les informations du port ci-dessous." %}
+                    </p>
+                </div>
+            </div>
+
+            <form method="post" class="space-y-8">
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                    <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded">
+                        <div class="flex">
+                            <div class="flex-shrink-0">
+                                <svg class="h-5 w-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-sm text-red-700">
+                                    {% for error in form.non_field_errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+
+                <div class="form-section">
+                    <h2>{% trans "Informations du port" %}</h2>
+
+                    <div class="form-group">
+                        <label for="{{ form.nom.id_for_label }}" class="form-label">
+                            {{ form.nom.label }}
+                            {% if form.nom.field.required %}<span class="text-red-500">*</span>{% endif %}
+                        </label>
+                        {{ form.nom }}
+                        {% for error in form.nom.errors %}
+                            <p class="form-errors">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Map Container -->
+                    <div class="form-group">
+                        <label class="form-label">
+                            {% trans "Localisation du port" %}
+                            <span class="text-gray-500 text-sm font-normal">{% trans "(Cliquez sur la carte pour définir l'emplacement ou utilisez la recherche)" %}</span>
+                        </label>
+                        <div id="map" class="map-container"></div>
+                        <div id="geocoder" class="mb-4"></div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="form-group">
+                            <label for="{{ form.latitude.id_for_label }}" class="form-label">
+                                {{ form.latitude.label }}
+                            </label>
+                            <div class="relative">
+                                {{ form.latitude }}
+                                <button type="button" id="get-location" class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-blue-600" title="{% trans 'Utiliser ma position actuelle' %}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    </svg>
+                                </button>
+                            </div>
+                            {% for error in form.latitude.errors %}
+                                <p class="form-errors">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                        <div class="form-group">
+                            <label for="{{ form.longitude.id_for_label }}" class="form-label">
+                                {{ form.longitude.label }}
+                            </label>
+                            <div class="relative">
+                                {{ form.longitude }}
+                                <button type="button" id="clear-coords" class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-red-600" title="{% trans 'Effacer les coordonnées' %}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                </button>
+                            </div>
+                            {% for error in form.longitude.errors %}
+                                <p class="form-errors">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.pays.id_for_label }}" class="form-label">
+                            {{ form.pays.label }}
+                            {% if form.pays.field.required %}<span class="text-red-500">*</span>{% endif %}
+                        </label>
+                        {{ form.pays }}
+                        {% for error in form.pays.errors %}
+                            <p class="form-errors">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-3 pt-6 border-t border-gray-200">
+                    <button type="submit" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg shadow-md transition flex items-center justify-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        {{ submit_text|default:"Enregistrer" }}
+                    </button>
+
+                    <a href="{% url 'port-list' %}" class="px-6 py-3 border border-gray-300 rounded-lg font-medium text-gray-700 bg-white hover:bg-gray-50 text-center transition">
+                        {% trans "Annuler" %}
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

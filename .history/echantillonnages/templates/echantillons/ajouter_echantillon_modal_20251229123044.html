@@ -1,0 +1,128 @@
+<!-- echantillonnages/templates/echantillonnages/ajouter_echantillon_modal.html -->
+{% load crispy_forms_tags %}
+<div class="modal fade" id="ajouterEchantillonModal" tabindex="-1" aria-labelledby="ajouterEchantillonModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="ajouterEchantillonModalLabel">Ajouter un échantillon</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="echantillon-form" method="post" action="{% url 'ajouter' commodite_id=commodite.id %}" class="js-echantillon-form">
+          {% csrf_token %}
+          {{ form.media }}
+          {{ form|crispy }}
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-save"></i> Enregistrer
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('.js-echantillon-form');
+    const modal = document.getElementById('ajouterEchantillonModal');
+    
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enregistrement...';
+            
+            const formData = new FormData(this);
+            
+            fetch(this.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Fermer la modal
+                    const bootstrapModal = bootstrap.Modal.getInstance(modal);
+                    if (bootstrapModal) {
+                        bootstrapModal.hide();
+                    }
+                    
+                    // Afficher un message de succès (vous pouvez utiliser Toast ou Alert)
+                    showSuccessMessage(data.message);
+                    
+                    // Recharger la page après un court délai
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1000);
+                } else {
+                    // Afficher les erreurs
+                    showErrors(data.errors);
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalText;
+                }
+            })
+            .catch(error => {
+                console.error('Erreur:', error);
+                alert('Une erreur est survenue lors de l\'enregistrement.');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+            });
+        });
+    }
+    
+    // Fonction pour afficher un message de succès
+    function showSuccessMessage(message) {
+        // Créer un toast ou une alerte Bootstrap
+        const alertDiv = document.createElement('div');
+        alertDiv.className = 'alert alert-success alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3';
+        alertDiv.style.zIndex = '9999';
+        alertDiv.innerHTML = `
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+        document.body.appendChild(alertDiv);
+        
+        setTimeout(() => {
+            alertDiv.remove();
+        }, 3000);
+    }
+    
+    // Fonction pour afficher les erreurs de validation
+    function showErrors(errors) {
+        // Effacer les anciennes erreurs
+        document.querySelectorAll('.invalid-feedback').forEach(el => el.remove());
+        document.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+        
+        // Afficher les nouvelles erreurs
+        for (const [field, messages] of Object.entries(errors)) {
+            const input = document.querySelector(`[name="${field}"]`);
+            if (input) {
+                input.classList.add('is-invalid');
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'invalid-feedback d-block';
+                errorDiv.textContent = messages.join(', ');
+                input.parentElement.appendChild(errorDiv);
+            }
+        }
+    }
+    
+    // Réinitialiser le formulaire quand la modal est fermée
+    if (modal) {
+        modal.addEventListener('hidden.bs.modal', function() {
+            form.reset();
+            document.querySelectorAll('.invalid-feedback').forEach(el => el.remove());
+            document.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+        });
+    }
+});
+</script>

@@ -1,0 +1,85 @@
+<!-- templates/fournisseur/accueil.html -->
+{% extends 'layouts/base_fournisseur.html' %}
+{% load humanize %}
+
+{% block content %}
+<style>
+    .card {
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        transition: transform 0.2s;
+    }
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    }
+    .table th {
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        color: #6c757d;
+    }
+    .table td {
+        font-size: 0.9rem;
+    }
+    .badge {
+        font-size: 0.75rem;
+        padding: 0.35em 0.65em;
+    }
+</style>
+
+<div class="container mt-4">
+    <h2>Mes Commodités</h2>
+    <div class="row">
+        {% for commodite in commodites %}
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">{{ commodite.nom }}</h5>
+                    <span class="badge" style="background-color: {{ commodite.couleur }}; color: white;">
+                        {{ commodite.get_type_commodite_display }}
+                    </span>
+                </div>
+                <div class="card-body">
+                    <h6>Derniers échantillons :</h6>
+                    {% if commodite.echantillonnages.all %}
+                        <div class="table-responsive">
+                            <table class="table table-sm table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Quantité (T)</th>
+                                        <th>Prix (FCFA) /T</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for echantillon in commodite.echantillonnages.all|slice:":5" %}
+                                    <tr>
+                                        <td>{{ echantillon.date_creation|date:"d/m/Y" }}</td>
+                                        <td>{{ echantillon.quantite|floatformat:2 }}</td>
+                                        <td>{{ echantillon.prix }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% if commodite.echantillonnages.count > 5 %}
+                        <div class="text-end">
+                            <small class="text-muted">+ {{ commodite.echantillonnages.count|add:"-5" }} autres échantillons</small>
+                        </div>
+                        {% endif %}
+                    {% else %}
+                        <p class="text-muted">Aucun échantillon disponible pour cette commodité.</p>
+                    {% endif %}
+                    </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">
+                Aucune commodité enregistrée pour le moment.
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

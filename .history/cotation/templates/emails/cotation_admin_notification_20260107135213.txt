@@ -1,0 +1,32 @@
+NOUVELLE DEMANDE DE COTATION - ACTION REQUISE
+==============================================
+
+⚠️ Une nouvelle demande de cotation nécessite votre attention.
+
+RÉFÉRENCE: {{ demande.ref }}
+
+INFORMATIONS CLIENT
+-------------------
+Nom du client: {{ demande.nom_client }}
+Contact: {{ demande.contact }}
+Date de demande: {{ demande.date_demande|date:"d/m/Y à H:i" }}
+Statut: {{ demande.get_statut_display }}
+
+DÉTAILS DE LA COMMANDE
+-----------------------
+Commodité: {{ demande.commodite.nom }}
+Quantité: {{ demande.quantite }} tonnes
+Conditionnement: {{ demande.get_type_conditionnement_display }}
+Incoterm: {{ demande.incoterm }}
+Port de chargement: {{ demande.pol }}
+Port de déchargement: {{ demande.pod }}
+Prix cible: {{ demande.target_price }}Fcfa
+
+ACTION REQUISE
+--------------
+Veuillez traiter cette demande dans les plus brefs délais et contacter 
+le client pour lui fournir une cotation détaillée.
+
+---
+© 2026 oils of africa - Innov sourcing
+Cet email a été envoyé automatiquement par le système.

@@ -1,0 +1,61 @@
+<!-- echantillonnages/templates/disponibilite/liste_disponibilites.html -->
+{% extends 'layouts/base.html' %}
+
+{% block title %}Disponibilité des commodités{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card mb-4">
+                <div class="card-header pb-0">
+                    <h6>Disponibilité des commodités</h6>
+                    <p class="text-sm mb-0">
+                        Vue d'ensemble des quantités disponibles par commodité
+                    </p>
+                </div>
+                <div class="card-body px-0 pt-0 pb-2">
+                    <div class="table-responsive p-0">
+                        <table class="table align-items-center mb-0">
+                            <thead>
+                                <tr>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Commodité</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Quantité totale (tonnes)</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for dispo in disponibilites %}
+                                <tr>
+                                    <td>
+                                        <div class="d-flex px-2 py-1">
+                                            <div class="d-flex flex-column justify-content-center">
+                                                <h6 class="mb-0 text-sm">{{ dispo.commodite.nom }}</h6>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <p class="text-sm font-weight-bold mb-0">{{ dispo.quantite_totale|floatformat:2 }}</p>
+                                    </td>
+                                     
+                                    <td class="align-middle">
+                                        <a href="{% url 'disponibilite_commodite' dispo.commodite.id %}" 
+                                           class="btn btn-link text-info text-gradient px-3 mb-0">
+                                            <i class="fas fa-eye me-2"></i>Voir détails
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-center py-4">Aucune donnée de disponibilité pour le moment.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

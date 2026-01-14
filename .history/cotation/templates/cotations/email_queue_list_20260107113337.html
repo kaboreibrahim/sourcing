@@ -1,0 +1,205 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block title %}File d'attente des emails{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="fas fa-envelope"></i> File d'attente des emails</h2>
+        <a href="{% url 'cotation_list' %}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Retour aux demandes
+        </a>
+    </div>
+
+    <!-- Statistiques -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card bg-warning text-dark">
+                <div class="card-body">
+                    <h5><i class="fas fa-clock"></i> En attente</h5>
+                    <h2>{{ pending_count }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <h5><i class="fas fa-check"></i> Envoyés</h5>
+                    <h2>{{ sent_count }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-danger text-white">
+                <div class="card-body">
+                    <h5><i class="fas fa-exclamation-triangle"></i> Échecs</h5>
+                    <h2>{{ failed_count }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filtres -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-4">
+                    <label for="status" class="form-label">Statut</label>
+                    <select class="form-control" id="status" name="status">
+                        <option value="">Tous</option>
+                        <option value="pending" {% if request.GET.status == 'pending' %}selected{% endif %}>
+                            En attente
+                        </option>
+                        <option value="sent" {% if request.GET.status == 'sent' %}selected{% endif %}>
+                            Envoyés
+                        </option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label for="type" class="form-label">Type</label>
+                    <select class="form-control" id="type" name="type">
+                        <option value="">Tous</option>
+                        <option value="CLIENT_CONFIRMATION" {% if request.GET.type == 'CLIENT_CONFIRMATION' %}selected{% endif %}>
+                            Confirmation client
+                        </option>
+                        <option value="ADMIN_NOTIFICATION" {% if request.GET.type == 'ADMIN_NOTIFICATION' %}selected{% endif %}>
+                            Notification admin
+                        </option>
+                    </select>
+                </div>
+                <div class="col-md-4 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-filter"></i> Filtrer
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Commande pour lancer l'envoi -->
+    <div class="alert alert-info mb-4">
+        <h5><i class="fas fa-terminal"></i> Commande d'envoi</h5>
+        <p class="mb-2">Pour envoyer les emails en attente, exécutez:</p>
+        <code>python manage.py send_pending_emails</code>
+        <p class="mt-2 mb-0">
+            <small>Cette commande est configurée dans crontab pour s'exécuter automatiquement.</small>
+        </p>
+    </div>
+
+    <!-- Tableau des emails -->
+    <div class="card shadow">
+        <div class="card-body">
+            {% if emails %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>ID</th>
+                                <th>Type</th>
+                                <th>Destinataire</th>
+                                <th>Demande</th>
+                                <th>Sujet</th>
+                                <th>Créé le</th>
+                                <th>Tentatives</th>
+                                <th>Statut</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for email in emails %}
+                                <tr>
+                                    <td>{{ email.id }}</td>
+                                    <td>
+                                        {% if email.email_type == 'CLIENT_CONFIRMATION' %}
+                                            <span class="badge bg-primary">Client</span>
+                                        {% else %}
+                                            <span class="badge bg-info">Admin</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ email.to_email }}</td>
+                                    <td>
+                                        <a href="{% url 'cotation_detail' email.demande.pk %}">
+                                            {{ email.demande.ref }}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <small>{{ email.subject|truncatechars:40 }}</small>
+                                    </td>
+                                    <td>{{ email.created_at|date:"d/m/Y H:i" }}</td>
+                                    <td>
+                                        <span class="badge {% if email.attempts >= 3 %}bg-danger{% else %}bg-secondary{% endif %}">
+                                            {{ email.attempts }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        {% if email.sent %}
+                                            <span class="badge bg-success">
+                                                <i class="fas fa-check"></i> Envoyé
+                                                <br>
+                                                <small>{{ email.sent_at|date:"d/m H:i" }}</small>
+                                            </span>
+                                        {% elif email.attempts >= 3 %}
+                                            <span class="badge bg-danger">
+                                                <i class="fas fa-times"></i> Échec
+                                            </span>
+                                            {% if email.error_message %}
+                                                <br>
+                                                <small class="text-danger">{{ email.error_message|truncatechars:50 }}</small>
+                                            {% endif %}
+                                        {% else %}
+                                            <span class="badge bg-warning text-dark">
+                                                <i class="fas fa-clock"></i> En attente
+                                            </span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                {% if is_paginated %}
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination justify-content-center">
+                            {% if page_obj.has_previous %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page=1">Première</a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}">
+                                        Précédente
+                                    </a>
+                                </li>
+                            {% endif %}
+
+                            <li class="page-item active">
+                                <span class="page-link">
+                                    Page {{ page_obj.number }} sur {{ page_obj.paginator.num_pages }}
+                                </span>
+                            </li>
+
+                            {% if page_obj.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ page_obj.next_page_number }}">
+                                        Suivante
+                                    </a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">
+                                        Dernière
+                                    </a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                {% endif %}
+            {% else %}
+                <div class="alert alert-info text-center">
+                    <i class="fas fa-info-circle"></i> Aucun email dans la file d'attente.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

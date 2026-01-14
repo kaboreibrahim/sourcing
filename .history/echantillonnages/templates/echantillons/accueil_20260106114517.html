@@ -1,0 +1,417 @@
+<!-- templates/fournisseur/accueil.html -->
+{% extends 'layouts/base_fournisseur.html' %}
+{% load humanize %}
+
+{% block content %}
+<style>
+    body {
+        background-color: #fafbfc;
+    }
+    
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+    
+    .page-title {
+        font-size: clamp(1.5rem, 4vw, 2rem);
+        font-weight: 600;
+        color: #111827;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+    
+    .page-subtitle {
+        color: #6b7280;
+        font-size: 0.9rem;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .commodities-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+        gap: 1.5rem;
+    }
+    
+    .commodity-card {
+        background: white;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+        transition: all 0.3s ease;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+    
+    .commodity-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    .card-header {
+        padding: 1.5rem;
+        position: relative;
+        color: white;
+        background: linear-gradient(135deg, var(--card-color) 0%, var(--card-color-dark) 100%);
+    }
+    
+    .card-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 120px;
+        height: 120px;
+        background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+        border-radius: 50%;
+        transform: translate(30%, -30%);
+    }
+    
+    .commodity-name {
+        font-size: 1.3rem;
+        font-weight: 600;
+        margin: 0 0 0.5rem 0;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .commodity-type {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        background: rgba(255, 255, 255, 0.25);
+        backdrop-filter: blur(10px);
+        padding: 0.4rem 0.8rem;
+        border-radius: 100px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .stats-row {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        background: #f9fafb;
+        border-bottom: 1px solid #f3f4f6;
+    }
+    
+    .stat-item {
+        padding: 1rem;
+        text-align: center;
+        border-right: 1px solid #f3f4f6;
+    }
+    
+    .stat-item:last-child {
+        border-right: none;
+    }
+    
+    .stat-value {
+        display: block;
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: #111827;
+        margin-bottom: 0.25rem;
+    }
+    
+    .stat-label {
+        font-size: 0.7rem;
+        color: #6b7280;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-weight: 500;
+    }
+    
+    .samples-section {
+        padding: 1rem 1.5rem 1.5rem;
+        flex-grow: 1;
+    }
+    
+    .section-title {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #6b7280;
+        margin: 0 0 1rem 0;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .sample-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .sample-item {
+        display: grid;
+        grid-template-columns: 1fr auto auto;
+        gap: 0.75rem;
+        align-items: center;
+        padding: 0.75rem;
+        background: #f9fafb;
+        border-radius: 8px;
+        transition: all 0.2s;
+    }
+    
+    .sample-item:hover {
+        background: #f3f4f6;
+    }
+    
+    .sample-date {
+        font-size: 0.85rem;
+        color: #6b7280;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+    
+    .sample-quantity {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #16a34a;
+        white-space: nowrap;
+    }
+    
+    .sample-price {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #2563eb;
+        white-space: nowrap;
+    }
+    
+    .more-samples {
+        text-align: center;
+        margin-top: 0.75rem;
+        font-size: 0.8rem;
+        color: #9ca3af;
+    }
+    
+    .empty-samples {
+        text-align: center;
+        padding: 2rem 1rem;
+        color: #9ca3af;
+    }
+    
+    .empty-icon {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+        opacity: 0.3;
+    }
+    
+    .view-btn {
+        width: 100%;
+        padding: 1rem;
+        background: #111827;
+        color: white;
+        border: none;
+        font-weight: 500;
+        font-size: 0.9rem;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+    
+    .view-btn:hover {
+        background: #374151;
+    }
+    
+    .empty-state {
+        background: white;
+        border-radius: 16px;
+        padding: 4rem 2rem;
+        text-align: center;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    }
+    
+    .empty-state-icon {
+        font-size: 4rem;
+        color: #e5e7eb;
+        margin-bottom: 1rem;
+    }
+    
+    .empty-state-title {
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 0.5rem;
+    }
+    
+    .empty-state-text {
+        color: #9ca3af;
+        margin: 0;
+    }
+    
+    @media (max-width: 768px) {
+        .commodities-grid {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+        
+        .stats-row {
+            grid-template-columns: repeat(3, 1fr);
+        }
+        
+        .stat-value {
+            font-size: 1.1rem;
+        }
+        
+        .stat-label {
+            font-size: 0.65rem;
+        }
+        
+        .sample-item {
+            grid-template-columns: 1fr;
+            gap: 0.5rem;
+        }
+        
+        .sample-date,
+        .sample-quantity,
+        .sample-price {
+            font-size: 0.8rem;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .card-header {
+            padding: 1.25rem;
+        }
+        
+        .commodity-name {
+            font-size: 1.1rem;
+        }
+        
+        .samples-section {
+            padding: 1rem;
+        }
+    }
+</style>
+
+<div class="container-fluid px-3 px-md-4 py-4">
+    <div class="page-header">
+        <h1 class="page-title">
+            <i class="fas fa-box-open"></i>
+            <span>Mes Commodités</span>
+        </h1>
+        <div class="page-subtitle">
+            <i class="fas fa-layer-group"></i>
+            <span>{{ commodites|length }} commodité{{ commodites|length|pluralize }}</span>
+        </div>
+    </div>
+
+    <div class="commodities-grid">
+        {% for commodite in commodites %}
+        <div class="commodity-card" 
+             onclick="window.location.href='{% url 'detail_commodite' commodite.id %}'"
+             style="--card-color: {{ commodite.couleur }}; --card-color-dark: {{ commodite.couleur }}dd;">
+            
+            <div class="card-header">
+                <h2 class="commodity-name">{{ commodite.nom }}</h2>
+                <div class="commodity-type">
+                    <i class="fas fa-tag"></i>
+                    <span>{{ commodite.get_type_commodite_display }}</span>
+                </div>
+            </div>
+            
+            <div class="stats-row">
+                <div class="stat-item">
+                    <span class="stat-value">{{ commodite.echantillonnages.first.quantite|floatformat:2|default:"0.00" }}</span>
+                    <span class="stat-label">Tonnes</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value">{{ commodite.echantillonnages.first.prix|floatformat:0|intcomma|default:"0" }}</span>
+                    <span class="stat-label">FCFA/T</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value">{{ commodite.echantillonnages.count }}</span>
+                    <span class="stat-label">Échantillons</span>
+                </div>
+            </div>
+            
+            <div class="samples-section">
+                <h3 class="section-title">
+                    <i class="fas fa-flask"></i>
+                    <span>Derniers Enregistrement...</span>
+                </h3>
+                
+                {% if commodite.echantillonnages.all %}
+                    <div class="sample-list">
+                        {% for echantillon in commodite.echantillonnages.all|slice:":3" %}
+                        <div class="sample-item">
+                            <div class="sample-date">
+                                <i class="far fa-calendar"></i>
+                                <span>{{ echantillon.date_creation|date:"d/m/Y" }}</span>
+                            </div>
+                            <div class="sample-quantity">
+                                {{ echantillon.quantite|floatformat:2 }} T
+                            </div>
+                            <div class="sample-price">
+                                {{ echantillon.prix|floatformat:0|intcomma }} FCFA
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    
+                    {% if commodite.echantillonnages.count > 3 %}
+                    <div class="more-samples">
+                        <i class="fas fa-plus-circle"></i>
+                        {{ commodite.echantillonnages.count|add:"-3" }} autre{{ commodite.echantillonnages.count|add:"-3"|pluralize }}
+                    </div>
+                    {% endif %}
+                {% else %}
+                    <div class="empty-samples">
+                        <div class="empty-icon">
+                            <i class="fas fa-inbox"></i>
+                        </div>
+                        <p style="margin: 0; font-size: 0.85rem;">Aucun échantillon</p>
+                    </div>
+                {% endif %}
+            </div>
+            
+            <button class="view-btn">
+                <i class="fas fa-chart-line"></i>
+                <span>Voir les détails</span>
+            </button>
+        </div>
+        {% empty %}
+        <div class="empty-state">
+            <div class="empty-state-icon">
+                <i class="fas fa-box-open"></i>
+            </div>
+            <h2 class="empty-state-title">Aucune commodité</h2>
+            <p class="empty-state-text">
+                Vos commodités apparaîtront ici une fois enregistrées dans le système.
+            </p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const cards = document.querySelectorAll('.commodity-card');
+    cards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        setTimeout(() => {
+            card.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, index * 80);
+    });
+});
+</script>
+{% endblock %}

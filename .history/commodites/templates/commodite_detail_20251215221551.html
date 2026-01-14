@@ -1,0 +1,285 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{{ commodite.nom }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Style de la grille des commodités */
+    .commodite-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin: 2rem 0;
+    }
+
+    .fournisseur-card {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border-left: 4px solid transparent;
+        border-radius: 0.5rem;
+        background: white;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+    }
+    
+    .fournisseur-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        border-left-color: #10b981;
+    }
+    
+    .zone-badge {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+        border-radius: 0.375rem;
+        background: white;
+        border: 1px solid #e5e7eb;
+    }
+    
+    .zone-badge:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+    
+    .zone-badge a {
+        display: block;
+        color: inherit;
+        text-decoration: none;
+        padding: 0.75rem 1rem;
+    }
+    
+    .zone-badge.active {
+        border: 2px solid #10B981;
+        background-color: #f0fdf4;
+        box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.5);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8 max-w-7xl">
+    <!-- Breadcrumb -->
+    <nav class="mb-6 text-sm">
+        <ol class="flex items-center gap-2 text-gray-600">
+            <li><a href="{% url 'commodite-list' %}" class="hover:text-green-600">{% trans "Commodités" %}</a></li>
+            <li><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg></li>
+            <li class="text-gray-800 font-semibold">{{ commodite.nom }}</li>
+        </ol>
+    </nav>
+    
+    <!-- En-tête de la commodité -->
+    <div class="bg-gradient-to-r from-green-500 to-emerald-600 rounded-xl shadow-lg p-8 mb-8 text-white">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+            <div class="flex-1">
+                <div class="flex items-center gap-4 mb-3">
+                    <span class="text-6xl">🌾</span>
+                    <div>
+                        <h1 class="text-4xl font-bold mb-2">{{ commodite.nom }}</h1>
+                        <p class="text-green-100">
+                            {% trans "Commodité agricole" %}
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="flex flex-wrap gap-3 mt-4">
+                    <span class="inline-flex items-center gap-2 bg-white bg-opacity-20 px-4 py-2 rounded-full font-semibold">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                        </svg>
+                        {% blocktrans count counter=total_fournisseurs %}
+                            {{ counter }} fournisseur
+                        {% plural %}
+                            {{ counter }} fournisseurs
+                        {% endblocktrans %}
+                    </span>
+                    
+                    <span class="inline-flex items-center gap-2 bg-white bg-opacity-20 px-4 py-2 rounded-full font-semibold">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path>
+                        </svg>
+                        {% blocktrans count counter=zones_stats|length %}
+                            {{ counter }} zone
+                        {% plural %}
+                            {{ counter }} zones
+                        {% endblocktrans %}
+                    </span>
+                    
+                    <span class="inline-flex items-center gap-2 bg-white bg-opacity-20 px-4 py-2 rounded-full">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                        {% trans "Créée le" %} {{ commodite.created_at|date:"d/m/Y" }}
+                    </span>
+                </div>
+            </div>
+            
+            <div class="flex flex-col gap-2">
+                <a href="{% url 'liaison-create' %}?commodite={{ commodite.pk }}" 
+                   class="bg-white hover:bg-gray-100 text-green-600 font-semibold px-6 py-3 rounded-lg shadow-md transition flex items-center gap-2 justify-center">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                    {% trans "Ajouter un fournisseur" %}
+                </a>
+                
+                <a href="{% url 'commodite-update' commodite.pk %}" 
+                   class="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold px-6 py-3 rounded-lg shadow-md transition flex items-center gap-2 justify-center">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                    </svg>
+                    {% trans "Modifier" %}
+                </a>
+                
+                <a href="{% url 'commodite-delete' commodite.pk %}" 
+                   class="bg-red-600 hover:bg-red-700 text-white font-semibold px-6 py-3 rounded-lg shadow-md transition flex items-center gap-2 justify-center">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                    </svg>
+                    {% trans "Supprimer" %}
+                </a>
+            </div>
+            
+        </div>
+    </div>
+    
+    <!-- Statistiques par zone -->
+    {% if zones_stats %}
+    <div class="bg-white rounded-xl shadow-md p-6 mb-8">
+        <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+            </svg>
+            {% trans "Répartition par zone" %}
+        </h2>
+        
+        <div class="commodite-grid">
+            {% for zone_num, stats in zones_stats.items %}
+                <div class="zone-badge rounded-xl p-4 text-white text-center {% if stats.is_active %}bg-gradient-to-br from-green-500 to-green-600 active{% else %}bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700{% endif %}">
+                    <a href="{{ stats.url }}" class="block">
+                    <div class="text-3xl font-bold mb-1">{{ stats.count }}</div>
+                    <div class="text-sm opacity-90">Zone {{ zone_num }}</div>
+                    <div class="text-xs opacity-75 mt-1">
+                        {{ stats.villes|length }} 
+                        {% blocktrans count counter=stats.villes|length %}
+                            ville
+                        {% plural %}
+                            villes
+                        {% endblocktrans %}
+                    </div>
+                </a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- Filtre actif -->
+    {% if zone_active %}
+    <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mb-6 rounded-r">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center">
+                <svg class="h-5 w-5 text-blue-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                </svg>
+                <span class="font-medium text-gray-700">
+                    {% blocktrans with zone=zone_active %}
+                        Filtre actif : Zone {{ zone }}
+                    {% endblocktrans %}
+                </span>
+            </div>
+            <a href="{{ reset_filter_url }}" class="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center">
+                <svg class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+                {% trans "Effacer le filtre" %}
+            </a>
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- Liste des fournisseurs -->
+    <div class="mb-6">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-2xl font-bold text-gray-800">
+                {% trans "Fournisseurs" %}
+            </h2>
+        </div>
+        
+        {% if liens_fournisseurs %}
+            <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                <div class="divide-y divide-gray-200">
+                    {% for lien in liens_fournisseurs %}
+                        <div class="fournisseur-card p-6">
+                            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                                <div class="flex-1">
+                                    <h3 class="text-lg font-bold text-gray-800 mb-2">
+                                        {{ lien.fournisseur.nom }}
+                                    </h3>
+                                    
+                                    <div class="flex flex-wrap gap-3 text-sm">
+                                        {% if lien.fournisseur.ville %}
+                                        <span class="inline-flex items-center gap-2 text-gray-600">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                            </svg>
+                                            {{ lien.fournisseur.ville.nom }}
+                                            {% if lien.fournisseur.ville.est_ville_reference %}
+                                                <span class="text-yellow-500">⭐</span>
+                                            {% endif %}
+                                        </span>
+                                        {% endif %}
+                                        
+                                        {% if lien.fournisseur.ville.zone %}
+                                        <span class="inline-flex items-center gap-2 bg-blue-100 text-blue-700 px-3 py-1 rounded-full font-semibold">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path>
+                                            </svg>
+                                            Zone {{ lien.fournisseur.ville.zone.numero }}
+                                        </span>
+                                        {% endif %}
+                                        
+                                        <span class="inline-flex items-center gap-2 text-gray-500">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                            </svg>
+                                            {% trans "Ajouté le" %} {{ lien.created_at|date:"d/m/Y" }}
+                                        </span>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex gap-2">
+                                    <a href="{% url 'liaison-delete' lien.pk %}" 
+                                       class="bg-red-100 hover:bg-red-200 text-red-700 font-medium px-4 py-2 rounded-lg transition flex items-center gap-2">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                        </svg>
+                                        {% trans "Retirer" %}
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% else %}
+            <div class="bg-white rounded-xl shadow-md p-12 text-center">
+                <svg class="w-20 h-20 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                </svg>
+                <h3 class="text-xl font-semibold text-gray-700 mb-2">{% trans "Aucun fournisseur" %}</h3>
+                <p class="text-gray-500 mb-6">{% trans "Aucun fournisseur n'est associé à cette commodité." %}</p>
+                <a href="{% url 'liaison-create' %}?commodite={{ commodite.pk }}" 
+                   class="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-3 rounded-lg shadow-md transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                    {% trans "Ajouter un fournisseur" %}
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

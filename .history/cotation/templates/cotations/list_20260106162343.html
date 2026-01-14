@@ -1,0 +1,264 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+    /* Style général de la page */
+    body {
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        min-height: 100vh;
+    }
+
+    .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 2rem 0;
+    }
+
+    /* Style de la carte principale */
+    .card {
+        border: none;
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.25);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+        margin-bottom: 2rem;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.2);
+    }
+
+    .card-header {
+        background: rgba(255, 255, 255, 0.4);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+        padding: 1.25rem 1.5rem;
+        backdrop-filter: blur(5px);
+        -webkit-backdrop-filter: blur(5px);
+    }
+
+    .table {
+        margin-bottom: 0;
+        background: transparent;
+    }
+
+    .table thead th {
+        background: rgba(255, 255, 255, 0.4);
+        border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+        color: #2d3748;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 0.5px;
+        backdrop-filter: blur(5px);
+    }
+
+    .table tbody tr {
+        transition: all 0.3s ease;
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(5px);
+    }
+
+    .table tbody tr:nth-child(even) {
+        background: rgba(255, 255, 255, 0.15);
+    }
+
+    .table tbody tr:hover {
+        background: rgba(255, 255, 255, 0.4);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .table td, .table th {
+        padding: 1rem 1.5rem;
+        vertical-align: middle;
+        border-color: rgba(255, 255, 255, 0.2);
+        color: #2d3748;
+    }
+</style>
+{% endblock %}
+
+{% block title %}Liste des demandes de cotation{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="fas fa-list"></i> Demandes de cotation</h2>
+        <a href="" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Nouvelle demande
+        </a>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Filtres et recherche -->
+    <div class="card filter-card mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-6">
+                    <label for="search" class="form-label">Rechercher</label>
+                    <input type="text" class="form-control" id="search" name="search" 
+                           value="{{ search_query }}" 
+                           placeholder="Nom client, contact, commodité...">
+                </div>
+                <div class="col-md-4">
+                    <label for="statut" class="form-label">Statut</label>
+                    <select class="form-control" id="statut" name="statut">
+                        <option value="">Tous les statuts</option>
+                        {% for value, label in statut_choices %}
+                            <option value="{{ value }}" {% if current_statut == value %}selected{% endif %}>
+                                {{ label }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-search"></i> Filtrer
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Tableau des demandes -->
+    <div class="card shadow">
+        <div class="card-body">
+            {% if demandes %}
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Référence</th>
+                                <th>Client</th>
+                                <th>Contact</th>
+                                <th>Commodité</th>
+                                <th>Incoterm</th>
+                                <th>Conditionnement</th>
+                                <th>Quantité</th>
+                                <th>Prix cible</th>
+                                <th>Statut</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for demande in demandes %}
+                                <tr>
+                                    <td>
+                                        {% comment %} <a href="{% url 'cotation_detail' demande.pk %}">
+                                            <strong>{{ demande.ref }}</strong>
+                                        </a> {% endcomment %}
+                                         <a href="">
+                                            <strong>{{ demande.ref }}</strong>
+                                        </a>
+                                    </td>
+                                    <td>{{ demande.nom_client }}</td>
+                                    <td>{{ demande.contact }}</td>
+                                    <td>{{ demande.commodite.nom }}</td>
+                                    <td>{{ demande.incoterm }}</td>
+                                    <td>{{ demande.get_type_conditionnement_display }}</td>
+                                    <td>{{ demande.quantite }} T</td>
+                                    <td>${{ demande.target_price }}</td>
+                                    <td>
+                                        {% if demande.statut == 'EN_ATTENTE' %}
+                                            <span class="badge bg-warning text-dark">
+                                                {{ demande.get_statut_display }}
+                                            </span>
+                                        {% elif demande.statut == 'TRAITEE' %}
+                                            <span class="badge bg-success">
+                                                {{ demande.get_statut_display }}
+                                            </span>
+                                        {% elif demande.statut == 'REFUSEE' %}
+                                            <span class="badge bg-danger">
+                                                {{ demande.get_statut_display }}
+                                            </span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ demande.date_demande|date:"d/m/Y H:i" }}</td>
+                                    <td>
+                                        {% comment %} <a href="{% url 'cotation_detail' demande.pk %}" 
+                                           class="btn btn-sm btn-info" 
+                                           title="Détails">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a href="{% url 'cotation_update' demande.pk %}" 
+                                           class="btn btn-sm btn-warning" 
+                                           title="Modifier">
+                                            <i class="fas fa-edit"></i>
+                                        </a> {% endcomment %}
+
+                                        <a href="#" 
+                                           class="btn btn-sm btn-info" 
+                                           title="Détails">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a href="#" 
+                                           class="btn btn-sm btn-warning" 
+                                           title="Modifier">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                {% if is_paginated %}
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination justify-content-center">
+                            {% if page_obj.has_previous %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page=1">Première</a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}">
+                                        Précédente
+                                    </a>
+                                </li>
+                            {% endif %}
+
+                            <li class="page-item active">
+                                <span class="page-link">
+                                    Page {{ page_obj.number }} sur {{ page_obj.paginator.num_pages }}
+                                </span>
+                            </li>
+
+                            {% if page_obj.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ page_obj.next_page_number }}">
+                                        Suivante
+                                    </a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">
+                                        Dernière
+                                    </a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                {% endif %}
+            {% else %}
+                <div class="alert alert-info text-center">
+                    <i class="fas fa-info-circle"></i> Aucune demande de cotation trouvée.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

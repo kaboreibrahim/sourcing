@@ -1,0 +1,153 @@
+{% load static %}
+<footer class="relative overflow-hidden pt-12 lg:pt-16 pb-8">
+  <!-- Background avec gradient -->
+  <div class="absolute inset-0 -z-10" style="background: linear-gradient(135deg, #8B5A2B 0%, #4a7c59 50%, #8B5A2B 100%);">
+    <!-- Éléments décoratifs -->
+    <div class="absolute top-10 left-10 w-32 h-32 bg-white/5 rounded-full blur-2xl"></div>
+    <div class="absolute bottom-20 right-10 w-40 h-40 bg-white/5 rounded-full blur-3xl"></div>
+    <div class="absolute top-1/3 right-1/4 w-24 h-24 bg-white/5 rounded-full blur-xl"></div>
+    <div class="absolute bottom-1/3 left-1/4 w-20 h-20 bg-white/5 rounded-full blur-lg"></div>
+  </div>
+  <!-- Overlay subtil -->
+  <div class="absolute inset-0 bg-black/10 -z-10"></div>
+    <div class="container mx-auto px-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8 lg:mb-12">
+        <div>
+          <a href="" class="flex items-center mb-6 group">
+            <img src="{% static 'images/logo.png' %}" alt="Logo" class="w-10 h-10 bg-white/20 backdrop-blur-sm p-1.5 rounded-lg mr-3">
+            <span class="text-2xl lg:text-3xl font-bold text-white group-hover:text-green-300 transition-colors">Innov-Sourcing OOA</span>
+          </a>
+          <p class="text-white/90 mb-8 text-sm lg:text-base leading-relaxed">
+            Notre plateforme met en avant l'ensemble des commodités dans le domaine du sourcing des huiles de palme et dérivés, en facilitant l'accès à des produits uniques et authentiques.
+          {% comment %} <div class="flex space-x-3">
+            <a href="#" class="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 backdrop-blur-sm text-white hover:bg-white/20 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg">
+              <i class="ri-facebook-fill text-lg"></i>
+            </a>
+            <a href="#" class="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 backdrop-blur-sm text-white hover:bg-white/20 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg">
+              <i class="ri-instagram-fill text-lg"></i>
+            </a>
+            <a href="#" class="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 backdrop-blur-sm text-white hover:bg-white/20 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg">
+              <i class="ri-twitter-x-fill text-lg"></i>
+            </a>
+            <a href="#" class="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 backdrop-blur-sm text-white hover:bg-white/20 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg">
+              <i class="ri-whatsapp-fill text-lg"></i>
+            </a>
+          </div> {% endcomment %}
+        </div>
+        <div>
+          <h3 class="text-xl font-bold mb-6 text-white relative inline-block pb-2">Liens rapides
+            <span class="absolute bottom-0 left-0 w-10 h-0.5 bg-green-300"></span>
+          </h3>
+          <ul class="space-y-3">
+            <li><a href="" class="text-white/90 hover:text-green-300 transition-colors text-sm lg:text-base flex items-center group py-2">
+              <i class="ri-arrow-right-s-line opacity-0 group-hover:opacity-100 transition-all mr-1 text-green-300"></i>Accueil
+            </a></li>
+            <li><a href="" class="text-white/90 hover:text-green-300 transition-colors text-sm lg:text-base flex items-center group py-2">
+              <i class="ri-arrow-right-s-line opacity-0 group-hover:opacity-100 transition-all mr-1 text-green-300"></i>Nos Disponibilités
+            </a></li>
+            <li><a href="" class="text-white/90 hover:text-green-300 transition-colors text-sm lg:text-base flex items-center group py-2">
+              <i class="ri-arrow-right-s-line opacity-0 group-hover:opacity-100 transition-all mr-1 text-green-300"></i>Besoin d'une offre ?
+            </a></li>
+            
+          </ul>
+        </div>
+        
+        <style>
+          @media (max-width: 1024px) {
+            #categoriesList {
+              max-height: 0;
+              overflow: hidden;
+              transition: max-height 0.3s ease-out;
+            }
+            #categoriesList.show {
+              max-height: 500px;
+              animation: fadeIn 0.3s ease-out;
+            }
+            
+            @keyframes fadeIn {
+              from { opacity: 0; transform: translateY(-10px); }
+              to { opacity: 1; transform: translateY(0); }
+            }
+            #categoriesArrow.rotate-180 {
+              transform: rotate(180deg);
+            }
+          }
+        </style>
+        <script>
+          document.addEventListener('DOMContentLoaded', function() {
+            const toggleButton = document.getElementById('categoriesToggle');
+            const categoriesList = document.getElementById('categoriesList');
+            const categoriesArrow = document.getElementById('categoriesArrow');
+            
+            if (toggleButton && categoriesList) {
+              toggleButton.addEventListener('click', function() {
+                categoriesList.classList.toggle('show');
+                categoriesList.classList.toggle('hidden');
+                categoriesArrow.classList.toggle('rotate-180');
+              });
+              
+              // Fermer le menu si on clique ailleurs sur mobile
+              document.addEventListener('click', function(e) {
+                if (!toggleButton.contains(e.target) && !categoriesList.contains(e.target)) {
+                  if (window.innerWidth < 1024) {
+                    categoriesList.classList.remove('show');
+                    categoriesList.classList.add('hidden');
+                    categoriesArrow.classList.remove('rotate-180');
+                  }
+                }
+              });
+              
+              // Gestion du redimensionnement de la fenêtre
+              window.addEventListener('resize', function() {
+                if (window.innerWidth >= 1024) {
+                  categoriesList.classList.remove('hidden');
+                  categoriesList.style.maxHeight = '';
+                  categoriesArrow.classList.remove('rotate-180');
+                } else if (!categoriesList.classList.contains('show')) {
+                  categoriesList.classList.add('hidden');
+                }
+              });
+            }
+          });
+        </script>
+        <div>
+          <h3 class="text-xl font-bold mb-6 text-white relative inline-block pb-2">Contact
+            <span class="absolute bottom-0 left-0 w-10 h-0.5 bg-green-300"></span>
+          </h3>
+          <ul class="space-y-3">
+            <li class="flex items-start group">
+              
+              <li class="flex items-start group">
+                <div class="w-10 h-10 flex-shrink-0 flex items-center justify-center rounded-full bg-white/10 backdrop-blur-sm text-white mr-3 group-hover:bg-white/20 transition-colors">
+                  <i class="ri-map-pin-line"></i>
+                </div>
+                <a href="https://www.google.com/maps/place/Oils+of+Africa/@5.2221774,-3.8218435,17z/data=!3m1!4b1!4m6!3m5!1s0xfc1f70020173019:0x93a22def0370ad99!8m2!3d5.2221721!4d-3.8192686!16s%2Fg%2F11wjbkb1c6!5m1!1e1?entry=ttu&g_ep=EgoyMDI1MTIwOS4wIKXMDSoASAFQAw%3D%3D" class="text-white/90 hover:text-green-300 text-sm lg:text-base mt-1.5 transition-colors" target="_blank">Modeste, Grand-Bassam, Côte d'Ivoire</a>
+              </li>
+            <li class="flex items-start group mt-4">
+              <div class="w-10 h-10 flex-shrink-0 flex items-center justify-center rounded-full bg-white/10 backdrop-blur-sm text-white mr-3 group-hover:bg-white/20 transition-colors">
+                <i class="ri-phone-line"></i>
+              </div>
+              <a href="tel:+2250140779177" class="text-white/90 hover:text-green-300 text-sm lg:text-base mt-1.5 transition-colors">+225 01 40 77 91 77</a>
+            </li>
+            <li class="flex items-start group mt-4">
+              <div class="w-10 h-10 flex-shrink-0 flex items-center justify-center rounded-full bg-white/10 backdrop-blur-sm text-white mr-3 group-hover:bg-white/20 transition-colors">
+                <i class="ri-mail-line"></i>
+              </div>
+              <a href="mailto:sourcing@oils-of-africa.com" class="text-white/90 hover:text-green-300 text-sm lg:text-base mt-1.5 transition-colors">sourcing@oils-of-africa.com</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center">
+        <p class="text-white/80 text-sm mb-4 md:mb-0">© 2025 Oils of Africa. Tous droits réservés.</p>
+        <div class="flex flex-wrap justify-center space-x-4 md:space-x-6">
+          <a href="#" class="text-white/80 hover:text-green-300 transition-colors text-xs md:text-sm">Conditions d'utilisation</a>
+          <span class="text-white/50 hidden md:inline">•</span>
+          <a href="#" class="text-white/80 hover:text-green-300 transition-colors text-xs md:text-sm">Politique de confidentialité</a>
+          <span class="text-white/50 hidden md:inline">•</span>
+          <a href="#" class="text-white/80 hover:text-green-300 transition-colors text-xs md:text-sm">Mentions légales</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>

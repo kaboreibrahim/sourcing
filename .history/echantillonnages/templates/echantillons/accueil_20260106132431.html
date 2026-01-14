@@ -1,0 +1,969 @@
+<!-- templates/fournisseur/accueil.html -->
+{% extends 'layouts/base_fournisseur.html' %}
+{% load static humanize %}
+
+{% block title %}Tableau de bord - Fournisseur{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        /* Couleurs principales */
+        --primary-color: #4f46e5;
+        --primary-dark: #4338ca;
+        --primary-light: #e0e7ff;
+        --success-color: #10b981;
+        --warning-color: #f59e0b;
+        --danger-color: #ef4444;
+        --info-color: #3b82f6;
+        
+        /* Nuances de texte */
+        --text-primary: #111827;
+        --text-secondary: #4b5563;
+        --text-tertiary: #6b7280;
+        --text-muted: #9ca3af;
+        
+        /* Arrière-plans */
+        --bg-primary: #ffffff;
+        --bg-secondary: #f9fafb;
+        --bg-tertiary: #f3f4f6;
+        --bg-card: #ffffff;
+        
+        /* Bordures */
+        --border-color: #e5e7eb;
+        --border-radius: 12px;
+        
+        /* Ombres */
+        --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        --shadow-primary: 0 4px 14px 0 rgba(79, 70, 229, 0.2);
+        
+        /* Transitions */
+        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    /* Thème sombre */
+    @media (prefers-color-scheme: dark) {
+        :root {
+            --bg-primary: #111827;
+            --bg-secondary: #1f2937;
+            --bg-tertiary: #374151;
+            --bg-card: #1f2937;
+            --text-primary: #f9fafb;
+            --text-secondary: #e5e7eb;
+            --text-tertiary: #d1d5db;
+            --border-color: #374151;
+        }
+    }
+    
+    body {
+        background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+        min-height: 100vh;
+    }
+    
+    /* Header Section */
+    .page-header {
+        background: var(--bg-primary);
+        border-radius: 20px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: var(--shadow-md);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .page-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -10%;
+        width: 400px;
+        height: 400px;
+        background: radial-gradient(circle, rgba(59, 130, 246, 0.08) 0%, transparent 70%);
+        border-radius: 50%;
+    }
+    
+    .header-content {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .page-title {
+        font-size: clamp(1.75rem, 4vw, 2.25rem);
+        font-weight: 700;
+        color: var(--text-primary);
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        letter-spacing: -0.025em;
+    }
+    
+    .title-icon {
+        width: 48px;
+        height: 48px;
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.5rem;
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+    
+    .page-subtitle {
+        color: var(--text-secondary);
+        font-size: 0.95rem;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-left: 64px;
+    }
+    
+    .header-stats {
+        display: flex;
+        gap: 2rem;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .header-stat {
+        text-align: center;
+    }
+    
+    .header-stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        display: block;
+        line-height: 1;
+    }
+    
+    .header-stat-label {
+        font-size: 0.8rem;
+        color: var(--text-tertiary);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-weight: 600;
+        margin-top: 0.25rem;
+    }
+    
+    /* Grid Layout */
+    .commodities-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(min(100%, 360px), 1fr));
+        gap: 1.75rem;
+    }
+    
+    /* Commodity Card */
+    .commodity-card {
+        background: var(--bg-primary);
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: var(--shadow-md);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        border: 1px solid transparent;
+        position: relative;
+    }
+    
+    .commodity-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--card-color) 0%, var(--card-color-dark) 100%);
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .commodity-card:hover {
+        transform: translateY(-8px);
+        box-shadow: var(--shadow-xl);
+        border-color: var(--border-color);
+    }
+    
+    .commodity-card:hover::before {
+        transform: scaleX(1);
+    }
+    
+    /* Card Header */
+    .card-header {
+        padding: 2rem;
+        position: relative;
+        background: linear-gradient(135deg, var(--card-color) 0%, var(--card-color-dark) 100%);
+        clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+    }
+    
+    .card-header-bg {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 200px;
+        height: 200px;
+        opacity: 0.15;
+        pointer-events: none;
+    }
+    
+    .card-header-bg i {
+        font-size: 200px;
+        color: white;
+        transform: rotate(-15deg);
+    }
+    
+    .commodity-name {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin: 0 0 1rem 0;
+        color: white;
+        position: relative;
+        z-index: 1;
+        letter-spacing: -0.025em;
+    }
+    
+    .commodity-meta {
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .commodity-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        background: rgba(255, 255, 255, 0.25);
+        backdrop-filter: blur(10px);
+        padding: 0.5rem 1rem;
+        border-radius: 100px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    
+    /* Stats Section */
+    .stats-row {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        background: var(--bg-secondary);
+        padding: 1.5rem 0;
+        gap: 1px;
+    }
+    
+    .stat-item {
+        text-align: center;
+        padding: 0 1rem;
+        position: relative;
+    }
+    
+    .stat-item:not(:last-child)::after {
+        content: '';
+        position: absolute;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        height: 40px;
+        width: 1px;
+        background: var(--border-color);
+    }
+    
+    .stat-icon {
+        width: 36px;
+        height: 36px;
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 0.9rem;
+        margin: 0 auto 0.5rem;
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+    }
+    
+    .stat-value {
+        display: block;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 0.25rem;
+        line-height: 1;
+    }
+    
+    .stat-label {
+        font-size: 0.7rem;
+        color: var(--text-tertiary);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-weight: 600;
+    }
+    
+    /* Samples Section */
+    .samples-section {
+        padding: 1.5rem;
+        flex-grow: 1;
+    }
+    
+    .section-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1.25rem;
+    }
+    
+    .section-title {
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .section-count {
+        background: var(--bg-tertiary);
+        color: var(--text-secondary);
+        padding: 0.25rem 0.75rem;
+        border-radius: 100px;
+        font-size: 0.75rem;
+        font-weight: 700;
+    }
+    
+    .sample-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    
+    .sample-item {
+        display: grid;
+        grid-template-columns: 1fr auto auto;
+        gap: 1rem;
+        align-items: center;
+        padding: 1rem;
+        background: var(--bg-secondary);
+        border-radius: 12px;
+        transition: all 0.3s ease;
+        border: 1px solid transparent;
+    }
+    
+    .sample-item:hover {
+        background: var(--bg-tertiary);
+        border-color: var(--border-color);
+        transform: translateX(4px);
+    }
+    
+    .sample-date {
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 500;
+    }
+    
+    .sample-date i {
+        color: var(--text-tertiary);
+    }
+    
+    .sample-quantity {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: var(--success-color);
+        white-space: nowrap;
+        padding: 0.4rem 0.8rem;
+        background: rgba(16, 185, 129, 0.1);
+        border-radius: 8px;
+    }
+    
+    .sample-price {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        white-space: nowrap;
+        padding: 0.4rem 0.8rem;
+        background: rgba(59, 130, 246, 0.1);
+        border-radius: 8px;
+    }
+    
+    .more-samples {
+        text-align: center;
+        margin-top: 1rem;
+        padding: 0.75rem;
+        background: var(--bg-secondary);
+        border-radius: 10px;
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+    }
+    
+    .more-samples:hover {
+        background: var(--bg-tertiary);
+        color: var(--primary-color);
+    }
+    
+    /* Empty States */
+    .empty-samples {
+        text-align: center;
+        padding: 3rem 1rem;
+        color: var(--text-tertiary);
+    }
+    
+    .empty-icon {
+        width: 64px;
+        height: 64px;
+        margin: 0 auto 1rem;
+        background: var(--bg-secondary);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        color: var(--text-tertiary);
+    }
+    
+    .empty-text {
+        margin: 0;
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+    
+    /* Action Button */
+    .view-btn {
+        width: 100%;
+        padding: 1.25rem;
+        background: linear-gradient(135deg, var(--text-primary) 0%, #374151 100%);
+        color: white;
+        border: none;
+        font-weight: 600;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .view-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        transition: left 0.5s ease;
+    }
+    
+    .view-btn:hover {
+        background: linear-gradient(135deg, #374151 0%, #4b5563 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+    
+    .view-btn:hover::before {
+        left: 100%;
+    }
+    
+    /* Main Empty State */
+    .empty-state {
+        background: var(--bg-primary);
+        border-radius: 20px;
+        padding: 5rem 2rem;
+        text-align: center;
+        box-shadow: var(--shadow-md);
+        grid-column: 1 / -1;
+    }
+    
+    .empty-state-icon {
+        width: 120px;
+        height: 120px;
+        margin: 0 auto 2rem;
+        background: var(--bg-secondary);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 4rem;
+        color: var(--text-tertiary);
+    }
+    
+    .empty-state-title {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 0.75rem;
+        letter-spacing: -0.025em;
+    }
+    
+    .empty-state-text {
+        color: var(--text-secondary);
+        font-size: 1rem;
+        margin: 0;
+        max-width: 500px;
+        margin: 0 auto;
+    }
+    
+    /* Animations */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .fade-in-up {
+        animation: fadeInUp 0.6s ease forwards;
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 1024px) {
+        .header-stats {
+            gap: 1.5rem;
+        }
+        
+        .commodities-grid {
+            grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .page-header {
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 1.5rem;
+        }
+        
+        .header-stats {
+            width: 100%;
+            justify-content: space-around;
+        }
+        
+        .commodities-grid {
+            grid-template-columns: 1fr;
+            gap: 1.25rem;
+        }
+        
+        .sample-item {
+            grid-template-columns: 1fr;
+            gap: 0.75rem;
+        }
+        
+        .card-header {
+            padding: 1.5rem;
+        }
+        
+        .commodity-name {
+            font-size: 1.25rem;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .page-title {
+            font-size: 1.5rem;
+        }
+        
+        .title-icon {
+            width: 40px;
+            height: 40px;
+            font-size: 1.25rem;
+        }
+        
+        .page-subtitle {
+            margin-left: 56px;
+            font-size: 0.85rem;
+        }
+        
+        .stats-row {
+            padding: 1rem 0;
+        }
+        
+        .stat-item {
+            padding: 0 0.5rem;
+        }
+        
+        .stat-value {
+            font-size: 1.25rem;
+        }
+        
+        .samples-section {
+            padding: 1rem;
+        }
+    }
+
+
+ 
+     
+</style>
+
+<div class="container-fluid px-3 px-md-4 py-4">
+    <div class="container-fluid px-3 px-md-4 py-4">
+        <!-- En-tête amélioré avec informations du fournisseur -->
+        <div class="page-header">
+            <div class="header-content">
+                <div class="welcome-section">
+                    <h1 class="page-title">
+                        <i class="fas fa-tachometer-alt"></i>
+                        Tableau de bord
+                    </h1>
+                    <p class="welcome-text">Bienvenue dans votre espace fournisseur</p>
+                    
+                    <div class="user-info">
+                        <div class="user-avatar">
+                            {{ user.first_name|first|upper }}{{ user.last_name|first|upper }}
+                        </div>
+                        <div class="user-details">
+                            <h3>
+                                {{ user.get_full_name|default:user.username }}
+                                {% if user.fournisseur_profile %}
+                                    <small style="font-size: 0.8em; opacity: 0.9;">({{ user.fournisseur_profile.entreprise_nom }})</small>
+                                {% endif %}
+                            </h3>
+                            <div class="user-email">
+                                <i class="fas fa-envelope"></i>
+                                {{ user.email }}
+                                {% if user.fournisseur_profile and user.fournisseur_profile.telephone %}
+                                    <span style="margin-left: 1rem;">
+                                        <i class="fas fa-phone"></i>
+                                        {{ user.fournisseur_profile.telephone }}
+                                    </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-card primary">
+                        <div class="stat-value">
+                            <i class="fas fa-boxes"></i>
+                            {{ commodites|length }}
+                        </div>
+                        <div class="stat-label">
+                            Commodités enregistrées
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card success">
+                        <div class="stat-value">
+                            <i class="fas fa-flask"></i>
+                            {{ total_echantillons|default:0 }}
+                        </div>
+                        <div class="stat-label">
+                            Total des échantillons
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card warning">
+                        <div class="stat-value">
+                            <i class="fas fa-calendar-alt"></i>
+                            {{ echantillons_mois|default:0 }}
+                        </div>
+                        <div class="stat-label">
+                            Échantillons ce mois
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card" style="background: rgba(255, 255, 255, 0.1);">
+                        <div class="stat-value">
+                            <i class="far fa-clock"></i>
+                            <span id="current-time">--:--:--</span>
+                        </div>
+                        <div class="stat-label">
+                            <i class="far fa-calendar"></i>
+                            {{ now|date:"d F Y" }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Contenu existant des commodités -->
+        <div class="commodities-grid">
+            {% for commodite in commodites %}
+            <div class="commodity-card" 
+                onclick="window.location.href='{% url 'detail_commodite' commodite.id %}'"
+                style="--card-color: {{ commodite.couleur|default:'#3b82f6' }}; --card-color-dark: {{ commodite.couleur|default:'#2563eb' }}dd;">
+                <!-- Contenu existant de la carte de commodité -->
+                {% comment %} ... {% endcomment %}
+            </div>
+            {% empty %}
+            <div class="empty-state">
+                <div class="empty-state-icon">
+                    <i class="fas fa-box-open"></i>
+                </div>
+                <h2 class="empty-state-title">Aucune commodité disponible</h2>
+                <p class="empty-state-text">
+                    Commencez par ajouter vos premières commodités pour les voir apparaître ici.
+                </p>
+                <a href="{% url 'ajouter_commodite' %}" class="btn btn-primary mt-3">
+                    <i class="fas fa-plus-circle"></i> Ajouter une commodité
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Page Header -->
+    <div class="page-header fade-in-up">
+        <div class="header-content">
+            <h1 class="page-title">
+                <div class="title-icon">
+                    <i class="fas fa-box-open"></i>
+                </div>
+                <span>Mes Commodités</span>
+            </h1>
+            <div class="page-subtitle">
+                <i class="fas fa-layer-group"></i>
+                <span>{{ commodites|length }} commodité{{ commodites|length|pluralize }} disponible{{ commodites|length|pluralize }}</span>
+            </div>
+        </div>
+
+        
+        <div class="header-stats">
+            <div class="header-stat">
+                <span class="header-stat-value">{{ commodites|length }}</span>
+                <span class="header-stat-label">Total</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Commodities Grid -->
+    <div class="commodities-grid">
+        {% for commodite in commodites %}
+        <div class="commodity-card" 
+             onclick="window.location.href='{% url 'detail_commodite' commodite.id %}'"
+             style="--card-color: {{ commodite.couleur|default:'#3b82f6' }}; --card-color-dark: {{ commodite.couleur|default:'#2563eb' }}dd;">
+            
+            <!-- Card Header -->
+            <div class="card-header">
+                <div class="card-header-bg">
+                    <i class="fas fa-box"></i>
+                </div>
+                <h2 class="commodity-name">{{ commodite.nom }}</h2>
+                <div class="commodity-meta">
+                    {% comment %} <div class="commodity-badge">
+                        <i class="fas fa-tag"></i>
+                        <span>{{ commodite.get_type_commodite_display|default:"Non spécifié" }}</span>
+                    </div> {% endcomment %}
+                </div>
+            </div>
+            
+            <!-- Stats Row -->
+            <div class="stats-row">
+                <div class="stat-item">
+                    <div class="stat-icon">
+                        <i class="fas fa-weight-hanging"></i>
+                    </div>
+                    <span class="stat-value">{{ commodite.echantillonnages.first.quantite|default:"0.00" }}</span>
+                    <span class="stat-label">Tonnes</span>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-icon">
+                        <i class="fas fa-coins"></i>
+                    </div>
+                    <span class="stat-value">{{ commodite.echantillonnages.first.prix|default:"0" }}</span>
+                    <span class="stat-label">FCFA/T</span>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-icon">
+                        <i class="fas fa-flask"></i>
+                    </div>
+                    <span class="stat-value">{{ commodite.echantillonnages.count }}</span>
+                    <span class="stat-label">Échantillons</span>
+                </div>
+            </div>
+            
+            <!-- Samples Section -->
+            <div class="samples-section">
+                <div class="section-header">
+                    <h3 class="section-title">
+                        <i class="fas fa-history"></i>
+                        <span>Historique</span>
+                    </h3>
+                    {% if commodite.echantillonnages.all %}
+                    <span class="section-count">{{ commodite.echantillonnages.count }}</span>
+                    {% endif %}
+                </div>
+                
+                {% if commodite.echantillonnages.all %}
+                    <div class="sample-list">
+                        {% for echantillon in commodite.echantillonnages.all|slice:":3" %}
+                        <div class="sample-item">
+                            <div class="sample-date">
+                                <i class="far fa-calendar-alt"></i>
+                                <span>{{ echantillon.date_creation|date:"d/m/Y" }}</span>
+                            </div>
+                            <div class="sample-quantity">
+                                <i class="fas fa-weight"></i>
+                                {{ echantillon.quantite|floatformat:2 }} T
+                            </div>
+                            <div class="sample-price">
+                                <i class="fas fa-tag"></i>
+                                {{ echantillon.prix|floatformat:0|intcomma }} FCFA
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    
+                    {% if commodite.echantillonnages.count > 3 %}
+                    <div class="more-samples">
+                        <i class="fas fa-plus-circle"></i>
+                        <span>{{ commodite.echantillonnages.count|add:"-3" }} autre{{ commodite.echantillonnages.count|add:"-3"|pluralize }} enregistrement{{ commodite.echantillonnages.count|add:"-3"|pluralize }}</span>
+                    </div>
+                    {% endif %}
+                {% else %}
+                    <div class="empty-samples">
+                        <div class="empty-icon">
+                            <i class="fas fa-inbox"></i>
+                        </div>
+                        <p class="empty-text">Aucun enregistrement pour l'instant</p>
+                    </div>
+                {% endif %}
+            </div>
+            
+            <!-- Action Button -->
+            <button class="view-btn">
+                <i class="fas fa-chart-line"></i>
+                <span>Voir les détails</span>
+                <i class="fas fa-arrow-right"></i>
+            </button>
+        </div>
+        {% empty %}
+        <div class="empty-state">
+            <div class="empty-state-icon">
+                <i class="fas fa-box-open"></i>
+            </div>
+            <h2 class="empty-state-title">Aucune commodité disponible</h2>
+            <p class="empty-state-text">
+                Vos commodités apparaîtront ici une fois qu'elles seront enregistrées dans le système. Contactez l'administrateur pour plus d'informations.
+            </p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Animation d'entrée pour les cartes
+    const cards = document.querySelectorAll('.commodity-card');
+    cards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(30px)';
+        setTimeout(() => {
+            card.style.transition = 'opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, index * 100);
+    });
+    
+    // Empêcher la propagation du clic sur le bouton
+    const viewBtns = document.querySelectorAll('.view-btn');
+    viewBtns.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const card = this.closest('.commodity-card');
+            if (card) {
+                card.click();
+            }
+        });
+    });
+});
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Mise à jour de l'heure en temps réel
+    function updateTime() {
+        const now = new Date();
+        const timeElement = document.getElementById('current-time');
+        if (timeElement) {
+            timeElement.textContent = now.toLocaleTimeString('fr-FR', {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+        }
+    }
+    
+    // Mettre à jour l'heure toutes les secondes
+    setInterval(updateTime, 1000);
+    updateTime();
+    
+    // Animation des cartes de statistiques
+    const statCards = document.querySelectorAll('.stat-card');
+    statCards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        setTimeout(() => {
+            card.style.transition = `opacity 0.5s ease ${index * 0.1}s, transform 0.5s ease ${index * 0.1}s`;
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, 100);
+    });
+    
+    // Animation des cartes de commodités
+    const commodityCards = document.querySelectorAll('.commodity-card');
+    commodityCards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        setTimeout(() => {
+            card.style.transition = `opacity 0.5s ease ${0.3 + (index * 0.1)}s, transform 0.5s ease ${0.3 + (index * 0.1)}s`;
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, 100);
+    });
+    
+    // Effet de survol sur les cartes
+    commodityCards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-5px)';
+            this.style.boxShadow = '0 15px 30px rgba(0, 0, 0, 0.1)';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+            this.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.1)';
+        });
+    });
+});
+</script>
+{% endblock %}

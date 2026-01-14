@@ -1,0 +1,145 @@
+{% load static %}
+<footer class="bg-gradient-to-b from-amber-50 to-amber-100 text-gray-800 pt-12 lg:pt-16 pb-8 border-t border-amber-200">
+    <div class="container mx-auto px-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8 lg:mb-12">
+        <div>
+          <a href="" class="flex items-center mb-6 group">
+            <img src="{% static 'images/logo.png' %}" alt="Logo" class="w-8 h-8 bg-gradient-to-br from-amber-600 to-amber-800 rounded-lg mr-2">
+            <span class="text-2xl lg:text-3xl font-pacifico text-amber-800 group-hover:text-amber-600 transition-colors">Innov-Sourcing OOA</span>
+          </a>
+          <p class="text-amber-700 mb-6 text-sm lg:text-base leading-relaxed">
+            La plateforme qui met en valeur le savoir-faire des artisans ivoiriens et facilite l'accès à des créations uniques et authentiques.
+          </p>
+          <div class="flex space-x-3">
+            <a href="#" class="w-9 h-9 flex items-center justify-center rounded-full bg-white shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:bg-amber-50">
+              <i class="ri-facebook-fill text-amber-700"></i>
+            </a>
+            <a href="#" class="w-9 h-9 flex items-center justify-center rounded-full bg-white shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:bg-amber-50">
+              <i class="ri-instagram-fill text-amber-700"></i>
+            </a>
+            <a href="#" class="w-9 h-9 flex items-center justify-center rounded-full bg-white shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:bg-amber-50">
+              <i class="ri-twitter-x-fill text-amber-700"></i>
+            </a>
+            <a href="#" class="w-9 h-9 flex items-center justify-center rounded-full bg-white shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:bg-amber-50">
+              <i class="ri-whatsapp-fill text-amber-700"></i>
+            </a>
+          </div>
+        </div>
+        <div>
+          <h3 class="text-lg font-semibold mb-6 text-amber-800 relative inline-block">Liens rapides
+            <span class="absolute bottom-0 left-0 w-10 h-0.5 bg-amber-600"></span>
+          </h3>
+          <ul class="space-y-3">
+            <li><a href="" class="text-amber-700 hover:text-amber-900 transition-colors text-sm lg:text-base flex items-center group">
+              <i class="ri-arrow-right-s-line opacity-0 group-hover:opacity-100 transition-opacity mr-1 text-amber-600"></i>Accueil
+            </a></li>
+            <li><a href="" class="text-amber-700 hover:text-amber-900 transition-colors text-sm lg:text-base flex items-center group">
+              <i class="ri-arrow-right-s-line opacity-0 group-hover:opacity-100 transition-opacity mr-1 text-amber-600"></i>Nos Disponibilités
+            </a></li>
+            <li><a href="" class="text-amber-700 hover:text-amber-900 transition-colors text-sm lg:text-base flex items-center group">
+              <i class="ri-arrow-right-s-line opacity-0 group-hover:opacity-100 transition-opacity mr-1 text-amber-600"></i>Besoin d'une offre ?
+            </a></li>
+            
+          </ul>
+        </div>
+        
+        <style>
+          @media (max-width: 1024px) {
+            #categoriesList {
+              max-height: 0;
+              overflow: hidden;
+              transition: max-height 0.3s ease-out;
+            }
+            #categoriesList.show {
+              max-height: 500px;
+              animation: fadeIn 0.3s ease-out;
+            }
+            
+            @keyframes fadeIn {
+              from { opacity: 0; transform: translateY(-10px); }
+              to { opacity: 1; transform: translateY(0); }
+            }
+            #categoriesArrow.rotate-180 {
+              transform: rotate(180deg);
+            }
+          }
+        </style>
+        <script>
+          document.addEventListener('DOMContentLoaded', function() {
+            const toggleButton = document.getElementById('categoriesToggle');
+            const categoriesList = document.getElementById('categoriesList');
+            const categoriesArrow = document.getElementById('categoriesArrow');
+            
+            if (toggleButton && categoriesList) {
+              toggleButton.addEventListener('click', function() {
+                categoriesList.classList.toggle('show');
+                categoriesList.classList.toggle('hidden');
+                categoriesArrow.classList.toggle('rotate-180');
+              });
+              
+              // Fermer le menu si on clique ailleurs sur mobile
+              document.addEventListener('click', function(e) {
+                if (!toggleButton.contains(e.target) && !categoriesList.contains(e.target)) {
+                  if (window.innerWidth < 1024) {
+                    categoriesList.classList.remove('show');
+                    categoriesList.classList.add('hidden');
+                    categoriesArrow.classList.remove('rotate-180');
+                  }
+                }
+              });
+              
+              // Gestion du redimensionnement de la fenêtre
+              window.addEventListener('resize', function() {
+                if (window.innerWidth >= 1024) {
+                  categoriesList.classList.remove('hidden');
+                  categoriesList.style.maxHeight = '';
+                  categoriesArrow.classList.remove('rotate-180');
+                } else if (!categoriesList.classList.contains('show')) {
+                  categoriesList.classList.add('hidden');
+                }
+              });
+            }
+          });
+        </script>
+        <div>
+          <h3 class="text-lg font-semibold mb-6 text-amber-800 relative inline-block">Contact
+            <span class="absolute bottom-0 left-0 w-10 h-0.5 bg-amber-600"></span>
+          </h3>
+          <ul class="space-y-3">
+            <li class="flex items-start group">
+              <div class="w-8 h-8 flex-shrink-0 flex items-center justify-center rounded-full bg-white text-amber-700 mr-3 shadow-sm group-hover:bg-amber-100 transition-colors">
+                <i class="ri-map-pin-line"></i>
+              </div>
+              <li class="flex items-start group">
+                <div class="w-8 h-8 flex-shrink-0 flex items-center justify-center rounded-full bg-white text-amber-700 mr-3 shadow-sm group-hover:bg-amber-100 transition-colors">
+                  <i class="ri-map-pin-line"></i>
+                </div>
+                <a href="https://www.google.com/maps/place/Modeste,+Grand-Bassam,+C%C3%B4te+d'Ivoire" class="text-amber-700 text-sm lg:text-base mt-1.5" target="_blank">Modeste, Grand-Bassam, Côte d'Ivoire</a>
+              </li>
+            <li class="flex items-start group mt-4">
+              <div class="w-8 h-8 flex-shrink-0 flex items-center justify-center rounded-full bg-white text-amber-700 mr-3 shadow-sm group-hover:bg-amber-100 transition-colors">
+                <i class="ri-phone-line"></i>
+              </div>
+              <a href="tel:+2250140779177" class="text-amber-700 text-sm lg:text-base mt-1.5">+225 01 40 77 91 77</a>
+            </li>
+            <li class="flex items-start group mt-4">
+              <div class="w-8 h-8 flex-shrink-0 flex items-center justify-center rounded-full bg-white text-amber-700 mr-3 shadow-sm group-hover:bg-amber-100 transition-colors">
+                <i class="ri-mail-line"></i>
+              </div>
+              <span class="text-amber-700 text-sm lg:text-base mt-1.5">sourcing@oils-of-africa.com</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="pt-8 border-t border-amber-200 flex flex-col md:flex-row justify-between items-center">
+        <p class="text-amber-700 text-sm mb-4 md:mb-0">© 2025 ArtisanBois. Tous droits réservés.</p>
+        <div class="flex flex-wrap justify-center space-x-4 md:space-x-6">
+          <a href="#" class="text-amber-700 hover:text-amber-900 transition-colors text-xs md:text-sm">Conditions d'utilisation</a>
+          <span class="text-amber-500 hidden md:inline">•</span>
+          <a href="#" class="text-amber-700 hover:text-amber-900 transition-colors text-xs md:text-sm">Politique de confidentialité</a>
+          <span class="text-amber-500 hidden md:inline">•</span>
+          <a href="#" class="text-amber-700 hover:text-amber-900 transition-colors text-xs md:text-sm">Mentions légales</a>
+        </div>
+      </div>
+    </div>
+  </footer>

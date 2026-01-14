@@ -1,0 +1,276 @@
+{% extends 'connexion/base_login.html' %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+    @keyframes gradientBG {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+    
+    .animate-gradient {
+        background-size: 200% 200%;
+        animation: gradientBG 15s ease infinite;
+    }
+    
+    .login-container {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1), 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+    }
+    
+    .input-field {
+        transition: all 0.3s ease;
+        padding: 0.75rem 1rem;
+        border-radius: 0.5rem;
+        border: 2px solid #e5e7eb;
+    }
+    
+    .input-field:focus {
+        border-color: #4f46e5;
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+    }
+    
+    .btn-login {
+        background: linear-gradient(135deg, #4f46e5, #7c3aed);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .btn-login:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px -5px rgba(79, 70, 229, 0.3);
+    }
+    
+    .btn-login:active {
+        transform: translateY(0);
+    }
+    
+    .btn-login::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 300px;
+        height: 300px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        transform: translate(-50%, -50%) scale(0);
+        transition: transform 0.5s ease-out;
+    }
+    
+    .btn-login:active::after {
+        transform: translate(-50%, -50%) scale(2);
+        opacity: 0;
+    }
+    
+    .social-btn {
+        transition: all 0.3s ease;
+    }
+    
+    .social-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-purple-50 to-indigo-100 p-4 sm:p-6 lg:p-8">
+    <div class="w-full max-w-md">
+        <!-- Carte de connexion -->
+        <div class="login-container rounded-2xl p-8 sm:p-10">
+            <!-- En-tête -->
+            <div class="text-center mb-10">
+                <div class="flex justify-center mb-6">
+                    <img src="{% static 'images/logo.png' %}" alt="Logo Sourcing" class="h-16 sm:h-20">
+                </div>
+                <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Content de vous revoir</h1>
+                <p class="text-gray-500">Connectez-vous pour accéder à votre espace</p>
+            </div>
+            
+            <!-- Formulaire -->
+            <form method="POST" action="{% url 'login' %}" class="space-y-6">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ next }}">
+                
+                <div class="space-y-5">
+                    <!-- Champ Email/Username -->
+                    <div>
+                        <label for="username" class="block text-sm font-medium text-gray-700 mb-1.5">
+                            Email ou nom d'utilisateur
+                        </label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="ri-user-line text-gray-400"></i>
+                            </div>
+                            <input id="username" name="username" type="text" required
+                                   class="input-field w-full pl-10 pr-4 py-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-lg"
+                                   placeholder="votre@email.com">
+                        </div>
+                    </div>
+                    
+                    <!-- Champ Mot de passe -->
+                    <div>
+                        <div class="flex items-center justify-between mb-1.5">
+                            <label for="password" class="block text-sm font-medium text-gray-700">
+                                Mot de passe
+                            </label>
+                            <a href="#" class="text-sm text-blue-600 hover:text-blue-500 font-medium">
+                                Mot de passe oublié ?
+                            </a>
+                        </div>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="ri-lock-line text-gray-400"></i>
+                            </div>
+                            <input id="password" name="password" type="password" required
+                                   class="input-field w-full pl-10 pr-12 py-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-lg"
+                                   placeholder="••••••••">
+                            <button type="button" id="togglePassword" 
+                                    class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none">
+                                <i class="ri-eye-line"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Se souvenir de moi -->
+                    <div class="flex items-center">
+                        <input id="remember_me" name="remember_me" type="checkbox"
+                               class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                        <label for="remember_me" class="ml-2 block text-sm text-gray-700">
+                            Se souvenir de moi
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Bouton de connexion -->
+                <div class="pt-2">
+                    <button type="submit"
+                            class="btn-login w-full flex justify-center py-3 px-4 border border-transparent rounded-lg text-white font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        <span class="relative z-10 flex items-center">
+                            <i class="ri-login-box-line mr-2"></i>
+                            <span>Se connecter</span>
+                        </span>
+                    </button>
+                </div>
+            </form>
+            
+            <!-- Séparateur -->
+            <div class="relative my-8">
+                <div class="absolute inset-0 flex items-center">
+                    <div class="w-full border-t border-gray-200"></div>
+                </div>
+                <div class="relative flex justify-center text-sm">
+                    <span class="px-2 bg-white text-gray-500">Ou continuez avec</span>
+                </div>
+            </div>
+            
+            <!-- Boutons de connexion sociale -->
+            <div class="grid grid-cols-2 gap-3">
+                <a href="#" class="social-btn flex items-center justify-center py-2 px-4 border border-gray-300 rounded-lg bg-white text-gray-700 hover:bg-gray-50">
+                    <i class="ri-google-fill text-red-500 mr-2"></i>
+                    <span>Google</span>
+                </a>
+                <a href="#" class="social-btn flex items-center justify-center py-2 px-4 border border-gray-300 rounded-lg bg-white text-gray-700 hover:bg-gray-50">
+                    <i class="ri-microsoft-fill text-blue-600 mr-2"></i>
+                    <span>Microsoft</span>
+                </a>
+            </div>
+            
+            <!-- Lien d'inscription -->
+            <div class="mt-8 text-center text-sm text-gray-600">
+                Pas encore de compte ?
+                <a href="#" class="font-medium text-blue-600 hover:text-blue-500 ml-1">
+                    Créer un compte
+                </a>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="mt-6 text-center text-xs text-gray-500">
+            <p>En vous connectant, vous acceptez nos conditions d'utilisation et notre politique de confidentialité.</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const togglePassword = document.getElementById("togglePassword");
+        const passwordInput = document.getElementById("password");
+        
+        // Toggle password visibility
+        togglePassword.addEventListener("click", function () {
+            const type = passwordInput.getAttribute("type") === "password" ? "text" : "password";
+            passwordInput.setAttribute("type", type);
+            
+            // Change l'icône
+            const icon = this.querySelector("i");
+            icon.className = type === "password" ? "ri-eye-line" : "ri-eye-off-line";
+        });
+        
+        // Animation au chargement
+        const form = document.querySelector('form');
+        form.classList.add('opacity-0', 'translate-y-4');
+        setTimeout(() => {
+            form.classList.remove('opacity-0', 'translate-y-4');
+            form.classList.add('opacity-100', 'translate-y-0');
+        }, 100);
+        
+        // Ajout d'un effet de vague au survol du bouton
+        const loginBtn = document.querySelector('.btn-login');
+        loginBtn.addEventListener('mousemove', (e) => {
+            const rect = loginBtn.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            loginBtn.style.setProperty('--x', `${x}px`);
+            loginBtn.style.setProperty('--y', `${y}px`);
+        });
+    });
+</script>
+{% endblock %}
+            </form>
+{% comment %} 
+            <div class="mt-6">
+                <div class="relative">
+                    <div class="absolute inset-0 flex items-center">
+                        <div class="w-full border-t border-gray-300"></div>
+                    </div>
+                    <div class="relative flex justify-center text-sm">
+                        <span class="px-2 bg-white text-gray-500">Pas encore de compte ?</span>
+                    </div>
+                </div>
+
+                <div class="mt-6 text-center">
+                    <a href="" class="font-medium text-primary hover:text-opacity-80 transition-colors duration-300">
+                        Créer un compte
+                    </a>
+                </div>
+            </div> {% endcomment %}
+        </div>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const togglePassword = document.getElementById("togglePassword");
+            const passwordInput = document.getElementById("password");
+    
+            togglePassword.addEventListener("click", function () {
+                const type = passwordInput.getAttribute("type") === "password" ? "text" : "password";
+                passwordInput.setAttribute("type", type);
+    
+                // Change l’icône selon l’état
+                const icon = this.querySelector("i");
+                if (type === "text") {
+                    icon.classList.remove("ri-eye-line");
+                    icon.classList.add("ri-eye-off-line");
+                } else {
+                    icon.classList.remove("ri-eye-off-line");
+                    icon.classList.add("ri-eye-line");
+                }
+            });
+        });
+    </script>
+    

@@ -1,0 +1,727 @@
+{# Template de base qui hérite de base.html #}
+{% extends 'layouts/base_client.html' %}
+{% block content %}
+{% load static %}
+
+<style>
+  /* Styles généraux améliorés */
+  :root {
+    --primary: #10b981;
+    --primary-dark: #059669;
+    --accent: #f59e0b;
+    --text: #1f2937;
+    --light-bg: #f9fafb;
+  }
+  
+  /* Effet de verre amélioré */
+  .glass-effect {
+    background: rgba(255, 255, 255, 0.15) !important;
+    backdrop-filter: blur(20px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15) !important;
+  }
+
+  /* Animation des cartes */
+  .product-card, .availability-card {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: translateY(0);
+    border: 1px solid #e5e7eb;
+  }
+
+  .product-card:hover, .availability-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+    border-color: var(--primary);
+  }
+
+  /* Effet sur les images */
+  .product-image-container {
+    overflow: hidden;
+    border-radius: 0.75rem 0.75rem 0 0;
+  }
+
+  .product-image {
+    transition: transform 0.5s ease;
+  }
+
+  .product-card:hover .product-image {
+    transform: scale(1.05);
+  }
+
+  /* Boutons améliorés */
+  .btn-primary {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.3);
+  }
+
+  .btn-primary:active {
+    transform: translateY(0);
+  }
+
+  /* Animation de vague */
+  .wave {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    overflow: hidden;
+    line-height: 0;
+  }
+
+  .wave svg {
+    position: relative;
+    display: block;
+    width: calc(100% + 1.3px);
+    height: 150px;
+  }
+
+  .wave .shape-fill {
+    fill: #FFFFFF;
+  }
+
+  /* Animation de flottement */
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+
+  .floating {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  /* Amélioration des cartes de disponibilité */
+  .availability-stats {
+    transition: all 0.3s ease;
+  }
+
+  .availability-card:hover .availability-stats {
+    background-color: rgba(16, 185, 129, 0.05);
+  }
+
+  /* Animation de chargement */
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+
+  .animate-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  /* Effet de survol sur les boutons secondaires */
+  .btn-secondary {
+    transition: all 0.3s ease;
+  }
+
+  .btn-secondary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  }
+  
+  .swiper {
+    width: 100%;
+    height: 100vh;
+    max-height: 900px;
+  }
+  
+  .swiper-slide {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .swiper-slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .slide-content {
+    position: relative;
+    display: inline-block;
+    padding: 1.5rem 2.5rem !important;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    z-index: 2;
+  }
+  
+  /* Overlay sombre pour améliorer la lisibilité */
+  .swiper-slide::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    max-width: 90%;
+  }
+  
+  .slide-content::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    z-index: -1;
+  }
+  
+  /* Ajustement pour mobile */
+  @media (max-width: 768px) {
+    .slide-content {
+      padding: 1rem 1.5rem !important;
+      margin: 0.25rem;
+      padding: 1.5rem !important;
+      margin: 1rem;
+    }
+  }
+</style>
+
+{# Section d'intégration des styles et scripts pour le carrousel Swiper #}
+<!-- Styles et scripts pour le carrousel -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+
+{# Conteneur principal de la page avec une hauteur minimale et une police système par défaut #}
+<div class="min-h-screen bg-gray-50" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; scroll-behavior: smooth;">
+  <!-- Carrousel d'images -->
+  <div class="swiper">
+    <div class="swiper-wrapper">
+      <!-- Slide 1 -->
+      <div class="swiper-slide relative">
+        <img src="{% static 'images/1.jpg' %}" alt="Meuble artisanal en bois" class="w-full h-full object-cover" onerror="this.src='https://images.unsplash.com/photo-1556909211-db6f203886a0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'">
+        <div class="absolute inset-0 flex items-center justify-center px-4">
+          <div class="slide-content text-center">
+            <h2 class="text-4xl md:text-6xl font-bold mb-6 text-white drop-shadow-lg">Bienvenue sur notre plateforme de sourcing de Oils of Africa</h2>
+            <p class="text-xl md:text-2xl text-white/90 max-w-3xl mx-auto drop-shadow">Découvrez notre huile de palme de qualité supérieure, produite avec soin par des producteurs locaux engagés</p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Slide 2 -->
+      <div class="swiper-slide relative">
+        <img src="{% static 'images/2.jpg' %}" alt="Artisanat traditionnel" class="w-full h-full object-cover" onerror="this.src='https://images.unsplash.com/photo-1605000797499-95a51c5269ae?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'">
+        <div class="absolute inset-0 flex items-center justify-center px-4">
+          <div class="slide-content text-center">
+            <h2 class="text-4xl md:text-6xl font-bold mb-6 text-white drop-shadow-lg">Une production durable</h2>
+            <p class="text-xl md:text-2xl text-white/90 max-w-3xl mx-auto drop-shadow">Des méthodes de production responsables qui préservent l'environnement</p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Slide 3 -->
+      <div class="swiper-slide relative">
+        <img src="{% static 'images/3.png' %}" alt="Décoration d'intérieur" class="w-full h-full object-cover" onerror="this.src='https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'">
+        <div class="absolute inset-0 flex items-center justify-center px-4">
+          <div class="slide-content text-center">
+            <h2 class="text-4xl md:text-6xl font-bold mb-6 text-white drop-shadow-lg">Qualité et traçabilité</h2>
+            <p class="text-xl md:text-2xl text-white/90 max-w-3xl mx-auto drop-shadow">Une chaîne d'approvisionnement transparente et éthique</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Contrôles de navigation -->
+    <div class="swiper-pagination"></div>
+    <div class="swiper-button-next"></div>
+    <div class="swiper-button-prev"></div>
+  </div>
+  
+  <!-- Script d'initialisation du carrousel -->
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const swiper = new Swiper('.swiper', {
+        // Paramètres optionnels
+        loop: true,
+        autoplay: {
+          delay: 5000,
+          disableOnInteraction: false,
+        },
+        effect: 'fade',
+        fadeEffect: {
+          crossFade: true
+        },
+        speed: 1000,
+        pagination: {
+          el: '.swiper-pagination',
+          clickable: true,
+        },
+        navigation: {
+          nextEl: '.swiper-button-next',
+          prevEl: '.swiper-button-prev',
+        },
+      });
+    });
+  </script>
+
+{# Section héro avec fond dégradé et éléments décoratifs #}
+<!-- Hero Section Moderne -->
+<section class="relative overflow-hidden" id="hero">
+  <!-- Background avec gradient -->
+  <div class="absolute inset-0" style="background: linear-gradient(135deg, #8B5A2B 0%, #6d4522 50%, #8B5A2B 100%);">
+    <!-- Éléments décoratifs -->
+    <div class="absolute top-10 left-10 w-32 h-32 bg-white/5 rounded-full blur-2xl"></div>
+    <div class="absolute bottom-20 right-10 w-40 h-40 bg-white/5 rounded-full blur-3xl"></div>
+    <div class="absolute top-1/3 right-1/4 w-24 h-24 bg-white/5 rounded-full blur-xl"></div>
+    <div class="absolute bottom-1/3 left-1/4 w-20 h-20 bg-white/5 rounded-full blur-lg"></div>
+  </div>
+  
+  <!-- Overlay subtil -->
+  <div class="absolute inset-0 bg-black/10"></div>
+  
+  <!-- Contenu Hero -->
+  <div class="relative z-10 flex items-center justify-center py-24 px-4">
+    <div class="max-w-6xl mx-auto text-center">
+      <h1 class="text-5xl md:text-7xl font-bold text-white mb-8 leading-tight">
+        Oils of Africa
+        <span class="text-amber-200 block">Votre partenaire en approvisionnement</span>
+        <span class="text-white/80 text-3xl md:text-4xl block mt-4 font-normal">d'huile de palme & derive </span>
+      </h1>
+      
+      <p class="text-xl md:text-2xl text-white/90 mb-12 max-w-4xl mx-auto leading-relaxed">
+        Spécialistes du sourcing des huile de palme en Afrique de l'Ouest, nous garantissons qualité, traçabilité et respect des normes internationales
+      </p>
+
+
+      
+      <!-- Boutons CTA -->
+      <div class="flex flex-col sm:flex-row gap-6 justify-center mb-16">
+        <a href="#produits" 
+           class="group px-10 py-4 bg-white text-green-700 font-semibold rounded-2xl shadow-2xl hover:shadow-3xl hover:scale-105 transition-all duration-300 btn-primary">
+          <span class="flex items-center justify-center">
+            <i class="ri-oil-line mr-3 text-xl"></i>
+            Découvrir nos produits
+            <i class="ri-arrow-right-line ml-3 text-xl group-hover:translate-x-1 transition-transform"></i>
+          </span>
+        </a>
+        <a href="#engagement" 
+           class="px-10 py-4 border-2 border-white text-white font-semibold rounded-2xl hover:bg-white hover:text-green-700 transition-all duration-300 btn-secondary">
+          <span class="flex items-center justify-center">
+            <i class="ri-hand-heart-line mr-3 text-xl"></i>
+            Notre engagement RSE
+          </span>
+        </a>
+      </div>
+      
+      <!-- Statistiques -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+        <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
+          <div class="text-3xl font-bold text-white mb-2">{{ total_general|floatformat:2 }} T</div>
+          <div class="text-white/80">Stock disponible</div>
+        </div>
+        <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
+          <div class="text-3xl font-bold text-white mb-2">{{ nombre_commodites }}+</div>
+          <div class="text-white/80">Produits sourcés</div>
+        </div>
+        <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
+          <div class="text-3xl font-bold text-white mb-2">100%</div>
+          <div class="text-white/80">Traçabilité</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Scroll indicator -->
+  <a href="#produits" class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+    <div class="w-10 h-16 flex flex-col items-center justify-center">
+      <span class="text-white text-sm mb-1">Découvrir</span>
+      <div class="w-6 h-10 border-2 border-white/50 rounded-full flex justify-center">
+        <div class="w-1 h-3 bg-white/80 rounded-full mt-2"></div>
+      </div>
+    </div>
+  </a>
+</section>
+
+{# Section affichant les différentes catégories de produits #}
+<!-- Catégories Populaires -->
+<section class="py-24 bg-gray-50">
+  <div class="container mx-auto px-4">
+    <div class="text-center mb-16">
+      <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6">Nos produits phares</h2>
+      <p class="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+        Découvrez notre gamme complète d'huiles de palme et dérivés, produits de manière éthique et durable
+      </p>
+    </div>
+    
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 relative z-10">
+      <div class="group cursor-pointer">
+        <div class="relative overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500">
+          <div class="h-80 bg-gradient-to-br from-green-100 to-green-200"></div>
+          <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+          <div class="absolute bottom-6 left-6 right-6">
+            <h3 class="text-white text-2xl font-bold mb-2">Huile de Palme Rouge</h3>
+            <p class="text-white/80 text-sm">Riche en bêta-carotène et vitamine E</p>
+            <div class="mt-4 flex items-center text-white/80">
+              <span class="text-sm">En savoir plus</span>
+              <i class="ri-arrow-right-line ml-2 group-hover:translate-x-1 transition-transform"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="group cursor-pointer">
+        <div class="relative overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500">
+          <div class="h-80 bg-gradient-to-br from-green-200 to-green-300"></div>
+          <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+          <div class="absolute bottom-6 left-6 right-6">
+            <h3 class="text-white text-2xl font-bold mb-2">Huile de Palme Blanche</h3>
+            <p class="text-white/80 text-sm">Idéale pour la cuisson à haute température</p>
+            <div class="mt-4 flex items-center text-white/80">
+              <span class="text-sm">En savoir plus</span>
+              <i class="ri-arrow-right-line ml-2 group-hover:translate-x-1 transition-transform"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="group cursor-pointer">
+        <div class="relative overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500">
+          <div class="h-80 bg-gradient-to-br from-green-300 to-green-400"></div>
+          <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+          <div class="absolute bottom-6 left-6 right-6">
+            <h3 class="text-white text-2xl font-bold mb-2">Huile de Palme Bio</h3>
+            <p class="text-white/80 text-sm">Certifiée agriculture biologique</p>
+            <div class="mt-4 flex items-center text-white/80">
+              <span class="text-sm">En savoir plus</span>
+              <i class="ri-arrow-right-line ml-2 group-hover:translate-x-1 transition-transform"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="group cursor-pointer">
+        <div class="relative overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500">
+          <div class="h-80 bg-gradient-to-br from-green-400 to-green-500"></div>
+          <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+          <div class="absolute bottom-6 left-6 right-6">
+            <h3 class="text-white text-2xl font-bold mb-2">Sous-produits</h3>
+            <p class="text-white/80 text-sm">Tourteaux, coques et fibres</p>
+            <div class="mt-4 flex items-center text-white/80">
+              <span class="text-sm">En savoir plus</span>
+              <i class="ri-arrow-right-line ml-2 group-hover:translate-x-1 transition-transform"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- Produits Vedettes -->
+ {# Section à ajouter dans votre template accueil1.html #}
+{# À insérer après la section "Produits Vedettes" par exemple #}
+
+<!-- Section Disponibilités des Commodités -->
+<section class="py-24 bg-white">
+  <div class="container mx-auto px-4">
+    <!-- En-tête de section -->
+    <div class="text-center mb-16">
+      <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+        Disponibilités en temps réel
+      </h2>
+      <p class="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+        Consultez nos stocks disponibles d'huile de palme et de produits dérivés, mis à jour quotidiennement
+      </p>
+    </div>
+
+    <!-- Statistiques globales -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 max-w-4xl mx-auto">
+      <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-2xl p-6 border border-green-200">
+        <div class="flex items-center justify-between mb-2">
+          <i class="ri-database-2-line text-3xl text-green-600"></i>
+          <span class="text-sm font-medium text-green-700 bg-green-200 px-3 py-1 rounded-full">Total</span>
+        </div>
+        <div class="text-3xl font-bold text-gray-900 mb-1">
+          {{ total_general|floatformat:2 }} T
+        </div>
+        <div class="text-sm text-gray-600">Stock total disponible</div>
+      </div>
+
+      <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-6 border border-blue-200">
+        <div class="flex items-center justify-between mb-2">
+          <i class="ri-list-check text-3xl text-blue-600"></i>
+          <span class="text-sm font-medium text-blue-700 bg-blue-200 px-3 py-1 rounded-full">Produits</span>
+        </div>
+        <div class="text-3xl font-bold text-gray-900 mb-1">
+          {{ nombre_commodites }}
+        </div>
+        <div class="text-sm text-gray-600">Références disponibles</div>
+      </div>
+
+      <div class="bg-gradient-to-br from-amber-50 to-amber-100 rounded-2xl p-6 border border-amber-200">
+        <div class="flex items-center justify-between mb-2">
+          <i class="ri-alert-line text-3xl text-amber-600"></i>
+          <span class="text-sm font-medium text-amber-700 bg-amber-200 px-3 py-1 rounded-full">Alerte</span>
+        </div>
+        <div class="text-3xl font-bold text-gray-900 mb-1">
+          {{ low_stock_count }}
+        </div>
+        <div class="text-sm text-gray-600">Stocks faibles (≤50T)</div>
+      </div>
+    </div>
+
+    <!-- Grille des commodités -->
+    {% if disponibilites %}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {% for disponibilite in disponibilites %}
+      <div class="commodity-card rounded-2xl shadow-lg overflow-hidden hover:-translate-y-2 transition-all duration-300 {% if disponibilite.quantite_totale <= 50 %}low-stock{% endif %}" 
+           style="background: linear-gradient(135deg, {{ disponibilite.commodite.couleur }} 0%, {{ disponibilite.commodite.couleur }}dd 100%);">
+        
+        <!-- En-tête de la carte -->
+        <div class="p-6 border-b border-white/20">
+          <div class="flex items-center justify-between mb-2">
+            <h3 class="text-2xl font-bold text-white">
+              {{ disponibilite.commodite.nom }}
+            </h3>
+            {% if disponibilite.quantite_totale <= 50 %}
+            <span class="bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full">
+              <i class="ri-alert-line mr-1"></i>Stock faible
+            </span>
+            {% endif %}
+          </div>
+        </div>
+        
+        <!-- Corps de la carte -->
+        <div class="p-6">
+          <!-- Affichage de la quantité -->
+          <div class="bg-white/95 backdrop-blur-sm rounded-2xl p-6 mb-6 text-center">
+            <div class="text-5xl font-bold mb-2" style="color: {{ disponibilite.commodite.couleur }};">
+              {{ disponibilite.quantite_totale|floatformat:2 }}
+            </div>
+            <div class="text-sm text-gray-600 font-semibold uppercase tracking-wide">
+              Tonnes disponibles
+            </div>
+          </div>
+          
+          <!-- Informations supplémentaires -->
+          <div class="space-y-3">
+            <div class="flex items-center text-white/90">
+              <i class="ri-building-line mr-3 text-xl"></i>
+              <span class="text-sm">{{ disponibilite.nombre_fournisseurs }} unité{{ disponibilite.nombre_fournisseurs|pluralize:",s" }} de production</span>
+            </div>
+            
+            <div class="flex items-center text-white/90">
+              <i class="ri-time-line mr-3 text-xl"></i>
+              <span class="text-sm">Mis à jour le {{ disponibilite.derniere_maj|date:"d/m/Y" }}</span>
+            </div>
+          </div>
+          
+          <!-- Principaux fournisseurs -->
+          {% if disponibilite.fournisseurs %}
+          <div class="mt-6">
+            <div class="text-white/80 text-xs font-semibold uppercase tracking-wide mb-3">
+              Principaux fournisseurs
+            </div>
+            <div class="space-y-2">
+              {% for fournisseur in disponibilite.fournisseurs|slice:":3" %}
+              <div class="bg-white/20 backdrop-blur-sm rounded-lg px-3 py-2 flex items-center justify-between border border-white/30">
+                <span class="text-white text-sm">{{ fournisseur.nom }}</span>
+                <span class="text-white font-bold text-sm">{{ fournisseur.quantite|floatformat:1 }}T</span>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+          {% endif %}
+          
+          <!-- Bouton d'action -->
+          <button class="w-full mt-6 bg-white/20 hover:bg-white/30 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-300 backdrop-blur-sm border border-white/30">
+            <i class="ri-information-line mr-2"></i>
+            Voir les détails
+          </button>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <!-- Message si aucune commodité -->
+    <div class="text-center py-16">
+      <i class="ri-inbox-line text-5xl text-gray-300 mb-6"></i>
+      <h3 class="text-xl font-semibold text-gray-600 mb-2">Aucune commodité disponible</h3>
+      <p class="text-gray-500">Les stocks seront mis à jour prochainement.</p>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+<!-- Styles CSS pour la section -->
+<style>
+  .commodity-card {
+    transition: all 0.3s ease;
+  }
+  
+  .commodity-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+  }
+  
+  .low-stock {
+    animation: pulse-low-stock 2s infinite;
+  }
+  
+  @keyframes pulse-low-stock {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.85; }
+  }
+</style>
+ 
+ 
+<!-- Témoignages -->
+<section class="py-24 bg-gray-50">
+  <div class="container mx-auto px-4">
+    <div class="text-center mb-16">
+      <h2 class="text-4xl font-bold text-gray-900 mb-6">Ce que disent nos clients</h2>
+      <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+        Découvrez les témoignages de clients satisfaits qui ont fait confiance à nos artisans
+      </p>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div class="bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
+        <div class="flex text-yellow-400 mb-6">
+          <i class="ri-star-fill"></i>
+          <i class="ri-star-fill"></i>
+          <i class="ri-star-fill"></i>
+          <i class="ri-star-fill"></i>
+          <i class="ri-star-fill"></i>
+        </div>
+        <p class="text-gray-600 mb-8 leading-relaxed">
+          "J'ai commandé une table à manger sur mesure. Le résultat est magnifique, bien au-delà de mes attentes. La qualité du bois et des finitions est exceptionnelle."
+        </p>
+        <div class="flex items-center">
+          <div class="w-14 h-14 rounded-full flex items-center justify-center text-white font-bold" style="background-color: #8B5A2B;">
+            MS
+          </div>
+          <div class="ml-4">
+            <h4 class="font-semibold text-gray-900">Marie Sangaré</h4>
+            <p class="text-sm text-gray-500">Abidjan</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
+        <div class="flex text-yellow-400 mb-6">
+          <i class="ri-star-fill"></i>
+          <i class="ri-star-fill"></i>
+          <i class="ri-star-fill"></i>
+          <i class="ri-star-fill"></i>
+          <i class="ri-star-half-fill"></i>
+        </div>
+        <p class="text-gray-600 mb-8 leading-relaxed">
+          "Les masques décoratifs sont d'une beauté saisissante. J'ai acheté trois pièces pour mon salon et le résultat est spectaculaire. Je recommande vivement !"
+        </p>
+        <div class="flex items-center">
+          <div class="w-14 h-14 rounded-full flex items-center justify-center text-white font-bold" style="background-color: #8B5A2B;">
+            PK
+          </div>
+          <div class="ml-4">
+            <h4 class="font-semibold text-gray-900">Philippe Kouamé</h4>
+            <p class="text-sm text-gray-500">Yamoussoukro</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
+        <div class="flex text-yellow-400 mb-6">
+          <i class="ri-star-fill"></i>
+          <i class="ri-star-fill"></i>
+          <i class="ri-star-fill"></i>
+          <i class="ri-star-fill"></i>
+          <i class="ri-star-fill"></i>
+        </div>
+        <p class="text-gray-600 mb-8 leading-relaxed">
+          "L'armoire créée pour moi est magnifique. Chaque détail est soigné, les motifs sublimes et la qualité irréprochable. Un meuble qui traversera les générations."
+        </p>
+        <div class="flex items-center">
+          <div class="w-14 h-14 rounded-full flex items-center justify-center text-white font-bold" style="background-color: #8B5A2B;">
+            AD
+          </div>
+          <div class="ml-4">
+            <h4 class="font-semibold text-gray-900">Aminata Diabaté</h4>
+            <p class="text-sm text-gray-500">San Pedro</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA Final -->
+<section class="py-24" style="background: linear-gradient(135deg, #8B5A2B 0%, #6d4522 100%);">
+  <div class="container mx-auto px-4">
+    <div class="max-w-4xl mx-auto text-center">
+      <h2 class="text-4xl md:text-5xl font-bold text-white mb-8 leading-tight">
+        Prêt à découvrir l'excellence de l'artisanat ivoirien ?
+      </h2>
+      <p class="text-xl text-white/90 mb-12 leading-relaxed max-w-3xl mx-auto">
+        Rejoignez notre communauté et trouvez des pièces uniques qui racontent une histoire et embellissent votre intérieur
+      </p>
+      <div class="flex flex-col sm:flex-row gap-6 justify-center">
+        <a href=" " 
+           class="px-10 py-4 bg-white text-amber-800 font-semibold rounded-2xl shadow-2xl hover:shadow-3xl hover:scale-105 transition-all duration-300">
+          <span class="flex items-center justify-center">
+            <i class="ri-search-eye-line mr-3 text-xl"></i>
+            Explorer le catalogue
+          </span>
+        </a>
+        <a href=" " 
+           class="px-10 py-4 border-2 border-white text-white font-semibold rounded-2xl hover:bg-white hover:text-amber-800 transition-all duration-300">
+          <span class="flex items-center justify-center">
+            <i class="ri-message-3-line mr-3 text-xl"></i>
+            Contacter un artisan
+          </span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+{# Section d'inscription à la newsletter #}
+<!-- Newsletter -->
+<section class="py-24 bg-white">
+  <div class="container mx-auto px-4">
+    <div class="max-w-4xl mx-auto bg-gradient-to-r from-gray-50 to-amber-50 p-12 rounded-3xl shadow-xl border border-gray-100">
+      <div class="text-center mb-10">
+        <h2 class="text-3xl font-bold text-gray-900 mb-4">Restez informé</h2>
+        <p class="text-gray-600 text-lg">
+          Inscrivez-vous à notre newsletter pour recevoir les dernières créations et actualités de nos artisans
+        </p>
+      </div>
+      
+      <form class="flex flex-col sm:flex-row gap-4 mb-6">
+        <input type="email" 
+               placeholder="Votre adresse email" 
+               class="flex-1 px-6 py-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-700 focus:border-transparent text-gray-700">
+        <button type="submit" 
+                class="px-8 py-4 text-white font-semibold rounded-xl hover:opacity-90 transition-all shadow-lg"
+                style="background-color: #8B5A2B;">
+          <i class="ri-mail-send-line mr-2"></i>
+          S'inscrire
+        </button>
+      </form>
+      
+      <div class="text-center">
+        <label class="flex items-center justify-center text-sm text-gray-600 cursor-pointer">
+          <input type="checkbox" class="mr-3 rounded border-gray-300 text-amber-600 focus:ring-amber-700">
+          <span>J'accepte de recevoir des informations sur les nouveautés et offres spéciales</span>
+        </label>
+      </div>
+    </div>
+  </div>
+</section>
+
+</div>
+ 
+{% endblock %}

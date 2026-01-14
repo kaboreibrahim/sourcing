@@ -1,0 +1,225 @@
+{% extends 'connexion/base_login.html' %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+    @keyframes gradient {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+    
+    .animate-float {
+        animation: float 6s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-15px); }
+    }
+    
+    .input-field:focus {
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+    }
+    
+    .btn-login {
+        background: linear-gradient(45deg, #3b82f6, #8b5cf6);
+        background-size: 200% 200%;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-login:hover {
+        background-position: right center;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+    }
+    
+    .form-container {
+        backdrop-filter: blur(10px);
+        background: rgba(255, 255, 255, 0.9);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+    }
+    
+    .input-group {
+        transition: all 0.3s ease;
+    }
+    
+    .input-group:focus-within {
+        transform: translateX(5px);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-purple-50 to-blue-100 py-12 px-4 sm:px-6 lg:px-8">
+    <div class="w-full max-w-md space-y-8 transform transition-all duration-500 ease-in-out">
+        <!-- Logo avec animation -->
+        <div class="flex justify-center">
+            <div class="relative">
+                <div class="absolute -inset-4 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full opacity-30 blur-lg"></div>
+                <a href="" class="relative flex items-center">
+                    <img class="h-24 w-auto animate-float" 
+                         src="{% static 'images/logo.png' %}" 
+                         alt="Logo Sourcing">
+                </a>
+            </div>
+        </div>
+        
+        <div class="text-center">
+            <h1 class="text-3xl font-extrabold text-gray-900 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600">
+                Innov-Sourcing OOA
+            </h1>
+            <p class="mt-2 text-sm text-gray-600">
+                Plateforme de gestion des approvisionnements
+            </p>
+        </div>
+
+        <!-- Carte du formulaire -->
+        <div class="form-container rounded-2xl p-8 transform transition-all duration-500 hover:shadow-xl">
+            <div class="text-center mb-8">
+                <h2 class="text-2xl font-bold text-gray-800">
+                    Connexion à votre compte
+                </h2>
+                <p class="mt-2 text-sm text-gray-600">
+                    Entrez vos identifiants pour accéder à votre espace
+                </p>
+            </div>
+
+            <form class="space-y-6" method="POST" action="{% url 'login' %}">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ next }}">
+                
+                <div class="space-y-5">
+                    <!-- Champ Email/Utilisateur -->
+                    <div class="input-group">
+                        <label for="username" class="block text-sm font-medium text-gray-700 mb-1">
+                            Email ou nom d'utilisateur
+                        </label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="ri-user-3-line text-gray-400"></i>
+                            </div>
+                            <input id="username" name="username" type="text" required 
+                                   class="input-field appearance-none block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                                   placeholder="votre@email.com">
+                        </div>
+                    </div>
+
+                    <!-- Champ Mot de passe -->
+                    <div class="input-group">
+                        <div class="flex items-center justify-between mb-1">
+                            <label for="password" class="block text-sm font-medium text-gray-700">
+                                Mot de passe
+                            </label>
+                            <a href="#" class="text-xs text-blue-600 hover:text-blue-500 transition-colors duration-200">
+                                Mot de passe oublié ?
+                            </a>
+                        </div>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="ri-lock-2-line text-gray-400"></i>
+                            </div>
+                            <input id="password" name="password" type="password" required 
+                                   class="input-field appearance-none block w-full pl-10 pr-12 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                                   placeholder="••••••••">
+                            <button type="button" id="togglePassword" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none transition-colors duration-200">
+                                <i class="ri-eye-line"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Se souvenir de moi -->
+                    <div class="flex items-center">
+                        <input id="remember_me" name="remember_me" type="checkbox" 
+                               class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                        <label for="remember_me" class="ml-2 block text-sm text-gray-700">
+                            Se souvenir de moi
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Bouton de connexion -->
+                <div class="pt-2">
+                    <button type="submit"
+                            class="btn-login group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        <span class="absolute left-0 inset-y-0 flex items-center pl-3">
+                            <i class="ri-login-box-line"></i>
+                        </span>
+                        <span class="relative">
+                            <span class="opacity-100 group-hover:opacity-0 transition-opacity duration-300">
+                                Se connecter
+                            </span>
+                            <span class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                <i class="ri-arrow-right-line mr-2"></i> Accéder à mon espace
+                            </span>
+                        </span>
+                    </button>
+                </div>
+            </form>
+
+            <div class="mt-6">
+                <div class="relative">
+                    <div class="absolute inset-0 flex items-center">
+                        <div class="w-full border-t border-gray-200"></div>
+                    </div>
+                    <div class="relative flex justify-center text-sm">
+                        <span class="px-2 bg-white text-gray-500">Besoin d'aide ?</span>
+                    </div>
+                </div>
+                <div class="mt-6 text-center">
+                    <a href="#" class="text-sm font-medium text-blue-600 hover:text-blue-500 transition-colors duration-200">
+                        <i class="ri-customer-service-line mr-1"></i> Contactez le support
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="text-center mt-6">
+            <p class="text-xs text-gray-500">
+                © {% now "Y" %} Innov-Sourcing OOA. Tous droits réservés.
+            </p>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    // Gestion de l'affichage du mot de passe
+    const togglePassword = document.getElementById("togglePassword");
+    const passwordInput = document.getElementById("password");
+    
+    if (togglePassword && passwordInput) {
+        togglePassword.addEventListener("click", function () {
+            const type = passwordInput.getAttribute("type") === "password" ? "text" : "password";
+            passwordInput.setAttribute("type", type);
+            
+            // Change l'icône selon l'état
+            const icon = this.querySelector("i");
+            if (type === "text") {
+                icon.classList.remove("ri-eye-line");
+                icon.classList.add("ri-eye-off-line");
+            } else {
+                icon.classList.remove("ri-eye-off-line");
+                icon.classList.add("ri-eye-line");
+            }
+        });
+    }
+    
+    // Animation au chargement
+    const formElements = document.querySelectorAll('.input-group, .btn-login');
+    formElements.forEach((el, index) => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(20px)';
+        
+        setTimeout(() => {
+            el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            el.style.opacity = '1';
+            el.style.transform = 'translateY(0)';
+        }, 100 * index);
+    });
+});
+</script>
+{% endblock %}
+ 

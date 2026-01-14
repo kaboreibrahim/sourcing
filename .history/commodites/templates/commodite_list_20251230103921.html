@@ -1,0 +1,370 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "Liste des Commodités" %}{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Animations de base */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes gradientBG {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    /* Style des cartes */
+    .commodite-card {
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        cursor: pointer;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        position: relative;
+        overflow: hidden;
+        background: white;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+        animation: fadeIn 0.5s ease-out forwards;
+        opacity: 0;
+    }
+    
+    .commodite-card:nth-child(1) { animation-delay: 0.1s; }
+    .commodite-card:nth-child(2) { animation-delay: 0.2s; }
+    .commodite-card:nth-child(3) { animation-delay: 0.3s; }
+    .commodite-card:nth-child(n+4) { animation-delay: 0.4s; }
+    
+    .commodite-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #10b981, #059669);
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .commodite-card:hover::before {
+        transform: scaleX(1);
+    }
+    
+    .commodite-card:hover {
+        transform: translateY(-8px) scale(1.02);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        border-color: #10b981;
+    }
+
+    .commodite-card:active {
+        transform: translateY(-4px) scale(1.01);
+    }
+    
+    /* Badge des fournisseurs */
+    .fournisseur-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 50px;
+        height: 50px;
+        border-radius: 14px;
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: white;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+    
+    .badge-success {
+        background: linear-gradient(135deg, #10b981, #059669);
+    }
+    
+    .badge-warning {
+        background: linear-gradient(135deg, #f59e0b, #d97706);
+    }
+    
+    .badge-danger {
+        background: linear-gradient(135deg, #ef4444, #dc2626);
+    }
+
+    .fournisseur-badge:hover {
+        transform: rotate(10deg) scale(1.1);
+    }
+    
+    /* Barre de recherche améliorée */
+    .search-box {
+        border-radius: 12px;
+        border: 2px solid #e5e7eb;
+        padding: 14px 24px;
+        font-size: 1rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        background-color: #f9fafb;
+        width: 100%;
+        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    }
+    
+    .search-box:focus {
+        border-color: #10b981;
+        box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15);
+        background-color: white;
+        outline: none;
+    }
+
+    .search-box::placeholder {
+        color: #9ca3af;
+        opacity: 1;
+    }
+
+    /* Amélioration du responsive */
+    @media (max-width: 768px) {
+        .commodite-card {
+            margin: 0.5rem;
+        }
+        
+        .search-box {
+            padding: 12px 20px;
+        }
+    }
+
+    /* Effet de vague au survol des boutons */
+    .btn-ripple {
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .btn-ripple:after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 5px;
+        height: 5px;
+        background: rgba(255, 255, 255, 0.5);
+        opacity: 0;
+        border-radius: 100%;
+        transform: scale(1, 1) translate(-50%, -50%);
+        transform-origin: 50% 50%;
+    }
+
+    .btn-ripple:focus:not(:active)::after {
+        animation: ripple 0.6s ease-out;
+    }
+
+    @keyframes ripple {
+        0% {
+            transform: scale(0, 0);
+            opacity: 0.5;
+        }
+        100% {
+            transform: scale(40, 40);
+            opacity: 0;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- En-tête -->
+    <div class="mb-8">
+        <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+            <div>
+                <h1 class="text-4xl font-bold text-gray-800 mb-2">
+                    🌾 {% trans "Commodités Agricoles" %}
+                </h1>
+                <p class="text-gray-600">
+                    {% blocktrans count counter=total_commodites %}
+                        {{ counter }} commodité • {{ total_liaisons }} liaison avec des fournisseurs
+                    {% plural %}
+                        {{ counter }} commodités • {{ total_liaisons }} liaisons avec des fournisseurs
+                    {% endblocktrans %}
+                </p>
+            </div>
+            
+             <div class="flex flex-wrap gap-3 backdrop-blur-xl bg-white/10 rounded-2xl p-5 shadow-2xl border border-white/30 relative overflow-hidden">
+                <!-- Effet de brillance subtil -->
+                <div class="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-transparent pointer-events-none"></div>
+                
+                <a href="{% url 'commodite-stats' %}" class="btn-ripple relative backdrop-blur-md bg-purple-500/20 hover:bg-purple-500/30 text-white font-semibold px-6 py-3 rounded-xl shadow-lg border border-purple-300/30 transition-all duration-300 flex items-center gap-2 hover:shadow-purple-500/50 hover:shadow-xl transform hover:-translate-y-1 hover:scale-105 group">
+                    <div class="absolute inset-0 bg-gradient-to-r from-purple-400/0 via-purple-400/20 to-purple-400/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"></div>
+                    <svg class="w-5 h-5 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="6" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                    </svg>
+                    <span class="relative z-10">{% trans "Statistiques" %}</span>
+                </a>
+                
+                <a href="{% url 'liaison-list' %}" class="btn-ripple relative backdrop-blur-md bg-blue-500/20 hover:bg-blue-500/30 text-white font-semibold px-6 py-3 rounded-xl shadow-lg border border-blue-300/30 transition-all duration-300 flex items-center gap-2 hover:shadow-blue-500/50 hover:shadow-xl transform hover:-translate-y-1 hover:scale-105 group">
+                    <div class="absolute inset-0 bg-gradient-to-r from-blue-400/0 via-blue-400/20 to-blue-400/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"></div>
+                    <svg class="w-5 h-5 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
+                    </svg>
+                    <span class="relative z-10">{% trans "Liaisons" %}</span>
+                </a>
+                
+                <a href="{% url 'commodite-create' %}" class="btn-ripple relative backdrop-blur-md bg-green-500/20 hover:bg-green-500/30 text-white font-semibold px-6 py-3 rounded-xl shadow-lg border border-green-300/30 transition-all duration-300 flex items-center gap-2 hover:shadow-green-500/50 hover:shadow-xl transform hover:-translate-y-1 hover:scale-105 group">
+                    <div class="absolute inset-0 bg-gradient-to-r from-green-400/0 via-green-400/20 to-green-400/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"></div>
+                    <svg class="w-5 h-5 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                    <span class="relative z-10">{% trans "Nouvelle Commodité" %}</span>
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Barre de recherche -->
+    <div class="mb-8">
+        <form method="get" class="max-w-2xl">
+            <div class="relative">
+                <input type="text" 
+                       name="search" 
+                       value="{{ search_query }}"
+                       placeholder="{% trans 'Rechercher une commodité...' %}"
+                       class="search-box w-full pr-12">
+                <button type="submit" class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-green-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                </button>
+            </div>
+        </form>
+    </div>
+    
+    <!-- Grille de cards -->
+    {% if commodites %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {% for commodite in commodites %}
+                <a href="{% url 'commodite-detail' commodite.pk %}" class="block">
+                    <div class="commodite-card bg-white rounded-xl p-6 h-full flex flex-col">
+                        <div class="flex flex-col h-full">
+                            <!-- En-tête avec icône -->
+                            <div class="flex items-start justify-between mb-4">
+                                <div class="flex-1">
+                                    <h3 class="text-xl font-bold text-gray-800 mb-2 line-clamp-2">
+                                        {{ commodite.nom }}
+                                    </h3>
+                                </div>
+                                
+                                <!-- Badge nombre de fournisseurs -->
+                                <div class="fournisseur-badge {% if commodite.total_fournisseurs >= 5 %}badge-success{% elif commodite.total_fournisseurs > 0 %}badge-warning{% else %}badge-danger{% endif %}">
+                                    {{ commodite.total_fournisseurs }}
+                                </div>
+                            </div>
+                            
+                            <!-- Statistiques -->
+                            <div class="mt-auto space-y-3 pt-4 border-t">
+                                <div class="flex items-center justify-between text-sm">
+                                    <span class="text-gray-600 flex items-center gap-2">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                        </svg>
+                                        {% trans "Fournisseurs" %}
+                                    </span>
+                                    <span class="font-bold text-gray-800">
+                                        {{ commodite.total_fournisseurs }}
+                                    </span>
+                                </div>
+                                
+                                <!-- Indicateur de statut -->
+                                <div class="text-xs">
+                                    {% if commodite.total_fournisseurs >= 5 %}
+                                        <span class="inline-flex items-center gap-1 bg-green-100 text-green-700 px-3 py-1 rounded-full font-semibold">
+                                            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                            </svg>
+                                            {% trans "Bien fourni" %}
+                                        </span>
+                                    {% elif commodite.total_fournisseurs > 0 %}
+                                        <span class="inline-flex items-center gap-1 bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full font-semibold">
+                                            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                                            </svg>
+                                            {% trans "Peu de fournisseurs" %}
+                                        </span>
+                                    {% else %}
+                                        <span class="inline-flex items-center gap-1 bg-red-100 text-red-700 px-3 py-1 rounded-full font-semibold">
+                                            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                                            </svg>
+                                            {% trans "Aucun fournisseur" %}
+                                        </span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <!-- Actions -->
+                            <div class="flex gap-2 mt-4">
+                                <a href="{% url 'commodite-update' commodite.pk %}" 
+                                   class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 text-center py-2 rounded-lg text-sm font-medium transition"
+                                   onclick="event.stopPropagation();">
+                                    {% trans "Modifier" %}
+                                </a>
+                                <a href="{% url 'commodite-delete' commodite.pk %}" 
+                                   class="flex-1 bg-red-100 hover:bg-red-200 text-red-700 text-center py-2 rounded-lg text-sm font-medium transition"
+                                   onclick="event.stopPropagation();">
+                                    {% trans "Supprimer" %}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+        
+        <!-- Pagination -->
+        {% if is_paginated %}
+            <div class="mt-8 flex justify-center">
+                <nav class="flex items-center gap-2">
+                    {% if page_obj.has_previous %}
+                        <a href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}" 
+                           class="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
+                            {% trans "Premier" %}
+                        </a>
+                        <a href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}" 
+                           class="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
+                            {% trans "Précédent" %}
+                        </a>
+                    {% endif %}
+                    
+                    <span class="px-4 py-2 bg-green-600 text-white rounded-lg">
+                        {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}
+                    </span>
+                    
+                    {% if page_obj.has_next %}
+                        <a href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}" 
+                           class="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
+                            {% trans "Suivant" %}
+                        </a>
+                        <a href="?page={{ page_obj.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}" 
+                           class="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
+                            {% trans "Dernier" %}
+                        </a>
+                    {% endif %}
+                </nav>
+            </div>
+        {% endif %}
+    {% else %}
+        <div class="text-center py-16">
+            <div class="mb-6">
+                <span class="text-8xl">🌾</span>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-700 mb-2">{% trans "Aucune commodité trouvée" %}</h3>
+            <p class="text-gray-500 mb-6">
+                {% if search_query %}
+                    {% trans "Aucune commodité ne correspond à votre recherche." %}
+                {% else %}
+                    {% trans "Commencez par créer votre première commodité." %}
+                {% endif %}
+            </p>
+            <a href="{% url 'commodite-create' %}" class="inline-block bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-3 rounded-lg shadow-md transition">
+                {% trans "Créer une commodité" %}
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

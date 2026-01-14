@@ -1,0 +1,258 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "Liste des demandes de cotation" %}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .cotation-card {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+        border: 1px solid #e5e7eb;
+        border-radius: 1rem;
+    }
+    
+    .cotation-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #2563eb, #16a34a);
+        transform: scaleX(0);
+        transition: transform 0.3s ease;
+    }
+    
+    .cotation-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    }
+    
+    .cotation-card:hover::before {
+        transform: scaleX(1);
+    }
+    
+    .search-box {
+        transition: all 0.3s ease;
+    }
+    
+    .search-box:focus-within {
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- En-tête -->
+    <div class="mb-8">
+        <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900 mb-2">{% trans "Demandes de cotation" %}</h1>
+                <p class="text-gray-600">
+                    {% trans "Gérez les demandes de cotation des clients" %}
+                </p>
+            </div>
+            <div class="flex flex-wrap gap-3">
+                <a href="{% url 'email_queue_list' %}" 
+                   class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-xl shadow-md hover:shadow-lg transition-all">
+                    <i class="fas fa-inbox"></i>
+                    {% trans "Mails en attente" %}
+                </a>
+            </div>
+        </div>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="mb-6 p-4 rounded-lg {% if message.tags == 'error' %}bg-red-100 text-red-700{% else %}bg-green-100 text-green-700{% endif %}">
+                <div class="flex items-center justify-between">
+                    <span>{{ message }}</span>
+                    <button type="button" class="text-xl" onclick="this.parentElement.parentElement.remove()">&times;</button>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Filtres et recherche -->
+    <div class="bg-white rounded-2xl shadow-lg p-6 mb-8 border border-gray-200">
+        <form method="get" class="space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+                <!-- Recherche -->
+                <div class="lg:col-span-8">
+                    <label for="search" class="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
+                        <i class="fas fa-search text-gray-500"></i>
+                        {% trans "Rechercher" %}
+                    </label>
+                    <div class="relative search-box">
+                        <input type="text" 
+                               name="search" 
+                               id="search" 
+                               value="{{ search_query|default:'' }}" 
+                               placeholder="{% trans 'Nom client, contact, commodité...' %}" 
+                               class="w-full px-4 py-3 pl-12 pr-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
+                        <div class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">
+                            <i class="fas fa-search"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Filtre Statut -->
+                <div class="lg:col-span-3">
+                    <label for="statut" class="block text-sm font-bold text-gray-700 mb-2">
+                        {% trans "Statut" %}
+                    </label>
+                    <select name="statut" id="statut" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <option value="">{% trans "Tous les statuts" %}</option>
+                        {% for value, label in statut_choices %}
+                            <option value="{{ value }}" {% if current_statut == value %}selected{% endif %}>
+                                {{ label }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <!-- Bouton Filtrer -->
+                <div class="lg:col-span-1 flex items-end">
+                    <button type="submit" class="w-full inline-flex justify-center items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-xl shadow-md hover:shadow-lg transition-all">
+                        <i class="fas fa-filter"></i>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Liste des demandes en cartes -->
+    {% if demandes %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            {% for demande in demandes %}
+                <div class="cotation-card bg-white p-6">
+                    <!-- En-tête de la carte -->
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-2">
+                                <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
+                                    <i class="fas fa-file-invoice text-blue-600"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-bold text-gray-900">{{ demande.nom_client }}</h3>
+                                    <div class="text-sm text-gray-500">
+                                        <span class="font-medium">{{ demande.ref }}</span>
+                                        <span class="mx-1">•</span>
+                                        <span>{{ demande.date_demande|date:"d/m/Y H:i" }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            {% if demande.statut == 'EN_ATTENTE' %}
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                    <span class="w-2 h-2 mr-1 bg-yellow-500 rounded-full"></span>
+                                    {{ demande.get_statut_display }}
+                                </span>
+                            {% elif demande.statut == 'TRAITEE' %}
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                    <span class="w-2 h-2 mr-1 bg-green-500 rounded-full"></span>
+                                    {{ demande.get_statut_display }}
+                                </span>
+                            {% elif demande.statut == 'REFUSEE' %}
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                    <span class="w-2 h-2 mr-1 bg-red-500 rounded-full"></span>
+                                    {{ demande.get_statut_display }}
+                                </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <!-- Détails de la demande -->
+                    <div class="space-y-3 border-t border-gray-100 pt-4">
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <p class="text-xs font-medium text-gray-500">Contact</p>
+                                <p class="text-sm font-medium text-gray-900">{{ demande.contact|default:"-" }}</p>
+                            </div>
+                            <div>
+                                <p class="text-xs font-medium text-gray-500">Commodité</p>
+                                <p class="text-sm font-medium text-gray-900">{{ demande.commodite.nom }}</p>
+                            </div>
+                            <div>
+                                <p class="text-xs font-medium text-gray-500">Incoterm</p>
+                                <p class="text-sm font-medium text-gray-900">{{ demande.incoterm|default:"-" }}</p>
+                            </div>
+                            <div>
+                                <p class="text-xs font-medium text-gray-500">Conditionnement</p>
+                                <p class="text-sm font-medium text-gray-900">{{ demande.get_type_conditionnement_display }}</p>
+                            </div>
+                            <div>
+                                <p class="text-xs font-medium text-gray-500">Quantité</p>
+                                <p class="text-sm font-medium text-gray-900">{{ demande.quantite }} T</p>
+                            </div>
+                            <div>
+                                <p class="text-xs font-medium text-gray-500">Prix cible</p>
+                                <p class="text-sm font-medium text-gray-900">{{ demande.target_price }} Fcfa</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Actions -->
+                    <div class="mt-4 pt-4 border-t border-gray-100 flex justify-end space-x-2">
+                        <a href="{% url 'cotation_detail' demande.id %}" 
+                           class="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-blue-700 bg-blue-100 hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            <i class="fas fa-eye mr-1"></i>
+                            Détails
+                        </a>
+                        <a href="" 
+                           class="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-yellow-700 bg-yellow-100 hover:bg-yellow-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500">
+                            <i class="fas fa-edit mr-1"></i>
+                            traiter
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if is_paginated %}
+            <div class="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div class="text-sm text-gray-700">
+                    <span>Page <span class="font-medium">{{ page_obj.number }}</span> sur <span class="font-medium">{{ page_obj.paginator.num_pages }}</span></span>
+                </div>
+                <div class="flex space-x-1">
+                    {% if page_obj.has_previous %}
+                        <a href="?page=1" class="px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+                            &laquo; Première
+                        </a>
+                        <a href="?page={{ page_obj.previous_page_number }}" class="px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+                            &lsaquo; Précédente
+                        </a>
+                    {% endif %}
+                    
+                    {% if page_obj.has_next %}
+                        <a href="?page={{ page_obj.next_page_number }}" class="px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+                            Suivante &rsaquo;
+                        </a>
+                        <a href="?page={{ page_obj.paginator.num_pages }}" class="px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+                            Dernière &raquo;
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        {% endif %}
+    {% else %}
+        <div class="bg-white rounded-xl shadow-md p-12 text-center">
+            <div class="mx-auto flex items-center justify-center h-24 w-24 rounded-full bg-gray-100 mb-4">
+                <i class="fas fa-file-invoice text-gray-400 text-4xl"></i>
+            </div>
+            <h3 class="text-lg font-medium text-gray-900 mb-2">Aucune demande de cotation</h3>
+            <p class="text-gray-500 mb-6">Aucune demande de cotation n'a été trouvée pour le moment.</p>
+            <a href="#" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                <i class="fas fa-plus mr-2"></i>
+                Créer une demande
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

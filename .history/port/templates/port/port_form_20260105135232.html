@@ -1,0 +1,975 @@
+ {% extends "layouts/base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block extra_css %}
+<link href='https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css' rel='stylesheet' />
+<link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.4.3/mapbox-gl-draw.css" type="text/css">
+<style>
+    #map {
+        width: 100%;
+        height: 500px;
+        border-radius: 0.75rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+    /* Style personnalisé pour le champ de recherche LocationIQ */
+    .locationiq-search-container {
+        position: relative;
+        width: 100%;
+    }
+    .locationiq-search-input {
+        width: 100%;
+        padding: 0.75rem 2.5rem 0.75rem 1rem;
+        border: 2px solid #e5e7eb;
+        border-radius: 0.5rem;
+        font-size: 1rem;
+        transition: all 0.3s;
+    }
+    .locationiq-search-input:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+    .locationiq-results {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: white;
+        border: 2px solid #e5e7eb;
+        border-top: none;
+        border-radius: 0 0 0.5rem 0.5rem;
+        max-height: 300px;
+        overflow-y: auto;
+        z-index: 1000;
+        display: none;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+    .locationiq-results.active {
+        display: block;
+    }
+    .locationiq-result-item {
+        padding: 0.75rem 1rem;
+        cursor: pointer;
+        border-bottom: 1px solid #f3f4f6;
+        transition: background 0.2s;
+    }
+    .locationiq-result-item:hover {
+        background: #f9fafb;
+    }
+    .locationiq-result-item:last-child {
+        border-bottom: none;
+    }
+    .locationiq-result-name {
+        font-weight: 600;
+        color: #1f2937;
+        margin-bottom: 0.25rem;
+    }
+    .locationiq-result-address {
+        font-size: 0.875rem;
+        color: #6b7280;
+    }
+    .locationiq-loading {
+        padding: 1rem;
+        text-align: center;
+        color: #6b7280;
+        font-size: 0.875rem;
+    }
+    .marker-info {
+        background: white;
+        border-radius: 0.5rem;
+        padding: 0.75rem;
+        margin-top: 0.5rem;
+        border: 2px solid #3b82f6;
+        display: none;
+    }
+    .marker-info.active {
+        display: block;
+    }
+    .coordinate-display {
+        font-family: monospace;
+        background: #f3f4f6;
+        padding: 0.5rem;
+        border-radius: 0.25rem;
+        font-size: 0.875rem;
+        margin-top: 0.5rem;
+    }
+    .area-info {
+        background: white;
+        border-radius: 0.5rem;
+        padding: 0.75rem;
+        margin-top: 0.5rem;
+        border: 2px solid #10b981;
+        display: none;
+    }
+    .area-info.active {
+        display: block;
+    }
+    .area-display {
+        font-family: monospace;
+        background: #f0fdf4;
+        padding: 0.5rem;
+        border-radius: 0.25rem;
+        font-size: 0.875rem;
+        margin-top: 0.5rem;
+        color: #065f46;
+    }
+    .draw-controls {
+        background: white;
+        border-radius: 0.5rem;
+        padding: 1rem;
+        margin-top: 0.5rem;
+        border: 2px solid #8b5cf6;
+    }
+    .draw-btn {
+        width: 100%;
+        padding: 0.75rem;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        transition: all 0.3s;
+        margin-bottom: 0.5rem;
+        cursor: pointer;
+        border: none;
+    }
+    .draw-btn.polygon {
+        background: #8b5cf6;
+        color: white;
+    }
+    .draw-btn.polygon:hover {
+        background: #7c3aed;
+    }
+    .draw-btn.delete {
+        background: #ef4444;
+        color: white;
+    }
+    .draw-btn.delete:hover {
+        background: #dc2626;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Tokens pour JavaScript -->
+<script>
+    const MAPBOX_TOKEN = '{{ mapbox_token }}';
+    const LOCATIONIQ_API_KEY = 'pk.73485bb1846f5a96d8a0dd24fc100f13';
+</script>
+
+<div class="container mx-auto px-4 py-8 max-w-7xl">
+    <!-- Breadcrumb -->
+    <nav class="mb-6 text-sm">
+        <ol class="flex items-center gap-2 text-gray-600">
+            <li><a href="{% url 'port-list' %}" class="hover:text-blue-600">{% trans "Ports" %}</a></li>
+            <li>
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+                </svg>
+            </li>
+            <li class="text-gray-800 font-semibold">{{ title }}</li>
+        </ol>
+    </nav>
+    
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Formulaire -->
+        <div class="bg-white rounded-xl shadow-lg p-8">
+            <h1 class="text-3xl font-bold text-gray-800 mb-6">{{ title }}</h1>
+            
+            <form method="post" enctype="multipart/form-data" class="space-y-8" id="portForm">
+                {% csrf_token %}
+                
+                {% if form.non_field_errors %}
+                    <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded">
+                        <div class="flex">
+                            <svg class="w-5 h-5 text-red-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                            </svg>
+                            <div class="text-red-700">
+                                {{ form.non_field_errors }}
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+                
+                <!-- Section: Informations du port -->
+                <div class="border-l-4 border-blue-500 pl-6">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4">
+                        {% trans "Informations du port" %}
+                    </h2>
+                    
+                    <div class="grid grid-cols-1 gap-6">
+                        <!-- Nom du port -->
+                        <div>
+                            <label for="{{ form.nom.id_for_label }}" class="block text-sm font-semibold text-gray-700 mb-2">
+                                {{ form.nom.label }} <span class="text-red-500">*</span>
+                            </label>
+                            {{ form.nom }}
+                            {% if form.nom.help_text %}
+                                <p class="mt-1 text-sm text-gray-500">{{ form.nom.help_text }}</p>
+                            {% endif %}
+                            {% if form.nom.errors %}
+                                <p class="mt-1 text-sm text-red-600">{{ form.nom.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Pays -->
+                        <div>
+                            <label for="{{ form.pays.id_for_label }}" class="block text-sm font-semibold text-gray-700 mb-2">
+                                {{ form.pays.label }} <span class="text-red-500">*</span>
+                            </label>
+                            {{ form.pays }}
+                            {% if form.pays.help_text %}
+                                <p class="mt-1 text-sm text-gray-500">{{ form.pays.help_text }}</p>
+                            {% endif %}
+                            {% if form.pays.errors %}
+                                <p class="mt-1 text-sm text-red-600">{{ form.pays.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Section: Coordonnées -->
+                <div class="border-l-4 border-green-500 pl-6">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4">
+                        {% trans "Coordonnées géographiques" %}
+                    </h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="{{ form.latitude.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                                {{ form.latitude.label }}
+                            </label>
+                            <div class="relative">
+                                {{ form.latitude }}
+                                <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                    <span class="text-gray-500">°N</span>
+                                </div>
+                            </div>
+                            {% if form.latitude.help_text %}
+                                <p class="mt-1 text-sm text-gray-500">{{ form.latitude.help_text }}</p>
+                            {% endif %}
+                            {% if form.latitude.errors %}
+                                <p class="mt-1 text-sm text-red-600">{{ form.latitude.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+                        
+                        <div>
+                            <label for="{{ form.longitude.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                                {{ form.longitude.label }}
+                            </label>
+                            <div class="relative">
+                                {{ form.longitude }}
+                                <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                    <span class="text-gray-500">°E</span>
+                                </div>
+                            </div>
+                            {% if form.longitude.help_text %}
+                                <p class="mt-1 text-sm text-gray-500">{{ form.longitude.help_text }}</p>
+                            {% endif %}
+                            {% if form.longitude.errors %}
+                                <p class="mt-1 text-sm text-red-600">{{ form.longitude.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    
+                    <div class="mt-4 bg-blue-50 border-l-4 border-blue-500 p-4 rounded-lg">
+                        <p class="text-sm text-blue-800">
+                            ℹ️ {% trans "Cliquez sur la carte pour positionner le port ou utilisez la barre de recherche pour trouver un emplacement." %}
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Boutons d'action -->
+                <div class="flex gap-4 pt-4 border-t">
+                    <button type="submit" id="submitBtn"
+                            class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg shadow-md transition flex items-center justify-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        {% if form.instance.pk %}{% trans "Creér" %}{% else %}{% trans "Mettre a jour " %}{% endif %}
+                    </button>
+                    <a href="{% if form.instance.pk %}{% url 'port-detail' form.instance.pk %}{% else %}{% url 'port-list' %}{% endif %}"
+                       class="flex-1 bg-white hover:bg-gray-100 text-gray-800 font-semibold px-6 py-3 border border-gray-300 rounded-lg shadow-sm transition flex items-center justify-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                        {% trans "Annuler" %}
+                    </a>
+                </div>
+            </form>
+        </div>
+        
+        <!-- Carte interactive -->
+        <div class="bg-white rounded-xl shadow-lg p-6">
+            <h2 class="text-xl font-bold text-gray-800 mb-4">
+                {% trans "Localisation du port" %}
+            </h2>
+            
+            <!-- Barre de recherche LocationIQ -->
+            <div class="mb-4">
+                <div class="locationiq-search-container">
+                    <input type="text" 
+                           id="locationiq-search" 
+                           class="locationiq-search-input" 
+                           placeholder="{% trans 'Rechercher un port ou une localisation...' %}"
+                           autocomplete="off">
+                    <div id="locationiq-results" class="locationiq-results"></div>
+                </div>
+            </div>
+            
+            <div id="map"></div>
+            
+            <!-- Informations sur le marqueur -->
+            <div id="marker-info" class="marker-info">
+                <p class="text-sm font-medium text-gray-700">
+                    {% trans "Coordonnées du port" %}:
+                </p>
+                <div id="selected-coords" class="coordinate-display">
+                    {% if form.latitude.value and form.longitude.value %}
+                        {% trans "Latitude" %}: {{ form.latitude.value|floatformat:6 }}°N
+                        <br>
+                        {% trans "Longitude" %}: {{ form.longitude.value|floatformat:6 }}°E
+                    {% else %}
+                        {% trans "Cliquez sur la carte pour positionner le port" %}
+                    {% endif %}
+                </div>
+                <div class="mt-2 flex justify-end">
+                    <button type="button" id="clear-marker" class="text-sm text-red-600 hover:text-red-800">
+                        {% trans "Effacer la position" %}
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Instructions -->
+            <div class="mt-4 bg-gray-50 border border-gray-200 rounded-lg p-4">
+                <p class="text-sm text-gray-700 font-semibold mb-2">💡 {% trans "Comment utiliser" %}:</p>
+                <ul class="text-xs text-gray-600 space-y-1">
+                    <li>• {% trans "Cliquez sur la carte pour positionner le port" %}</li>
+                    <li>• {% trans "Ou utilisez la barre de recherche pour trouver un emplacement" %}</li>
+                    <li>• {% trans "Le marqueur est déplaçable par glisser-déposer" %}</li>
+                    <li>• {% trans "Les coordonnées sont mises à jour automatiquement" %}</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    input[type="text"], 
+    input[type="number"],
+    select, 
+    textarea {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 2px solid #e5e7eb;
+        border-radius: 0.5rem;
+        font-size: 1rem;
+        transition: all 0.3s;
+    }
+    
+    input[type="text"]:focus, 
+    input[type="number"]:focus,
+    select:focus, 
+    textarea:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+    
+    input.error, select.error, textarea.error {
+        border-color: #ef4444;
+    }
+    
+    input[type="checkbox"] {
+        width: 1.25rem;
+        height: 1.25rem;
+        cursor: pointer;
+    }
+    
+    textarea {
+        min-height: 100px;
+        resize: vertical;
+    }
+</style>
+
+
+<script src='https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js'></script>
+<script>
+// ============================================
+// CONFIGURATION
+// ============================================
+mapboxgl.accessToken = MAPBOX_TOKEN;
+const LOCATIONIQ_API_KEY = 'pk.73485bb1846f5a96d8a0dd24fc100f13';
+
+let map;
+let supplierMarker = null;
+let isDraggingMarker = false;
+let searchTimeout = null;
+let currentSearchType = 'supplier';
+let isLoadingLocalites = false;
+
+// ============================================
+// INITIALISATION DE LA CARTE
+// ============================================
+function initMap() {
+    map = new mapboxgl.Map({
+        container: 'map-container',
+        style: 'mapbox://styles/mapbox/streets-v12',
+        center: [0, 20], // Centre du monde
+        zoom: 2
+    });
+
+    map.addControl(new mapboxgl.NavigationControl(), 'top-right');
+    map.addControl(new mapboxgl.FullscreenControl(), 'top-right');
+
+    // Gestion du changement de style de carte
+    const mapStyleSelect = document.getElementById('mapStyle');
+    mapStyleSelect.addEventListener('change', function() {
+        const selectedStyle = this.value;
+        map.setStyle(`mapbox://styles/mapbox/${selectedStyle}`);
+        
+        // Attendre que le nouveau style soit chargé avant de réajouter le marqueur
+        map.once('style.load', function() {
+            const lat = parseFloat(document.getElementById('id_latitude').value);
+            const lng = parseFloat(document.getElementById('id_longitude').value);
+            if (!isNaN(lat) && !isNaN(lng) && supplierMarker) {
+                // Recréer le marqueur après le changement de style
+                const el = document.createElement('div');
+                el.className = 'supplier-marker';
+                
+                supplierMarker.remove();
+                supplierMarker = new mapboxgl.Marker({
+                    element: el,
+                    draggable: true
+                })
+                .setLngLat([lng, lat])
+                .addTo(map);
+
+                supplierMarker.on('dragstart', () => {
+                    isDraggingMarker = true;
+                });
+
+                supplierMarker.on('dragend', function() {
+                    isDraggingMarker = false;
+                    const lngLat = supplierMarker.getLngLat();
+                    updateCoordinates(lngLat.lng, lngLat.lat);
+                });
+            }
+        });
+        
+        console.log(`🎨 Style de carte changé: ${selectedStyle}`);
+    });
+
+    // Événement de clic sur la carte
+    map.on('click', async function(e) {
+        if (!isDraggingMarker) {
+            await handleMapClick(e);
+        }
+    });
+
+    // Charger position existante si modification
+    const lat = parseFloat(document.getElementById('id_latitude').value);
+    const lng = parseFloat(document.getElementById('id_longitude').value);
+    if (!isNaN(lat) && !isNaN(lng)) {
+        addSupplierMarker(lng, lat);
+        map.flyTo({
+            center: [lng, lat],
+            zoom: 12,
+            essential: true
+        });
+    }
+}
+
+// ============================================
+// GESTION DES MARQUEURS
+// ============================================
+function addSupplierMarker(lng, lat) {
+    updateCoordinates(lng, lat);
+
+    if (supplierMarker) {
+        supplierMarker.setLngLat([lng, lat]);
+    } else {
+        const el = document.createElement('div');
+        el.className = 'supplier-marker';
+
+        supplierMarker = new mapboxgl.Marker({
+            element: el,
+            draggable: true
+        })
+        .setLngLat([lng, lat])
+        .addTo(map);
+
+        supplierMarker.on('dragstart', () => {
+            isDraggingMarker = true;
+        });
+
+        supplierMarker.on('dragend', function() {
+            isDraggingMarker = false;
+            const lngLat = supplierMarker.getLngLat();
+            updateCoordinates(lngLat.lng, lngLat.lat);
+        });
+    }
+
+    map.flyTo({
+        center: [lng, lat],
+        zoom: Math.max(map.getZoom(), 12),
+        essential: true
+    });
+}
+
+// ============================================
+// GÉOCODAGE INVERSE AVEC LOCATIONIQ
+// ============================================
+async function reverseGeocodeLocationIQ(lng, lat) {
+    try {
+        const url = `https://us1.locationiq.com/v1/reverse?` +
+            `key=${LOCATIONIQ_API_KEY}` +
+            `&lat=${lat}` +
+            `&lon=${lng}` +
+            `&format=json` +
+            `&addressdetails=1` +
+            `&accept-language=fr`;
+
+        const response = await fetch(url);
+
+        if (!response.ok) {
+            throw new Error(`Erreur API: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        const address = data.address || {};
+        const parts = [];
+
+        if (address.road) parts.push(address.road);
+        if (address.suburb || address.neighbourhood) {
+            parts.push(address.suburb || address.neighbourhood);
+        }
+        if (address.city || address.town || address.village) {
+            parts.push(address.city || address.town || address.village);
+        }
+        if (address.country) {
+            parts.push(address.country);
+        }
+
+        return parts.length > 0 ? parts.join(', ') : data.display_name;
+
+    } catch (error) {
+        console.error('Erreur lors du géocodage inverse:', error);
+        return `Position: ${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+    }
+}
+
+async function handleMapClick(e) {
+    const { lng, lat } = e.lngLat;
+
+    // Afficher un loader temporaire
+    const popup = new mapboxgl.Popup({ offset: 25 })
+        .setLngLat([lng, lat])
+        .setHTML(`
+            <div class="loading-indicator">
+                <div class="loading-spinner"></div>
+                Recherche de l'adresse...
+            </div>
+        `)
+        .addTo(map);
+
+    // Obtenir l'adresse
+    const address = await reverseGeocodeLocationIQ(lng, lat);
+
+    // Mettre à jour le popup
+    popup.setHTML(`
+        <div class="font-semibold mb-2">📍 Position sélectionnée</div>
+        <div class="text-sm text-gray-600">${address}</div>
+        <div class="text-xs text-gray-400 mt-2">
+            ${lat.toFixed(6)}, ${lng.toFixed(6)}
+        </div>
+    `);
+
+    // Placer le marqueur
+    addSupplierMarker(lng, lat);
+
+    console.log(`✅ Position sélectionnée: ${address}`);
+}
+
+// ============================================
+// RECHERCHE DE LIEUX AVEC LOCATIONIQ
+// ============================================
+async function searchLocationIQ(query) {
+    const searchResults = document.getElementById('search-results');
+
+    if (!query || query.length < 2) {
+        searchResults.style.display = 'none';
+        return;
+    }
+
+    searchResults.innerHTML = `
+        <div class="search-result-item">
+            <div class="loading-indicator">
+                <div class="loading-spinner"></div>
+                Recherche en cours...
+            </div>
+        </div>
+    `;
+    searchResults.style.display = 'block';
+
+    try {
+        const url = `https://us1.locationiq.com/v1/search?` +
+            `key=${LOCATIONIQ_API_KEY}` +
+            `&q=${encodeURIComponent(query)}` +
+            `&format=json` +
+            `&limit=10` +
+            `&addressdetails=1`;
+
+        const response = await fetch(url);
+
+        if (!response.ok) {
+            throw new Error(`Erreur API: ${response.status}`);
+        }
+
+        const data = await response.json();
+        displayLocationResults(data);
+
+    } catch (error) {
+        console.error('Erreur lors de la recherche LocationIQ:', error);
+        searchResults.innerHTML = `
+            <div class="no-results">
+                <svg class="w-5 h-5 inline mr-2 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                </svg>
+                Erreur lors de la recherche. Veuillez réessayer.
+            </div>
+        `;
+    }
+}
+
+function displayLocationResults(results) {
+    const searchResults = document.getElementById('search-results');
+
+    if (!results || results.length === 0) {
+        searchResults.innerHTML = `
+            <div class="no-results">
+                <svg class="w-5 h-5 inline mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                </svg>
+                Aucun lieu trouvé
+            </div>
+        `;
+        searchResults.style.display = 'block';
+        return;
+    }
+
+    searchResults.innerHTML = results.map(result => {
+        const address = result.address || {};
+        const name = result.display_name.split(',')[0];
+        const details = formatLocationDetails(address);
+        const icon = getLocationIcon(result.type);
+
+        return `
+            <div class="search-result-item" 
+                 data-lng="${result.lon}" 
+                 data-lat="${result.lat}"
+                 data-name="${escapeHtml(result.display_name)}">
+                <div class="flex items-start gap-3">
+                    <div class="text-2xl">${icon}</div>
+                    <div class="flex-1">
+                        <div class="search-result-name">${escapeHtml(name)}</div>
+                        <div class="search-result-details">${details}</div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    searchResults.style.display = 'block';
+
+    searchResults.querySelectorAll('.search-result-item').forEach(item => {
+        item.addEventListener('click', function() {
+            const lng = parseFloat(this.dataset.lng);
+            const lat = parseFloat(this.dataset.lat);
+            const name = this.dataset.name;
+
+            addSupplierMarker(lng, lat);
+
+            map.flyTo({
+                center: [lng, lat],
+                zoom: 14,
+                essential: true,
+                duration: 1500
+            });
+
+            searchResults.style.display = 'none';
+            document.getElementById('location-search').value = '';
+
+            console.log(`✅ Lieu sélectionné: ${name} (${lat}, ${lng})`);
+        });
+    });
+}
+
+function formatLocationDetails(address) {
+    const parts = [];
+
+    if (address.suburb || address.neighbourhood) {
+        parts.push(address.suburb || address.neighbourhood);
+    }
+    if (address.city || address.town || address.village) {
+        parts.push(address.city || address.town || address.village);
+    }
+    if (address.state) {
+        parts.push(address.state);
+    }
+    if (address.country) {
+        parts.push(address.country);
+    }
+
+    return parts.length > 0 ? parts.join(', ') : 'Monde';
+}
+
+function getLocationIcon(type) {
+    const icons = {
+        'city': '🏙️',
+        'town': '🏘️',
+        'village': '🏡',
+        'suburb': '🏠',
+        'neighbourhood': '📍',
+        'road': '🛣️',
+        'administrative': '🏛️',
+        'building': '🏢',
+        'country': '🌍'
+    };
+    return icons[type] || '📌';
+}
+
+// ============================================
+// RECHERCHE DE FOURNISSEURS
+// ============================================
+async function searchSuppliers(query) {
+    const searchResults = document.getElementById('search-results');
+
+    searchResults.innerHTML = `
+        <div class="search-result-item">
+            <div class="loading-indicator">
+                <div class="loading-spinner"></div>
+                Recherche de fournisseurs...
+            </div>
+        </div>
+    `;
+    searchResults.style.display = 'block';
+
+    try {
+        const response = await fetch(`/api/fournisseurs/search/?q=${encodeURIComponent(query)}`);
+        const data = await response.json();
+
+        if (!data.results || data.results.length === 0) {
+            searchResults.innerHTML = `
+                <div class="no-results">
+                    <svg class="w-5 h-5 inline mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                    </svg>
+                    Aucun fournisseur trouvé
+                </div>
+            `;
+            return;
+        }
+
+        searchResults.innerHTML = data.results.map(supplier => `
+            <div class="search-result-item" 
+                 data-lng="${supplier.longitude}" 
+                 data-lat="${supplier.latitude}">
+                <div class="flex items-start gap-3">
+                    <div class="text-2xl">👤</div>
+                    <div class="flex-1">
+                        <div class="search-result-name">${escapeHtml(supplier.nom)}</div>
+                        <div class="search-result-details">
+                            ${supplier.ville ? escapeHtml(supplier.ville) : ''}
+                            ${supplier.localite ? ' - ' + escapeHtml(supplier.localite) : ''}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+
+        searchResults.querySelectorAll('.search-result-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const lng = parseFloat(this.dataset.lng);
+                const lat = parseFloat(this.dataset.lat);
+
+                if (!isNaN(lng) && !isNaN(lat)) {
+                    addSupplierMarker(lng, lat);
+                    map.flyTo({
+                        center: [lng, lat],
+                        zoom: 14,
+                        essential: true
+                    });
+                }
+
+                searchResults.style.display = 'none';
+                document.getElementById('location-search').value = '';
+            });
+        });
+
+    } catch (error) {
+        console.error('Erreur lors de la recherche de fournisseurs:', error);
+        searchResults.innerHTML = `
+            <div class="no-results text-red-600">
+                Erreur lors de la recherche
+            </div>
+        `;
+    }
+}
+
+// ============================================
+// GESTION DES ONGLETS DE RECHERCHE
+// ============================================
+function initSearchTabs() {
+    const searchInput = document.getElementById('location-search');
+    const searchResults = document.getElementById('search-results');
+
+    document.querySelectorAll('.search-tab').forEach(tab => {
+        tab.addEventListener('click', function() {
+            document.querySelectorAll('.search-tab').forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
+
+            currentSearchType = this.dataset.type;
+
+            if (currentSearchType === 'supplier') {
+                searchInput.placeholder = '🔍 Rechercher un fournisseur...';
+            } else {
+                searchInput.placeholder = '🔍 Rechercher un lieu (ville, adresse, pays)...';
+            }
+
+            searchInput.value = '';
+            searchResults.innerHTML = '';
+            searchResults.style.display = 'none';
+        });
+    });
+
+    searchInput.addEventListener('input', function(e) {
+        clearTimeout(searchTimeout);
+        const query = e.target.value.trim();
+
+        if (query.length < 2) {
+            searchResults.style.display = 'none';
+            return;
+        }
+
+        searchTimeout = setTimeout(() => {
+            if (currentSearchType === 'supplier') {
+                searchSuppliers(query);
+            } else {
+                searchLocationIQ(query);
+            }
+        }, 300);
+    });
+
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.search-container')) {
+            searchResults.style.display = 'none';
+        }
+    });
+}
+
+// ============================================
+// MISE À JOUR DES COORDONNÉES
+// ============================================
+function updateCoordinates(lng, lat) {
+    const lngInput = document.getElementById('id_longitude');
+    const latInput = document.getElementById('id_latitude');
+
+    lngInput.value = lng ? parseFloat(lng).toFixed(6) : '';
+    latInput.value = lat ? parseFloat(lat).toFixed(6) : '';
+
+    lngInput.classList.remove('error');
+    latInput.classList.remove('error');
+
+    const lngError = lngInput.parentElement.querySelector('.error-message');
+    const latError = latInput.parentElement.querySelector('.error-message');
+
+    if (lngError) lngError.remove();
+    if (latError) latError.remove();
+}
+
+// ============================================
+// CHARGEMENT DES LOCALITÉS
+// ============================================
+function loadLocalites(villeId) {
+    const localiteSelect = document.getElementById('id_localite');
+    const loadingIndicator = document.getElementById('localite-loading');
+
+    if (isLoadingLocalites || !villeId) return;
+
+    const currentValue = localiteSelect.value;
+    localiteSelect.innerHTML = '<option value="">---------</option>';
+
+    isLoadingLocalites = true;
+    loadingIndicator.classList.remove('hidden');
+    localiteSelect.disabled = true;
+
+    fetch(`{% url 'ajax_load_localites' %}?ville_id=${villeId}`)
+        .then(response => response.json())
+        .then(data => {
+            localiteSelect.innerHTML = '<option value="">---------</option>';
+
+            if (data.localites && data.localites.length > 0) {
+                data.localites.forEach(localite => {
+                    const option = document.createElement('option');
+                    option.value = localite.id;
+                    option.textContent = localite.nom;
+                    localiteSelect.appendChild(option);
+                });
+
+                if (currentValue) {
+                    localiteSelect.value = currentValue;
+                }
+            }
+        })
+        .catch(error => console.error('Erreur:', error))
+        .finally(() => {
+            loadingIndicator.classList.add('hidden');
+            localiteSelect.disabled = false;
+            isLoadingLocalites = false;
+        });
+}
+
+// ============================================
+// UTILITAIRES
+// ============================================
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+// ============================================
+// INITIALISATION
+// ============================================
+document.addEventListener('DOMContentLoaded', function() {
+    initMap();
+    initSearchTabs();
+
+    const villeSelect = document.getElementById('id_ville');
+    if (villeSelect) {
+        villeSelect.addEventListener('change', function() {
+            loadLocalites(this.value);
+        });
+
+        {% if ville_preselected %}
+            villeSelect.value = '{{ ville_preselected }}';
+            loadLocalites('{{ ville_preselected }}');
+        {% elif form.ville.value %}
+            loadLocalites('{{ form.ville.value }}');
+        {% else %}
+            if (villeSelect.value) {
+                loadLocalites(villeSelect.value);
+            }
+        {% endif %}
+    }
+
+    console.log('✅ Carte mondiale initialisée avec succès');
+    console.log('🌍 Recherche disponible partout dans le monde');
+    console.log('🎨 Styles de carte disponibles: Streets, Outdoors, Light, Dark, Satellite, Satellite Streets');
+});
+</script>
+{% endblock %}

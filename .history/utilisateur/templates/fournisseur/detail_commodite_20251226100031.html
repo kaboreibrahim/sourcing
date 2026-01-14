@@ -1,0 +1,424 @@
+<!-- templates/fournisseur/detail_commodite.html -->
+{% extends 'layouts/base_fournisseur.html' %}
+{% load humanize %}
+
+{% block extra_css %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+    .header-banner {
+        padding: 2rem;
+        border-radius: 15px;
+        color: white;
+        margin-bottom: 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .header-banner::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(0,0,0,0.2) 100%);
+    }
+    
+    .header-content {
+        position: relative;
+        z-index: 1;
+    }
+    
+    .stat-card {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        height: 100%;
+        transition: all 0.3s;
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+    
+    .stat-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .stat-value {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #2c3e50;
+        margin: 0;
+    }
+    
+    .stat-label {
+        color: #6c757d;
+        font-size: 0.9rem;
+        margin-top: 0.5rem;
+    }
+    
+    .chart-container {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        margin-bottom: 2rem;
+    }
+    
+    .chart-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid #f0f0f0;
+    }
+    
+    .chart-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #2c3e50;
+        margin: 0;
+    }
+    
+    .table-container {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .sample-row {
+        transition: all 0.2s;
+    }
+    
+    .sample-row:hover {
+        background-color: #f8f9fa;
+        transform: scale(1.01);
+    }
+    
+    .badge-quality {
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: 600;
+    }
+    
+    .back-btn {
+        background: rgba(255, 255, 255, 0.2);
+        border: 2px solid white;
+        color: white;
+        padding: 0.5rem 1.5rem;
+        border-radius: 25px;
+        transition: all 0.3s;
+    }
+    
+    .back-btn:hover {
+        background: white;
+        color: inherit;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <!-- En-tête avec couleur de la commodité -->
+    <div class="header-banner" style="background: linear-gradient(135deg, {{ commodite.couleur }} 0%, {{ commodite.couleur }}dd 100%);">
+        <div class="header-content">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <a href="{% url 'accueil' %}" class="btn back-btn mb-3">
+                        <i class="fas fa-arrow-left me-2"></i>Retour
+                    </a>
+                    <h1 class="display-4 mb-2">{{ commodite.nom }}</h1>
+                    <p class="lead mb-0">
+                        <span class="badge bg-light text-dark">
+                            {{ commodite.get_type_commodite_display }}
+                        </span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistiques globales -->
+    <div class="row g-4 mb-4">
+        <div class="col-lg-3 col-md-6">
+            <div class="stat-card">
+                <div class="stat-icon" style="background: {{ commodite.couleur }}22; color: {{ commodite.couleur }};">
+                    <i class="fas fa-weight-hanging"></i>
+                </div>
+                <h3 class="stat-value">{{ stats.quantite_totale|floatformat:2 }}</h3>
+                <p class="stat-label">Tonnes totales</p>
+            </div>
+        </div>
+        
+        <div class="col-lg-3 col-md-6">
+            <div class="stat-card">
+                <div class="stat-icon" style="background: #28a74522; color: #28a745;">
+                    <i class="fas fa-dollar-sign"></i>
+                </div>
+                <h3 class="stat-value">{{ stats.prix_moyen|floatformat:0|intcomma }}</h3>
+                <p class="stat-label">Prix moyen (FCFA/T)</p>
+            </div>
+        </div>
+        
+        <div class="col-lg-3 col-md-6">
+            <div class="stat-card">
+                <div class="stat-icon" style="background: #007bff22; color: #007bff;">
+                    <i class="fas fa-flask"></i>
+                </div>
+                <h3 class="stat-value">{{ stats.nombre_echantillons }}</h3>
+                <p class="stat-label">Échantillons</p>
+            </div>
+        </div>
+        
+        <div class="col-lg-3 col-md-6">
+            <div class="stat-card">
+                <div class="stat-icon" style="background: #fd7e1422; color: #fd7e14;">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h3 class="stat-value">
+                    {{ stats.prix_min|floatformat:0|intcomma }} - {{ stats.prix_max|floatformat:0|intcomma }}
+                </h3>
+                <p class="stat-label">Fourchette prix (FCFA)</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Graphiques -->
+    <div class="row g-4 mb-4">
+        <!-- Graphique d'évolution des quantités -->
+        <div class="col-lg-6">
+            <div class="chart-container">
+                <div class="chart-header">
+                    <h5 class="chart-title">
+                        <i class="fas fa-chart-area me-2"></i>Évolution de la disponibilité
+                    </h5>
+                </div>
+                <canvas id="quantityChart" height="300"></canvas>
+            </div>
+        </div>
+        
+        <!-- Graphique d'évolution des prix -->
+        <div class="col-lg-6">
+            <div class="chart-container">
+                <div class="chart-header">
+                    <h5 class="chart-title">
+                        <i class="fas fa-chart-line me-2"></i>Évolution des prix
+                    </h5>
+                </div>
+                <canvas id="priceChart" height="300"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tableau des échantillons -->
+    <div class="table-container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h5 class="mb-0">
+                <i class="fas fa-list me-2"></i>Liste des échantillons
+            </h5>
+            <span class="badge bg-primary">{{ echantillons.count }} échantillon{{ echantillons.count|pluralize }}</span>
+        </div>
+        
+        {% if echantillons %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>Référence</th>
+                        <th>Date</th>
+                        <th>Quantité (T)</th>
+                        <th>Prix (FCFA/T)</th>
+                        <th>Agent</th>
+                        <th>Qualité</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ech in echantillons %}
+                    <tr class="sample-row">
+                        <td>
+                            <strong>{{ ech.reference }}</strong>
+                        </td>
+                        <td>
+                            <i class="far fa-calendar me-1"></i>
+                            {{ ech.date_creation|date:"d/m/Y H:i" }}
+                        </td>
+                        <td>
+                            <span class="badge bg-success">
+                                {{ ech.quantite|floatformat:2 }} T
+                            </span>
+                        </td>
+                        <td>
+                            <strong style="color: #007bff;">
+                                {{ ech.prix|floatformat:0|intcomma }} FCFA
+                            </strong>
+                        </td>
+                        <td>
+                            <i class="fas fa-user me-1"></i>
+                            {{ ech.utilisateur.get_full_name }}
+                        </td>
+                        <td>
+                            {% if ech.est_conforme == True %}
+                                <span class="badge badge-quality bg-success">
+                                    <i class="fas fa-check-circle me-1"></i>Conforme
+                                </span>
+                            {% elif ech.est_conforme == False %}
+                                <span class="badge badge-quality bg-danger">
+                                    <i class="fas fa-times-circle me-1"></i>Non conforme
+                                </span>
+                            {% else %}
+                                <span class="badge badge-quality bg-secondary">
+                                    <i class="fas fa-question-circle me-1"></i>Non évalué
+                                </span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center py-5 text-muted">
+            <i class="fas fa-inbox fa-3x mb-3"></i>
+            <p>Aucun échantillon disponible pour cette commodité.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+    // Données pour les graphiques
+    const chartData = {{ chart_data|safe }};
+    const commoditeColor = '{{ commodite.couleur }}';
+    
+    // Configuration commune
+    const commonOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                display: true,
+                position: 'top',
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                grid: {
+                    color: 'rgba(0, 0, 0, 0.05)'
+                }
+            },
+            x: {
+                grid: {
+                    display: false
+                }
+            }
+        }
+    };
+    
+    // Graphique des quantités
+    const ctxQuantity = document.getElementById('quantityChart').getContext('2d');
+    new Chart(ctxQuantity, {
+        type: 'line',
+        data: {
+            labels: chartData.dates,
+            datasets: [{
+                label: 'Quantité par échantillon (T)',
+                data: chartData.quantites,
+                borderColor: commoditeColor,
+                backgroundColor: commoditeColor + '33',
+                borderWidth: 3,
+                fill: true,
+                tension: 0.4,
+                pointRadius: 5,
+                pointHoverRadius: 7,
+                pointBackgroundColor: commoditeColor,
+                pointBorderColor: '#fff',
+                pointBorderWidth: 2
+            }, {
+                label: 'Quantité cumulée (T)',
+                data: chartData.quantites_cumulees,
+                borderColor: '#28a745',
+                backgroundColor: '#28a74533',
+                borderWidth: 3,
+                fill: true,
+                tension: 0.4,
+                pointRadius: 5,
+                pointHoverRadius: 7,
+                pointBackgroundColor: '#28a745',
+                pointBorderColor: '#fff',
+                pointBorderWidth: 2
+            }]
+        },
+        options: {
+            ...commonOptions,
+            plugins: {
+                ...commonOptions.plugins,
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return context.dataset.label + ': ' + context.parsed.y.toFixed(2) + ' T';
+                        }
+                    }
+                }
+            }
+        }
+    });
+    
+    // Graphique des prix
+    const ctxPrice = document.getElementById('priceChart').getContext('2d');
+    new Chart(ctxPrice, {
+        type: 'bar',
+        data: {
+            labels: chartData.dates,
+            datasets: [{
+                label: 'Prix (FCFA/T)',
+                data: chartData.prix,
+                backgroundColor: '#007bff',
+                borderColor: '#0056b3',
+                borderWidth: 2,
+                borderRadius: 8,
+                hoverBackgroundColor: '#0056b3'
+            }]
+        },
+        options: {
+            ...commonOptions,
+            plugins: {
+                ...commonOptions.plugins,
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return 'Prix: ' + context.parsed.y.toLocaleString('fr-FR') + ' FCFA/T';
+                        }
+                    }
+                }
+            }
+        }
+    });
+    
+    // Animation d'entrée
+    document.addEventListener('DOMContentLoaded', function() {
+        const elements = document.querySelectorAll('.stat-card, .chart-container, .table-container');
+        elements.forEach((el, index) => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            setTimeout(() => {
+                el.style.transition = 'all 0.5s ease';
+                el.style.opacity = '1';
+                el.style.transform = 'translateY(0)';
+            }, index * 100);
+        });
+    });
+</script>
+{% endblock %}

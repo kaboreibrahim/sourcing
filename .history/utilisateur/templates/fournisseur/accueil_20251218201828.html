@@ -1,0 +1,41 @@
+<!-- templates/fournisseur/mes_commodites.html -->
+{% extends 'layouts/base_fournisseur.html' %}
+{% load humanize %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Mes Commodités</h2>
+    <div class="row">
+        {% for fourn_comm in commodites %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">{{ fourn_comm.commodite.nom }}</h5>
+                    <div class="mb-2">
+                        <span class="badge" style="background-color: {{ fourn_comm.commodite.coulere }}; color: white;">
+                            {{ fourn_comm.commodite.get_type_commodite_display }}
+                        </span>
+                    </div>
+                    <p class="card-text">
+                        <strong>Quantité disponible:</strong> 
+                        {{ fourn_comm.quantite_disponible|default:"0" }} kg<br>
+                        <strong>Prix unitaire:</strong> 
+                        {{ fourn_comm.prix_unitaire|default:"0"|floatformat:0 }} FCFA/kg
+                    </p>
+                    {% comment %} <a href="{% url 'detail_commodite' fourn_comm.commodite.id %}" 
+                       class="btn btn-primary">
+                        Voir les détails
+                    </a> {% endcomment %}
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">
+                Aucune commodité enregistrée pour le moment.
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
