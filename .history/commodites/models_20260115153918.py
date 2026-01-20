@@ -29,11 +29,11 @@ class Commodite(SafeDeleteModel):
         max_length=150,
         help_text="Type de produit agricole (ex: Cacao, Café, Noix de cajou, etc.)"
     )
-    couleur = ColorField(
-        _("Couleur"),
-        default='#FF0000',
-        format='hex',
-        help_text="Couleur pour l'affichage sur la carte"
+    couleur = models.CharField(
+        max_length=7, 
+        default='#FF0000', 
+        verbose_name=_("Couleur"),
+        help_text=_("Couleur d'affichage pour cette commodité")
     )
     
     created_at = models.DateTimeField(
@@ -128,6 +128,8 @@ class FournisseurCommodite(SafeDeleteModel):
             models.Index(fields=['fournisseur']),
             models.Index(fields=['commodite']),
         ]
+
+    
 
     def __str__(self):
         return f"{self.fournisseur.nom} - {self.commodite.nom}"

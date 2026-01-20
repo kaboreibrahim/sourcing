@@ -27,9 +27,13 @@ SECRET_KEY = "django-insecure-%$=ojq4m%lt$vxt16%9fu@vsah&t&fhy5u6m=*9(u^q#2dqvil
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True  # Temporairement en True pour le débogage
 
+ALLOWED_HOSTS = [
+    "127.0.0.1",
+    "localhost",
+    "4owq6v7mi31e.share.zrok.io",  # ton domaine zrok
+]
 
 
-ALLOWED_HOSTS = ['*']
 # DEBUG = False
 
 # ALLOWED_HOSTS = ['sourcing.empotage-oils-of-africa.net']
@@ -251,16 +255,13 @@ MESSAGE_TAGS = {
 SITE_NAME = 'Sourcing Platform'
 
 
+
+
+
+
+# settings.py
+
 CSRF_TRUSTED_ORIGINS = [
     "https://127.0.0.1:8000",  # si tu veux tester en local
-    "https://wmggcrg8lh3v.share.zrok.io",  # l'URL publique générée par zrok
+    "https://4owq6v7mi31e.share.zrok.io",  # l'URL publique générée par zrok
 ]
-
-
-ALLOWED_HOSTS = [
-    "127.0.0.1",
-    "localhost",
-    "wmggcrg8lh3v.share.zrok.io",  # ton domaine zrok
-]
-
- 

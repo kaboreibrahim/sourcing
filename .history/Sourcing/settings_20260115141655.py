@@ -257,10 +257,5 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 
 
-ALLOWED_HOSTS = [
-    "127.0.0.1",
-    "localhost",
-    "wmggcrg8lh3v.share.zrok.io",  # ton domaine zrok
-]
 
  

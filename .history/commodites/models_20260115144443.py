@@ -4,7 +4,7 @@ from safedelete.models import SafeDeleteModel, SOFT_DELETE_CASCADE
 from simple_history.models import HistoricalRecords
 import uuid
 import random
-
+from colorfield.fields import ColorField
 
 class Commodite(SafeDeleteModel):
     """
@@ -29,14 +29,11 @@ class Commodite(SafeDeleteModel):
         max_length=150,
         help_text="Type de produit agricole (ex: Cacao, Café, Noix de cajou, etc.)"
     )
-    
-    couleur = models.CharField(
+    couleur = ColorField(
         _("Couleur"),
-        max_length=7,  # Format #RRGGBB
-        default='#000000',
-        help_text="Couleur pour l'affichage sur la carte (format hexadécimal)"
+        format='hex',
+        help_text="Couleur pour l'affichage sur la carte"
     )
-    
     
     created_at = models.DateTimeField(
         _("Date de création"),
@@ -88,7 +85,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from safedelete.models import SafeDeleteModel, SOFT_DELETE_CASCADE
 import uuid
-
+from colorfield.fields import ColorField
 
 class FournisseurCommodite(SafeDeleteModel):
     """
@@ -130,6 +127,8 @@ class FournisseurCommodite(SafeDeleteModel):
             models.Index(fields=['fournisseur']),
             models.Index(fields=['commodite']),
         ]
+
+    
 
     def __str__(self):
         return f"{self.fournisseur.nom} - {self.commodite.nom}"

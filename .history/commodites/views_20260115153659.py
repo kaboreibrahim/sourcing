@@ -162,7 +162,7 @@ class CommoditeCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     """
     model = Commodite
     template_name = 'commodite_form.html'
-    fields = ['nom']
+    fields = ['nom','couleur']
     success_message = _("La commodité %(nom)s a été créée avec succès")
     
     def get_success_url(self):

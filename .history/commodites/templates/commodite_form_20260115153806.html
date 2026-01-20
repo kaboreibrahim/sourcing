@@ -169,37 +169,33 @@
 </style>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const colorInput = document.getElementById('id_couleur');
-        const colorTextInput = document.getElementById('id_couleur_text');
-        const colorPreview = document.getElementById('color-preview');
-        const colorPresets = document.querySelectorAll('.color-preset');
-        
-        // Fonction pour mettre à jour tous les éléments
-        function updateColor(color) {
-            colorInput.value = color;
-            colorTextInput.value = color.toUpperCase();
-            colorPreview.style.backgroundColor = color;
-        }
-        
-        // Événement sur le color picker natif
-        colorInput.addEventListener('input', function() {
-            updateColor(this.value);
-        });
-        
-        // Événement sur les couleurs prédéfinies
-        colorPresets.forEach(function(preset) {
-            preset.addEventListener('click', function(e) {
-                e.preventDefault();
-                const color = this.getAttribute('data-color');
-                updateColor(color);
-            });
-        });
-        
-        // Initialiser avec la valeur actuelle
-        if (colorInput.value) {
-            updateColor(colorInput.value);
-        }
+document.addEventListener('DOMContentLoaded', function() {
+    // Gestion du sélecteur de couleur
+    const colorInput = document.getElementById('id_couleur');
+    const colorText = document.getElementById('id_couleur_text');
+    const colorPreview = document.getElementById('color-preview');
+    
+    // Mise à jour lors du changement de couleur
+    colorInput.addEventListener('input', function() {
+        colorText.value = this.value;
+        colorPreview.style.backgroundColor = this.value;
     });
+    
+    // Gestion des couleurs prédéfinies
+    document.querySelectorAll('.color-preset').forEach(button => {
+        button.addEventListener('click', function() {
+            const color = this.getAttribute('data-color');
+            colorInput.value = color;
+            colorText.value = color;
+            colorPreview.style.backgroundColor = color;
+        });
+    });
+    
+    // Initialisation
+    if (colorInput.value) {
+        colorText.value = colorInput.value;
+        colorPreview.style.backgroundColor = colorInput.value;
+    }
+});
 </script>
 {% endblock %}

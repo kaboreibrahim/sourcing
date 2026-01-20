@@ -4,7 +4,7 @@ from safedelete.models import SafeDeleteModel, SOFT_DELETE_CASCADE
 from simple_history.models import HistoricalRecords
 import uuid
 import random
-
+from colorfield.fields import ColorField
 
 class Commodite(SafeDeleteModel):
     """
@@ -86,7 +86,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from safedelete.models import SafeDeleteModel, SOFT_DELETE_CASCADE
 import uuid
-
+from colorfield.fields import ColorField
 
 class FournisseurCommodite(SafeDeleteModel):
     """
@@ -128,6 +128,8 @@ class FournisseurCommodite(SafeDeleteModel):
             models.Index(fields=['fournisseur']),
             models.Index(fields=['commodite']),
         ]
+
+    
 
     def __str__(self):
         return f"{self.fournisseur.nom} - {self.commodite.nom}"

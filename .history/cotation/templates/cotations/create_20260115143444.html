@@ -1059,9 +1059,9 @@
                             <i class="fas fa-box" aria-hidden="true"></i>
                             Détails du produit
                         </h5>
-                        
-                        <div class="form-row two-columns">
-                            <div class="form-field-wrapper">
+
+                        <div class="form-row">
+                            <div class="form-field-wrapper half-width">
                                 <label for="{{ form.commodite.id_for_label }}" class="form-label required-field">
                                     {{ form.commodite.label }}
                                     <span class="field-tooltip" data-tooltip="Sélectionnez le type de produit">
@@ -1081,7 +1081,7 @@
                                 {% endif %}
                             </div>
 
-                            <div class="form-field-wrapper">
+                            <div class="form-field-wrapper half-width">
                                 <label for="{{ form.quantite.id_for_label }}" class="form-label required-field">
                                     {{ form.quantite.label }}
                                 </label>
@@ -1098,29 +1098,31 @@
                             </div>
                         </div>
 
-                        <div class="form-field-wrapper">
-                            <label for="{{ form.type_conditionnement.id_for_label }}" class="form-label required-field">
-                                {{ form.type_conditionnement.label }}
-                                <span class="field-tooltip" data-tooltip="Type de conteneur ou emballage">
-                                    <i class="fas fa-info-circle" aria-hidden="true"></i>
-                                    <span class="sr-only">Information: Type de conteneur ou emballage</span>
-                                </span>
-                            </label>
-                            <div class="has-icon">
-                                <i class="fas fa-boxes input-icon" aria-hidden="true"></i>
-                                {{ form.type_conditionnement }}
-                            </div>
-                            <small class="form-text">Type de conteneur ou de conditionnement</small>
-                            {% if form.type_conditionnement.errors %}
-                                <div class="invalid-feedback d-block" role="alert">
-                                    <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
-                                    {{ form.type_conditionnement.errors.0 }}
+                        <div class="form-row">
+                            <div class="form-field-wrapper full-width">
+                                <label for="{{ form.type_conditionnement.id_for_label }}" class="form-label required-field">
+                                    {{ form.type_conditionnement.label }}
+                                    <span class="field-tooltip" data-tooltip="Type de conteneur ou emballage">
+                                        <i class="fas fa-info-circle" aria-hidden="true"></i>
+                                        <span class="sr-only">Information: Type de conteneur ou emballage</span>
+                                    </span>
+                                </label>
+                                <div class="has-icon">
+                                    <i class="fas fa-boxes input-icon" aria-hidden="true"></i>
+                                    {{ form.type_conditionnement }}
                                 </div>
-                            {% endif %}
+                                <small class="form-text">Type de conteneur ou de conditionnement</small>
+                                {% if form.type_conditionnement.errors %}
+                                    <div class="invalid-feedback d-block" role="alert">
+                                        <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
+                                        {{ form.type_conditionnement.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
                         </div>
 
-                        <div class="form-row two-columns">
-                            <div class="form-field-wrapper">
+                        <div class="form-row">
+                            <div class="form-field-wrapper half-width">
                                 <label for="{{ form.incoterm.id_for_label }}" class="form-label required-field">
                                     {{ form.incoterm.label }}
                                     <span class="field-tooltip" data-tooltip="Termes commerciaux internationaux (FOB, CIF, etc.)">
@@ -1140,14 +1142,24 @@
                                     </div>
                                 {% endif %}
                             </div>
-                            <div class="form-field-wrapper">
+
+                            <div class="form-field-wrapper half-width">
+                                <div class="form-group">
+                                    <label for="{{ form.target_price_currency.id_for_label }}">Devise du prix cible</label>
+                                    {{ form.target_price_currency }}
+                                    {% if form.target_price_currency.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.target_price_currency.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
                                 <label for="{{ form.target_price.id_for_label }}" class="form-label required-field">
                                     {{ form.target_price.label }}
                                 </label>
-                                <div class="input-group" style="display: flex; gap: 10px;">
+                                <div class="input-group">
                                     {{ form.target_price }}
-                                    <div style="width: 10px;"></div>  
-                                    {{ form.target_price_currency }}
                                 </div>
                                 <small class="form-text">Prix cible par tonne</small>
                                 {% if form.target_price.errors %}
@@ -1156,19 +1168,11 @@
                                         {{ form.target_price.errors.0 }}
                                     </div>
                                 {% endif %}
-                                {% if form.target_price_currency.errors %}
-                                    <div class="text-danger">
-                                        {% for error in form.target_price_currency.errors %}
-                                            {{ error }}
-                                        {% endfor %}
-                                    </div>
-                                {% endif %}
                             </div>
-                             
                         </div>
 
-                        <div class="form-row two-columns">
-                            <div class="form-field-wrapper">
+                        <div class="form-row">
+                            <div class="form-field-wrapper half-width">
                                 <label for="{{ form.pol.id_for_label }}" class="form-label">
                                     {{ form.pol.label }}
                                 </label>
@@ -1185,7 +1189,7 @@
                                 {% endif %}
                             </div>
 
-                            <div class="form-field-wrapper">
+                            <div class="form-field-wrapper half-width">
                                 <label for="{{ form.pod.id_for_label }}" class="form-label">
                                     {{ form.pod.label }}
                                 </label>
@@ -1196,13 +1200,6 @@
                                 <small class="form-text">Port de déchargement (optionnel)</small>
                                 {% if form.pod.errors %}
                                     <div class="invalid-feedback d-block" role="alert">
-                                        <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
-                                        {{ form.pod.errors.0 }}
-                                    </div>
-                                {% endif %}
-                            </div>
-                        </div>
-                    </div>
 
                     <!-- Step 3: Confirmation -->
                     <div class="form-step" data-step="3" role="tabpanel" aria-labelledby="step-3-label">
@@ -1942,4 +1939,3 @@
     }
 })();
 </script>
-{% endblock %}

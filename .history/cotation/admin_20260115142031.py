@@ -21,7 +21,7 @@ class DemandeCotationAdmin(admin.ModelAdmin):
         ('Détails de la demande', {
             'fields': (
                 'commodite', 'quantite', 'type_conditionnement',
-                'incoterm', 'pol', 'pod', 'target_price','target_price_currency'
+                'incoterm', 'pol', 'pod', 'target_price','target_price'
             )
         }),
         ('Statut', {

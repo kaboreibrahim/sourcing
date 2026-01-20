@@ -25,11 +25,11 @@ from django.utils.translation import gettext_lazy as _
 SECRET_KEY = "django-insecure-%$=ojq4m%lt$vxt16%9fu@vsah&t&fhy5u6m=*9(u^q#2dqvil"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = True  # Temporairement en True pour le débogage
+
+
 
 ALLOWED_HOSTS = ['*']
-
-
 # DEBUG = False
 
 # ALLOWED_HOSTS = ['sourcing.empotage-oils-of-africa.net']
@@ -47,22 +47,25 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.humanize",
     # Applications du projet
-    "utilisateur",
-    "fournisseurs",
-    "villes",
-    "zones",
-    "commodites",
-    "echantillonnages",
-    "Pays",
-    "port",
-    "colorfield",
+    'utilisateur',
+    'fournisseurs',
+    'villes',
+    'zones',
+    'commodites',
+    'echantillonnages',
+    'Pays',
+    'port',
+    'website',
+    'cotation',
 
     # Applications tierces
     'crispy_bootstrap5',
+    'crispy_forms',
     'safedelete',
     'corsheaders',
     'simple_history',
     'widget_tweaks',
+    "colorfield",
 
     # Authentification
     'django_otp',
@@ -79,14 +82,18 @@ AUTH_USER_MODEL = 'utilisateur.Utilisateur'
 
 
 MIDDLEWARE = [
-    "django.middleware.security.SecurityMiddleware",
-    "django.contrib.sessions.middleware.SessionMiddleware",
-    "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
-    "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "django.contrib.messages.middleware.MessageMiddleware",
-    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # WhiteNoise doit être juste après SecurityMiddleware
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+# Configuration de WhiteNoise
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 ROOT_URLCONF = "Sourcing.urls"
 
@@ -101,7 +108,9 @@ TEMPLATES = [
             os.path.join(BASE_DIR, 'zones/templates'),
             os.path.join(BASE_DIR, 'commodites/templates'),
             os.path.join(BASE_DIR, 'echantillonnages/templates'),
-            ],
+            os.path.join(BASE_DIR, 'website/templates'),
+            os.path.join(BASE_DIR, 'cotation/templates'),           
+        ],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -133,6 +142,13 @@ DATABASES = {
         },
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -178,25 +194,36 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = '/static/'  # URL pour accéder aux fichiers statiques
+# Configuration des fichiers statiques
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# Emplacement des fichiers statiques dans le projet
+# Dossiers où Django va chercher les fichiers statiques
 STATICFILES_DIRS = [
-    BASE_DIR / "static",
+    os.path.join(BASE_DIR, 'static'),
 ]
 
+# Configuration pour les médias (fichiers uploadés par les utilisateurs)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-# Dossier où Django stockera les fichiers téléchargés
-MEDIA_URL = 'medias/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'medias')
+# Configuration pour le stockage des fichiers statiques en production
+if not DEBUG:
+    # Utilisation de WhiteNoise avec compression et mise en cache
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+    WHITENOISE_USE_FINDERS = True
+    WHITENOISE_MANIFEST_STRICT = False
+    WHITENOISE_ALLOW_ALL_ORIGINS = True
+
+# Configuration de Crispy Forms
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 # Configuration Mapbox
 MAPBOX_ACCESS_TOKEN = 'pk.eyJ1IjoiaWJyYWsiLCJhIjoiY21oYnV4M3M5MDZqMTJyc2E0enFpbTlwaCJ9.OH_RYh--XO3vn363pKRlRg'
 
 
-# Dossier où Django collectera tous les fichiers statiques lors de la mise en production
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
+ 
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
@@ -212,7 +239,6 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'empotageoilsofafrica@gmail.com'  # Replace with your Gmail address
 EMAIL_HOST_PASSWORD = 'vlym rhmk nmht rhge'
-
 MESSAGE_TAGS = {
     messages.DEBUG: 'alert-secondary',
     messages.INFO: 'alert-info',
@@ -225,3 +251,7 @@ MESSAGE_TAGS = {
 SITE_NAME = 'Sourcing Platform'
 
 
+
+
+
+ 

@@ -358,29 +358,29 @@
     <div class="text-center mb-16">
       <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6">Nos produits phares</h2>
       <p class="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-        Découvrez notre gamme complète d'huiles de palme & des dérivés, produits de manière éthique et durable
+        Découvrez notre gamme complète d'huiles de palme et dérivés, produits de manière éthique et durable
       </p>
     </div>
     
     <!-- Conteneur avec défilement continu -->
-    <div class="mb-12 relative overflow-hidden">
+    <div class="mb-16 relative overflow-hidden">
       <div class="scroll-container" id="scrollContainer">
         <div class="scroll-content" id="scrollContent">
           {% for commodite in toutes_commodites %}
           <div class="commodity-item relative group">
             <!-- Arrière-plan flou avec la couleur de la commodité -->
             <div class="absolute inset-0 rounded-lg overflow-hidden z-0">
-              <div class="absolute inset-0" style="background-color: {{ commodite.couleur }}; filter: blur(8px); opacity: 0.2;"></div>
+              <div class="absolute inset-0" style="background-color: {{ commodite.couleur }}; filter: blur(16px); opacity: 0.4;"></div>
             </div>
             <!-- Carte avec effet de verre -->
-            <div class="relative bg-white/5 backdrop-blur-sm border border-white/20 rounded-lg overflow-hidden h-32 flex flex-col transition-all duration-500 hover:bg-white/20 hover:shadow-2xl hover:-translate-y-2">
+            <div class="relative bg-white/10 backdrop-blur-lg border border-white/20 rounded-lg overflow-hidden h-full flex flex-col transition-all duration-500 hover:bg-white/20 hover:shadow-2xl hover:-translate-y-1">
               <div class="h-2" style="background-color: {{ commodite.couleur }}"></div>
-              <div class="p-2 flex-grow flex flex-col relative z-10">
-                <h5 class="text-base font-semibold text-white mb-1 text-center drop-shadow-sm">{{ commodite.nom }}</h5>
-                <div class="mt-1 text-center">
-                  <span class="inline-block px-2 py-1 text-xs font-medium rounded-full backdrop-blur-sm" 
-                        style="background-color: rgba(255, 255, 255, 0.1); color: white; border: 1px solid rgba(255, 255, 255, 0.2);">
-                    {{ commodite.nom|slice:":10" }}{% if commodite.nom|length > 10 %}...{% endif %}
+              <div class="p-4 flex-grow flex flex-col relative z-10">
+                <h4 class="text-lg font-semibold text-white mb-2 text-center drop-shadow-md">{{ commodite.nom }}</h4>
+                <div class="mt-2 text-center">
+                  <span class="inline-block px-3 py-1 text-sm font-medium rounded-full backdrop-blur-md" 
+                        style="background-color: rgba(255, 255, 255, 0.2); color: white; border: 1px solid rgba(255, 255, 255, 0.3);">
+                    {{ commodite.nom|slice:":15" }}{% if commodite.nom|length > 15 %}...{% endif %}
                   </span>
                 </div>
               </div>
