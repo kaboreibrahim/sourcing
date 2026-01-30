@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset
+    xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+    xmlns:xhtml="http://www.w3.org/1999/xhtml">
+
+    <!-- ACCUEIL -->
+    <url>
+        <loc>https://innov-sourcing.com/fr/client/accueil/</loc>
+
+        <xhtml:link
+            rel="alternate"
+            hreflang="fr"
+            href="https://innov-sourcing.com/fr/client/accueil/" />
+
+        <xhtml:link
+            rel="alternate"
+            hreflang="en"
+            href="https://innov-sourcing.com/en/client/accueil/" />
+
+        <changefreq>monthly</changefreq>
+        <priority>1.0</priority>
+    </url>
+
+    <!-- DEMANDE DE COTATION -->
+    <url>
+        <loc>https://innov-sourcing.com/fr/cotation/creer/</loc>
+
+        <xhtml:link
+            rel="alternate"
+            hreflang="fr"
+            href="https://innov-sourcing.com/fr/cotation/creer/" />
+
+        <xhtml:link
+            rel="alternate"
+            hreflang="en"
+            href="https://innov-sourcing.com/en/cotation/creer/" />
+
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <!-- LOGIN -->
+    <url>
+        <loc>https://innov-sourcing.com/fr/utilisateur/login/</loc>
+
+        <xhtml:link
+            rel="alternate"
+            hreflang="fr"
+            href="https://innov-sourcing.com/fr/utilisateur/login/" />
+
+        <xhtml:link
+            rel="alternate"
+            hreflang="en"
+            href="https://innov-sourcing.com/en/utilisateur/login/" />
+
+        <changefreq>monthly</changefreq>
+        <priority>0.5</priority>
+    </url>
+
+</urlset>

@@ -1,0 +1,5748 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-01-30 15:40+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: .\Pays\admin.py:37 .\commodites\admin.py:55
+#: .\fournisseurs\templates\fournisseur_form.html:300 .\villes\admin.py:82
+#: .\villes\admin.py:150 .\villes\templates\localite\localite_form.html:242
+#: .\villes\templates\ville\ville_form.html:198 .\zones\admin.py:49
+msgid "Informations principales"
+msgstr "Main Information"
+
+#: .\Pays\admin.py:40 .\utilisateur\admin.py:255 .\zones\admin.py:56
+msgid "Dates"
+msgstr "Dates"
+
+#: .\Pays\forms.py:13
+msgid "Nom du pays"
+msgstr "Country name"
+
+#: .\Pays\forms.py:14
+msgid "Code ISO (2 lettres)"
+msgstr "ISO code (2 letters)"
+
+#: .\Pays\forms.py:15
+msgid "Drapeau du pays"
+msgstr "Country flag"
+
+#: .\Pays\forms.py:18
+msgid "Code ISO à 2 lettres (ex: FR pour la France)"
+msgstr "ISO code (2 letters) (e.g., FR for France)"
+
+#: .\Pays\forms.py:19
+msgid "Téléchargez une image du drapeau (format JPG, JPEG ou PNG)"
+msgstr "Upload a flag image (JPG, JPEG, or PNG format)"
+
+#: .\Pays\forms.py:24
+msgid "Ex: France, Sénégal, Côte d'Ivoire..."
+msgstr "e.g., France, Senegal, Côte d'Ivoire..."
+
+#: .\Pays\templates\pays\pays_confirm_delete.html:5 .\Pays\views\delete.py:35
+#: .\commodites\templates\commodite_confirm_delete.html:31
+#: .\commodites\templates\fournisseur_commodite_confirm_delete.html:29
+#: .\fournisseurs\templates\fournisseur_confirm_delete.html:31
+#: .\port\templates\port\port_confirm_delete.html:5
+#: .\villes\templates\localite\localite_confirm_delete.html:31
+#: .\villes\templates\ville\ville_confirm_delete.html:31
+#: .\zones\templates\zone_confirm_delete.html:31
+#, fuzzy
+#| msgid "Confirmer la suppression du port"
+msgid "Confirmer la suppression"
+msgstr "Confirm port deletion"
+
+#: .\Pays\templates\pays\pays_confirm_delete.html:15
+msgid "Supprimer ce pays"
+msgstr "Delete this country"
+
+#: .\Pays\templates\pays\pays_confirm_delete.html:21
+msgid "Êtes-vous sûr de vouloir supprimer ce pays ?"
+msgstr "Are you sure you want to delete this country?"
+
+#: .\Pays\templates\pays\pays_confirm_delete.html:30
+#: .\port\templates\port\port_confirm_delete.html:30
+msgid "Cette action est irréversible"
+msgstr "This action is irreversible"
+
+#: .\Pays\templates\pays\pays_confirm_delete.html:32
+msgid "Toutes les données associées à ce pays seront également supprimées."
+msgstr "All data associated with this country will also be deleted."
+
+#: .\Pays\templates\pays\pays_confirm_delete.html:44
+msgid "Code"
+msgstr "Code"
+
+#: .\Pays\templates\pays\pays_confirm_delete.html:47
+#, fuzzy, python-format
+#| msgid ""
+#| "\n"
+#| "                                    fournisseur\n"
+#| "                                "
+#| msgid_plural ""
+#| "\n"
+#| "                                    fournisseurs\n"
+#| "                                "
+msgid ""
+"\n"
+"                                        %(counter)s zone sera supprimée.\n"
+"                                    "
+msgid_plural ""
+"\n"
+"                                        %(counter)s zones seront "
+"supprimées.\n"
+"                                    "
+msgstr[0] ""
+"\n"
+"                                    supplier\n"
+"                                "
+msgstr[1] ""
+"\n"
+"                                    suppliers\n"
+"                                "
+
+#: .\Pays\templates\pays\pays_confirm_delete.html:68
+#: .\Pays\templates\pays\pays_form.html:276
+#: .\commodites\templates\commodite_confirm_delete.html:109
+#: .\commodites\templates\commodite_form.html:130
+#: .\commodites\templates\fournisseur_commodite_confirm_delete.html:97
+#: .\commodites\templates\fournisseur_commodite_form.html:98
+#: .\cotation\templates\cotations\create.html:1317
+#: .\fournisseurs\templates\fournisseur_confirm_delete.html:140
+#: .\fournisseurs\templates\fournisseur_form.html:415
+#: .\fournisseurs\templates\port_fournisseur_form.html:124
+#: .\port\templates\port\port_confirm_delete.html:61
+#: .\port\templates\port\port_form.html:316
+#: .\villes\templates\localite\localite_confirm_delete.html:120
+#: .\villes\templates\localite\localite_form.html:358
+#: .\villes\templates\portlocalite\port_localite_form.html:104
+#: .\villes\templates\portville\ville_port_form.html:104
+#: .\villes\templates\ville\ville_confirm_delete.html:123
+#: .\villes\templates\ville\ville_form.html:342
+#: .\zones\templates\zone_confirm_delete.html:110
+#: .\zones\templates\zone_form.html:87
+msgid "Annuler"
+msgstr "Cancel"
+
+#: .\Pays\templates\pays\pays_confirm_delete.html:74
+#: .\port\templates\port\port_confirm_delete.html:67
+msgid "Supprimer définitivement"
+msgstr "Delete permanently"
+
+#: .\Pays\templates\pays\pays_confirm_delete.html:111
+msgid "Suppression en cours..."
+msgstr "Deleting in progress..."
+
+#: .\Pays\templates\pays\pays_detail.html:5
+#: .\fournisseurs\templates\port_fournisseur_list.html:206
+msgid "Détails"
+msgstr "Details"
+
+#: .\Pays\templates\pays\pays_detail.html:68
+msgid "zones"
+msgstr "Zones"
+
+#: .\Pays\templates\pays\pays_detail.html:68
+#: .\Pays\templates\pays\pays_detail.html:127
+msgid "villes"
+msgstr "Villes"
+
+#: .\Pays\templates\pays\pays_detail.html:74
+#: .\Pays\templates\pays\pays_detail.html:228
+#: .\Pays\templates\pays\pays_form.html:136
+#: .\Pays\templates\pays\pays_list.html:288
+#: .\commodites\templates\commodite_detail.html:132
+#: .\commodites\templates\commodite_list.html:299
+#: .\fournisseurs\templates\fournisseur_detail.html:107
+#: .\fournisseurs\templates\fournisseur_list.html:383
+#: .\port\templates\port\port_detail.html:58
+#: .\port\templates\port\port_form.html:217
+#: .\port\templates\port\port_list.html:224
+#: .\villes\templates\localite\localite_detail.html:114
+#: .\villes\templates\localite\localite_list.html:327
+#: .\villes\templates\ville\ville_detail.html:125
+#: .\villes\templates\ville\ville_detail.html:328
+#: .\villes\templates\ville\ville_list.html:289
+#: .\zones\templates\zone_detail.html:169 .\zones\templates\zone_list.html:326
+msgid "Modifier"
+msgstr "Modify"
+
+#: .\Pays\templates\pays\pays_detail.html:77
+#: .\commodites\templates\commodite_stats.html:51
+#: .\fournisseurs\templates\fournisseur_stats.html:47
+msgid "Retour"
+msgstr "Back"
+
+#: .\Pays\templates\pays\pays_detail.html:86
+#: .\Pays\templates\pays\pays_detail.html:111
+#: .\Pays\templates\pays\pays_list.html:205
+#: .\commodites\templates\commodite_stats.html:112 .\zones\models.py:65
+#: .\zones\templates\zone_confirm_delete.html:12
+#: .\zones\templates\zone_detail.html:90 .\zones\templates\zone_form.html:12
+msgid "Zones"
+msgstr "Zones"
+
+#: .\Pays\templates\pays\pays_detail.html:89
+#: .\Pays\templates\pays\pays_detail.html:97
+#: .\Pays\templates\pays\pays_detail.html:176
+msgid "Voir tout"
+msgstr "See all"
+
+#: .\Pays\templates\pays\pays_detail.html:94
+#: .\Pays\templates\pays\pays_list.html:209
+#: .\port\templates\port\port_list.html:198 .\villes\models.py:100
+#: .\villes\templates\localite\localite_detail.html:42
+#: .\villes\templates\ville\ville_confirm_delete.html:12
+#: .\villes\templates\ville\ville_detail.html:44
+#: .\villes\templates\ville\ville_form.html:164
+#: .\villes\templates\ville\ville_list.html:84
+#: .\zones\templates\zone_detail.html:201 .\zones\templates\zone_list.html:308
+msgid "Villes"
+msgstr "Villes"
+
+#: .\Pays\templates\pays\pays_detail.html:102
+msgid "Mise à jour"
+msgstr "Update"
+
+#: .\Pays\templates\pays\pays_detail.html:113
+#: .\fournisseurs\views\port_fournisseur.py:68
+msgid "Ajouter"
+msgstr "Add"
+
+#: .\Pays\templates\pays\pays_detail.html:124
+#: .\Pays\templates\pays\pays_list.html:224
+#: .\Pays\templates\pays\pays_list.html:244 .\commodites\admin.py:208
+#: .\commodites\templates\fournisseur_commodite_list.html:81
+#: .\commodites\templates\fournisseur_commodite_list.html:125
+#: .\fournisseurs\admin.py:129
+#: .\fournisseurs\templates\fournisseur_list.html:239
+#: .\fournisseurs\templates\fournisseur_map.html:78
+#: .\fournisseurs\templates\fournisseur_search.html:110
+#: .\fournisseurs\templates\port_fournisseur_list.html:99
+#: .\fournisseurs\templates\port_fournisseur_list.html:159
+#: .\port\templates\port\port_detail.html:118
+#: .\port\templates\port\port_list.html:148 .\villes\admin.py:97
+#: .\villes\models.py:79 .\villes\templates\localite\localite_detail.html:285
+#: .\villes\templates\localite\localite_list.html:201
+#: .\villes\templates\portlocalite\port_localite_list.html:67
+#: .\villes\templates\portville\ville_port_list.html:141
+#: .\villes\templates\ville\ville_list.html:166 .\zones\models.py:64
+#: .\zones\templates\zone_confirm_delete.html:42
+#: .\zones\templates\zone_detail.html:103
+msgid "Zone"
+msgstr "Zone"
+
+#: .\Pays\templates\pays\pays_detail.html:127
+msgid "Numéro"
+msgstr "Number"
+
+#: .\Pays\templates\pays\pays_detail.html:138
+msgid "localité(s)"
+msgstr "Localities"
+
+#: .\Pays\templates\pays\pays_detail.html:147
+#: .\Pays\templates\pays\pays_detail.html:189
+#: .\villes\templates\ville\ville_detail.html:320
+msgid "Voir"
+msgstr "See"
+
+#: .\Pays\templates\pays\pays_detail.html:160
+msgid "Aucune zone"
+msgstr "No zone"
+
+#: .\Pays\templates\pays\pays_detail.html:162
+msgid "Commencez par ajouter une zone à ce pays."
+msgstr "Start by adding a zone to this country."
+
+#: .\Pays\templates\pays\pays_detail.html:165
+msgid "Nouvelle zone"
+msgstr "New zone"
+
+#: .\Pays\templates\pays\pays_detail.html:174
+#: .\fournisseurs\templates\fournisseur_list.html:258
+#: .\fournisseurs\templates\fournisseur_list.html:456
+#: .\fournisseurs\templates\fournisseur_list.html:474
+#: .\fournisseurs\templates\fournisseur_search.html:128
+#: .\utilisateur\templates\pages\accueil.html:602
+#: .\villes\templates\localite\localite_list.html:419
+#: .\villes\templates\localite\localite_list.html:440
+msgid "Toutes les villes"
+msgstr "All cities"
+
+#: .\Pays\templates\pays\pays_detail.html:197
+#, python-format
+msgid ""
+"\n"
+"                                Afficher les %(reste)s autres villes\n"
+"                            "
+msgstr ""
+"\n"
+"                                Show the %(reste)s other cities\n"
+"                            "
+
+#: .\Pays\templates\pays\pays_detail.html:211
+msgid "Aucune ville"
+msgstr "No city"
+
+#: .\Pays\templates\pays\pays_detail.html:213
+msgid "Ce pays ne contient encore aucune ville."
+msgstr "This country does not contain any city yet."
+
+#: .\Pays\templates\pays\pays_detail.html:222
+#: .\cotation\templates\cotations\email_queue_list.html:214
+msgid "Créé le"
+msgstr "Created on"
+
+#: .\Pays\templates\pays\pays_detail.html:224
+msgid "par"
+msgstr "by"
+
+#: .\Pays\templates\pays\pays_detail.html:229
+msgid "Partager"
+msgstr "Share"
+
+#: .\Pays\templates\pays\pays_form.html:133
+#: .\Pays\templates\pays\pays_list.html:116
+#: .\fournisseurs\templates\fournisseur_detail.html:175
+#: .\fournisseurs\templates\fournisseur_list.html:224
+#: .\fournisseurs\templates\fournisseur_search.html:95
+#: .\fournisseurs\templates\port_fournisseur_list.html:114 .\port\forms.py:17
+#: .\port\templates\port\port_confirm_delete.html:45
+#: .\port\templates\port\port_list.html:132
+#: .\villes\templates\localite\localite_detail.html:232
+#: .\villes\templates\localite\localite_list.html:165
+#: .\villes\templates\portville\ville_port_list.html:66
+#: .\villes\templates\ville\ville_detail.html:260
+#: .\villes\templates\ville\ville_list.html:150
+#: .\villes\templates\ville\ville_list.html:243 .\zones\models.py:37
+msgid "Pays"
+msgstr "Country"
+
+#: .\Pays\templates\pays\pays_form.html:136
+msgid "Nouveau pays"
+msgstr "New country"
+
+#: .\Pays\templates\pays\pays_form.html:149
+msgid "Remplissez les informations du pays ci-dessous."
+msgstr "Fill in the country information below."
+
+#: .\Pays\templates\pays\pays_form.html:191
+msgid "Informations de base"
+msgstr "Basic information"
+
+#: .\Pays\templates\pays\pays_form.html:229
+msgid "optionnel"
+msgstr "Optional"
+
+#: .\Pays\templates\pays\pays_form.html:251
+msgid "Sélectionner un fichier"
+msgstr "Select a file"
+
+#: .\Pays\templates\pays\pays_list.html:5
+msgid "Liste des Pays"
+msgstr "List of countries"
+
+#: .\Pays\templates\pays\pays_list.html:118
+msgid "Gérez les pays disponibles dans le système"
+msgstr "Manage the countries available in the system"
+
+#: .\Pays\templates\pays\pays_list.html:127
+#: .\Pays\templates\pays\pays_list.html:370
+msgid "Ajouter un pays"
+msgstr "Add a country"
+
+#: .\Pays\templates\pays\pays_list.html:143
+#: .\commodites\templates\fournisseur_commodite_list.html:54
+#: .\cotation\templates\cotations\list.html:88
+#: .\fournisseurs\templates\fournisseur_list.html:212
+#: .\fournisseurs\templates\fournisseur_search.html:215
+#: .\fournisseurs\templates\port_fournisseur_list.html:54
+#: .\port\templates\port\port_list.html:121
+#: .\port\templates\port\port_list.html:164
+#: .\villes\templates\localite\localite_list.html:149
+#: .\villes\templates\localite\localite_list.html:221
+#: .\villes\templates\portlocalite\port_localite_list.html:54
+#: .\villes\templates\portville\ville_port_list.html:54
+#: .\villes\templates\ville\ville_list.html:134
+#: .\villes\templates\ville\ville_list.html:185
+msgid "Rechercher"
+msgstr "Search"
+
+#: .\Pays\templates\pays\pays_list.html:150
+msgid "Rechercher par nom ou code pays..."
+msgstr "Search by name or country code..."
+
+#: .\Pays\templates\pays\pays_list.html:166
+#: .\commodites\templates\fournisseur_commodite_list.html:99
+#: .\fournisseurs\templates\fournisseur_map.html:102
+#: .\fournisseurs\templates\port_fournisseur_list.html:133
+#: .\villes\templates\portlocalite\port_localite_list.html:116
+#: .\villes\templates\portville\ville_port_list.html:115
+#: .\zones\templates\zone_list.html:216
+msgid "Filtrer"
+msgstr "Filter"
+
+#: .\Pays\templates\pays\pays_list.html:213
+#: .\port\templates\port\port_list.html:202
+#: .\villes\templates\localite\localite_detail.html:300
+#: .\villes\templates\localite\localite_form.html:208
+#: .\villes\templates\localite\localite_list.html:99
+#: .\villes\templates\ville\ville_detail.html:146
+#: .\villes\templates\ville\ville_detail.html:286
+#: .\zones\templates\zone_detail.html:216
+msgid "Localités"
+msgstr "Localities"
+
+#: .\Pays\templates\pays\pays_list.html:219
+#: .\port\templates\port\port_detail.html:72
+msgid "Zones associées"
+msgstr "Associated zones"
+
+#: .\Pays\templates\pays\pays_list.html:232
+msgid "Aucune zone associée."
+msgstr "No associated zone."
+
+#: .\Pays\templates\pays\pays_list.html:237
+#: .\port\templates\port\port_detail.html:76
+#: .\port\templates\port\port_detail.html:110
+msgid "Villes associées"
+msgstr "Associated cities"
+
+#: .\Pays\templates\pays\pays_list.html:250
+msgid "Aucune ville associée."
+msgstr "No associated city."
+
+#: .\Pays\templates\pays\pays_list.html:255
+#: .\port\templates\port\port_detail.html:80
+#: .\port\templates\port\port_detail.html:137
+msgid "Localités associées"
+msgstr "Associated localities"
+
+#: .\Pays\templates\pays\pays_list.html:270
+msgid "Aucune localité associée."
+msgstr "No associated locality."
+
+#: .\Pays\templates\pays\pays_list.html:281
+msgid "Voir le détail"
+msgstr "View details"
+
+#: .\Pays\templates\pays\pays_list.html:295
+#: .\commodites\templates\commodite_confirm_delete.html:16
+#: .\commodites\templates\commodite_detail.html:140
+#: .\commodites\templates\commodite_list.html:304
+#: .\commodites\templates\fournisseur_commodite_confirm_delete.html:14
+#: .\commodites\templates\fournisseur_commodite_list.html:174
+#: .\fournisseurs\templates\fournisseur_confirm_delete.html:16
+#: .\fournisseurs\templates\fournisseur_detail.html:115
+#: .\fournisseurs\templates\fournisseur_list.html:388
+#: .\port\templates\port\port_detail.html:64
+#: .\port\templates\port\port_list.html:230
+#: .\villes\templates\localite\localite_confirm_delete.html:16
+#: .\villes\templates\localite\localite_detail.html:122
+#: .\villes\templates\localite\localite_list.html:335
+#: .\villes\templates\portlocalite\port_localite_list.html:180
+#: .\villes\templates\portville\ville_port_list.html:191
+#: .\villes\templates\ville\ville_confirm_delete.html:16
+#: .\villes\templates\ville\ville_detail.html:133
+#: .\villes\templates\ville\ville_list.html:297
+#: .\zones\templates\zone_confirm_delete.html:16
+#: .\zones\templates\zone_detail.html:185 .\zones\templates\zone_list.html:333
+msgid "Supprimer"
+msgstr "Delete"
+
+#: .\Pays\templates\pays\pays_list.html:309
+#: .\Pays\templates\pays\pays_list.html:316
+#: .\commodites\templates\commodite_list.html:324
+#: .\commodites\templates\fournisseur_commodite_list.html:199
+#: .\cotation\templates\cotations\create.html:1312
+#: .\fournisseurs\templates\fournisseur_list.html:408
+#: .\fournisseurs\templates\fournisseur_search.html:322
+#: .\fournisseurs\templates\port_fournisseur_list.html:243
+#: .\port\templates\port\port_list.html:248
+#: .\villes\templates\portlocalite\port_localite_list.html:212
+#: .\villes\templates\portville\ville_port_list.html:223
+#: .\villes\templates\ville\ville_list.html:318
+#: .\zones\templates\zone_list.html:364
+msgid "Précédent"
+msgstr "Previous"
+
+#: .\Pays\templates\pays\pays_list.html:337
+#: .\Pays\templates\pays\pays_list.html:344
+#: .\commodites\templates\commodite_list.html:335
+#: .\commodites\templates\fournisseur_commodite_list.html:210
+#: .\cotation\templates\cotations\create.html:1320
+#: .\fournisseurs\templates\fournisseur_list.html:419
+#: .\fournisseurs\templates\fournisseur_search.html:333
+#: .\fournisseurs\templates\port_fournisseur_list.html:254
+#: .\port\templates\port\port_list.html:258
+#: .\villes\templates\portlocalite\port_localite_list.html:223
+#: .\villes\templates\portville\ville_port_list.html:234
+#: .\villes\templates\ville\ville_list.html:329
+#: .\zones\templates\zone_list.html:388
+msgid "Suivant"
+msgstr "Next"
+
+#: .\Pays\templates\pays\pays_list.html:358
+msgid "Aucun pays trouvé"
+msgstr "No country found"
+
+#: .\Pays\templates\pays\pays_list.html:361
+msgid "Aucun pays ne correspond à votre recherche. Essayez d'autres termes."
+msgstr "No country found"
+
+#: .\Pays\templates\pays\pays_list.html:363
+msgid "Commencez par ajouter votre premier pays."
+msgstr "Add your first country."
+
+#: .\Pays\views\create.py:18
+msgid "Le pays a été créé avec succès!"
+msgstr "Country created successfully!"
+
+#: .\Pays\views\create.py:24
+msgid "Créer un nouveau pays"
+msgstr "Create a new country"
+
+#: .\Pays\views\create.py:25 .\commodites\views.py:174
+#: .\commodites\views.py:306 .\fournisseurs\views\create.py:65
+#: .\port\views\create.py:32 .\villes\views\localite\create_localite.py:32
+#: .\villes\views\portlocalite\create.py:45
+#: .\villes\views\portville\create.py:45 .\villes\views\ville\create.py:36
+#: .\zones\views\create.py:37
+msgid "Créer"
+msgstr "Create"
+
+#: .\Pays\views\delete.py:28
+msgid "Le pays a été supprimé avec succès."
+msgstr "Country deleted successfully."
+
+#: .\Pays\views\update.py:21
+msgid "Les informations du pays ont été mises à jour avec succès!"
+msgstr "Country updated successfully!"
+
+#: .\Pays\views\update.py:27
+msgid "Modifier le pays: {}"
+msgstr "Update country: {}"
+
+#: .\Pays\views\update.py:28 .\commodites\views.py:197
+#: .\fournisseurs\views\update.py:34 .\port\views\update.py:31
+#: .\villes\views\localite\update_localite.py:33
+#: .\villes\views\ville\update.py:32 .\zones\views\update.py:35
+msgid "Mettre à jour"
+msgstr "Update"
+
+#: .\Sourcing\settings.py:178
+msgid "francais"
+msgstr "French"
+
+#: .\Sourcing\settings.py:179
+msgid "English"
+msgstr "English"
+
+#: .\commodites\admin.py:19 .\commodites\admin.py:190
+#: .\commodites\models.py:108
+#: .\commodites\templates\fournisseur_commodite_list.html:116
+#: .\echantillonnages\admin.py:99 .\echantillonnages\models.py:130
+#: .\fournisseurs\admin.py:199 .\fournisseurs\models.py:133
+#: .\fournisseurs\models.py:172
+#: .\fournisseurs\templates\port_fournisseur_detail.html:100
+#: .\fournisseurs\templates\port_fournisseur_list.html:67
+#: .\fournisseurs\templates\port_fournisseur_list.html:156
+#: .\utilisateur\models.py:41
+msgid "Fournisseur"
+msgstr "Supplier"
+
+#: .\commodites\admin.py:20
+msgid "Fournisseurs de cette commodité"
+msgstr "Suppliers of this commodity"
+
+#: .\commodites\admin.py:58 .\commodites\templates\commodite_list.html:194
+#: .\commodites\templates\commodite_stats.html:31
+#: .\fournisseurs\templates\fournisseur_list.html:192
+#: .\fournisseurs\templates\fournisseur_stats.html:27 .\zones\admin.py:52
+msgid "Statistiques"
+msgstr "Statistics"
+
+#: .\commodites\admin.py:62 .\commodites\admin.py:179
+#: .\fournisseurs\templates\fournisseur_detail.html:428 .\villes\admin.py:88
+#: .\villes\admin.py:156 .\villes\templates\localite\localite_detail.html:323
+msgid "Informations système"
+msgstr "System information"
+
+#: .\commodites\admin.py:87
+msgid "Nombre de fournisseurs"
+msgstr "Number of suppliers"
+
+#: .\commodites\admin.py:110 .\utilisateur\templates\pages\accueil.html:698
+msgid "Liste des fournisseurs"
+msgstr "List of suppliers"
+
+#: .\commodites\admin.py:116
+msgid "Liens fournisseurs"
+msgstr "Supplier links"
+
+#: .\commodites\admin.py:129 .\commodites\admin.py:196
+#: .\commodites\models.py:55 .\commodites\models.py:115
+#: .\commodites\templates\fournisseur_commodite_list.html:66
+#: .\commodites\templates\fournisseur_commodite_list.html:119
+#: .\echantillonnages\admin.py:109 .\echantillonnages\admin.py:115
+#: .\echantillonnages\models.py:122 .\fournisseurs\admin.py:24
+#: .\fournisseurs\templates\fournisseur_list.html:270
+#: .\fournisseurs\templates\fournisseur_map.html:90
+msgid "Commodité"
+msgstr "Commodity"
+
+#: .\commodites\admin.py:130 .\commodites\models.py:56
+#: .\commodites\templates\commodite_confirm_delete.html:12
+#: .\commodites\templates\commodite_detail.html:66
+#: .\commodites\templates\commodite_form.html:12
+#: .\commodites\templates\commodite_stats.html:29
+#: .\commodites\templates\commodite_stats.html:63 .\fournisseurs\admin.py:166
+#: .\fournisseurs\templates\fournisseur_list.html:353
+msgid "Commodités"
+msgstr "Commodities"
+
+#: .\commodites\admin.py:172
+msgid "Liaison"
+msgstr "Link"
+
+#: .\commodites\admin.py:175
+msgid "Informations géographiques"
+msgstr "Geographic information"
+
+#: .\commodites\admin.py:202
+#: .\commodites\templates\fournisseur_commodite_list.html:122
+#: .\fournisseurs\admin.py:121 .\fournisseurs\models.py:113
+#: .\fournisseurs\templates\fournisseur_list.html:254
+#: .\fournisseurs\templates\fournisseur_search.html:125
+#: .\utilisateur\templates\pages\accueil.html:600 .\villes\admin.py:164
+#: .\villes\models.py:99 .\villes\models.py:160
+#: .\villes\templates\localite\localite_list.html:183
+#: .\villes\templates\portville\ville_port_detail.html:100
+#: .\villes\templates\portville\ville_port_list.html:81
+#: .\villes\templates\portville\ville_port_list.html:138
+msgid "Ville"
+msgstr "City"
+
+#: .\commodites\admin.py:216 .\echantillonnages\admin.py:187
+msgid "Ville (via fournisseur)"
+msgstr "City (via supplier)"
+
+#: .\commodites\admin.py:224 .\echantillonnages\admin.py:195
+msgid "Zone (via fournisseur)"
+msgstr "Zone (via supplier)"
+
+#: .\commodites\admin.py:246
+msgid "Exporter les liaisons sélectionnées"
+msgstr "Export selected links"
+
+#: .\commodites\admin.py:249 .\commodites\models.py:124
+msgid "Lien Fournisseur-Commodité"
+msgstr "Supplier-Commodity Link"
+
+#: .\commodites\admin.py:250
+msgid "Liens Fournisseurs-Commodités"
+msgstr "Supplier-Commodity Links"
+
+#: .\commodites\models.py:28
+msgid "Nom de la commodité"
+msgstr "Commodity Name"
+
+#: .\commodites\models.py:35
+msgid "Couleur"
+msgstr "Color"
+
+#: .\commodites\models.py:36
+msgid "Couleur d'affichage pour cette commodité"
+msgstr "Display color for this commodity"
+
+#: .\commodites\models.py:40 .\echantillonnages\models.py:65
+#: .\fournisseurs\models.py:118
+#: .\fournisseurs\templates\fournisseur_detail.html:435 .\villes\models.py:84
+#: .\villes\templates\localite\localite_detail.html:347
+#: .\villes\templates\ville\ville_detail.html:424 .\zones\models.py:49
+msgid "Date de création"
+msgstr "Creation date"
+
+#: .\commodites\models.py:45 .\echantillonnages\models.py:148
+#: .\fournisseurs\models.py:123 .\villes\models.py:89 .\zones\models.py:54
+msgid "Date de mise à jour"
+msgstr "Update date"
+
+#: .\commodites\models.py:125
+msgid "Liens Fournisseur-Commodités"
+msgstr "Supplier-Commodity Links"
+
+#: .\commodites\templates\commodite_confirm_delete.html:5
+msgid "Supprimer la commodité"
+msgstr "Delete commodity"
+
+#: .\commodites\templates\commodite_confirm_delete.html:35
+msgid "Êtes-vous sûr de vouloir supprimer cette commodité ?"
+msgstr "Are you sure you want to delete this commodity?"
+
+#: .\commodites\templates\commodite_confirm_delete.html:44
+#: .\commodites\templates\commodite_detail.html:81
+msgid "Commodité agricole"
+msgstr "Agricultural commodity"
+
+#: .\commodites\templates\commodite_confirm_delete.html:53
+#, python-format
+msgid ""
+"\n"
+"                        %(counter)s fournisseur associé\n"
+"                    "
+msgid_plural ""
+"\n"
+"                        %(counter)s fournisseurs associés\n"
+"                    "
+msgstr[0] ""
+"\n"
+"                        %(counter)s associated supplier\n"
+"                    "
+msgstr[1] ""
+"\n"
+"                        %(counter)s associated suppliers\n"
+"                    "
+
+#: .\commodites\templates\commodite_confirm_delete.html:70
+#: .\fournisseurs\templates\fournisseur_confirm_delete.html:101
+#: .\villes\templates\localite\localite_confirm_delete.html:86
+#: .\villes\templates\ville\ville_confirm_delete.html:89
+#: .\zones\templates\zone_confirm_delete.html:71
+msgid "Attention"
+msgstr "Warning"
+
+#: .\commodites\templates\commodite_confirm_delete.html:72
+#, python-format
+msgid ""
+"\n"
+"                            Cette commodité est associée à %(counter)s "
+"fournisseur. La suppression de la commodité entraînera également la "
+"suppression de cette liaison (suppression logique).\n"
+"                        "
+msgid_plural ""
+"\n"
+"                            Cette commodité est associée à %(counter)s "
+"fournisseurs. La suppression de la commodité entraînera également la "
+"suppression de ces liaisons (suppression logique).\n"
+"                        "
+msgstr[0] ""
+"\n"
+"                            This amenity is associated with %(counter)s "
+"supplier. Deleting the amenity will also delete this association (soft "
+"delete).\n"
+"                        "
+msgstr[1] ""
+"\n"
+"                            This amenity is associated with %(counter)s "
+"suppliers. Deleting the amenity will also delete these associations (soft "
+"delete).\n"
+"                        "
+
+#: .\commodites\templates\commodite_confirm_delete.html:89
+#: .\commodites\templates\fournisseur_commodite_confirm_delete.html:77
+#: .\fournisseurs\templates\fournisseur_confirm_delete.html:120
+#: .\villes\templates\localite\localite_confirm_delete.html:100
+#: .\villes\templates\ville\ville_confirm_delete.html:103
+#: .\zones\templates\zone_confirm_delete.html:90
+msgid "Suppression logique"
+msgstr "logical deletion"
+
+#: .\commodites\templates\commodite_confirm_delete.html:90
+#: .\fournisseurs\templates\fournisseur_confirm_delete.html:121
+#: .\villes\templates\localite\localite_confirm_delete.html:101
+#: .\villes\templates\ville\ville_confirm_delete.html:104
+#: .\zones\templates\zone_confirm_delete.html:91
+msgid ""
+"Les données ne seront pas définitivement supprimées de la base de données "
+"mais marquées comme supprimées. Vous pourrez les restaurer ultérieurement "
+"depuis l'interface d'administration."
+msgstr ""
+"The data will not be permanently deleted from the database but marked as "
+"deleted. You will be able to restore them later from the administration "
+"interface."
+
+#: .\commodites\templates\commodite_confirm_delete.html:105
+#: .\commodites\templates\fournisseur_commodite_confirm_delete.html:93
+#: .\fournisseurs\templates\fournisseur_confirm_delete.html:136
+#: .\villes\templates\localite\localite_confirm_delete.html:116
+#: .\villes\templates\ville\ville_confirm_delete.html:119
+#: .\zones\templates\zone_confirm_delete.html:106
+msgid "Oui, supprimer"
+msgstr "Yes, delete"
+
+#: .\commodites\templates\commodite_detail.html:91
+#: .\zones\templates\zone_detail.html:138
+#, python-format
+msgid ""
+"\n"
+"                            %(counter)s fournisseur\n"
+"                        "
+msgid_plural ""
+"\n"
+"                            %(counter)s fournisseurs\n"
+"                        "
+msgstr[0] ""
+"\n"
+"                            %(counter)s supplier\n"
+"                        "
+msgstr[1] ""
+"\n"
+"                            %(counter)s suppliers\n"
+"                        "
+
+#: .\commodites\templates\commodite_detail.html:102
+#: .\zones\templates\zone_list.html:243
+#, python-format
+msgid ""
+"\n"
+"                            %(counter)s zone\n"
+"                        "
+msgid_plural ""
+"\n"
+"                            %(counter)s zones\n"
+"                        "
+msgstr[0] ""
+"\n"
+"                            %(counter)s zone\n"
+"                        "
+msgstr[1] ""
+"\n"
+"                            %(counter)s zones\n"
+"                        "
+
+#: .\commodites\templates\commodite_detail.html:113
+#: .\villes\templates\localite\localite_detail.html:102
+#: .\villes\templates\ville\ville_detail.html:114
+#: .\zones\templates\zone_detail.html:158
+msgid "Créée le"
+msgstr "Created on"
+
+#: .\commodites\templates\commodite_detail.html:124
+#: .\commodites\templates\commodite_detail.html:289
+msgid "Ajouter un fournisseur"
+msgstr "Add a supplier"
+
+#: .\commodites\templates\commodite_detail.html:164
+msgid "Répartition par zone"
+msgstr "Zone distribution"
+
+#: .\commodites\templates\commodite_detail.html:175
+msgid ""
+"\n"
+"                            ville\n"
+"                        "
+msgid_plural ""
+"\n"
+"                            villes\n"
+"                        "
+msgstr[0] ""
+"\n"
+"                            city\n"
+"                        "
+msgstr[1] ""
+"\n"
+"                            cities\n"
+"                        "
+
+#: .\commodites\templates\commodite_detail.html:197
+#, python-format
+msgid ""
+"\n"
+"                        Filtre actif : Zone %(zone)s\n"
+"                    "
+msgstr ""
+"\n"
+"                        Active filter: Zone %(zone)s\n"
+"                    "
+
+#: .\commodites\templates\commodite_detail.html:206
+msgid "Effacer le filtre"
+msgstr "Clear filter"
+
+#: .\commodites\templates\commodite_detail.html:216
+#: .\commodites\templates\commodite_list.html:260
+#: .\commodites\templates\commodite_stats.html:78 .\fournisseurs\admin.py:200
+#: .\fournisseurs\models.py:134
+#: .\fournisseurs\templates\fournisseur_confirm_delete.html:12
+#: .\fournisseurs\templates\fournisseur_detail.html:33
+#: .\fournisseurs\templates\fournisseur_form.html:269
+#: .\fournisseurs\templates\fournisseur_list.html:155
+#: .\fournisseurs\templates\fournisseur_map.html:50
+#: .\fournisseurs\templates\fournisseur_search.html:33
+#: .\fournisseurs\templates\fournisseur_stats.html:25
+#: .\fournisseurs\templates\fournisseur_stats.html:59
+#: .\zones\templates\zone_detail.html:230
+msgid "Fournisseurs"
+msgstr "Suppliers"
+
+#: .\commodites\templates\commodite_detail.html:258
+msgid "Ajouté le"
+msgstr "Added on"
+
+#: .\commodites\templates\commodite_detail.html:269
+#: .\fournisseurs\templates\fournisseur_detail.html:402
+msgid "Retirer"
+msgstr "Remove"
+
+#: .\commodites\templates\commodite_detail.html:282
+#: .\commodites\templates\commodite_list.html:288
+msgid "Aucun fournisseur"
+msgstr "No supplier"
+
+#: .\commodites\templates\commodite_detail.html:283
+msgid "Aucun fournisseur n'est associé à cette commodité."
+msgstr "No supplier is associated with this commodity."
+
+#: .\commodites\templates\commodite_form.html:110
+msgid "Exemples de commodités"
+msgstr "Examples of commodities"
+
+#: .\commodites\templates\commodite_form.html:111
+msgid ""
+"huile de palme, huile de cacao, huile de cajou, coton, hévéa, palmier à "
+"huile, karité, etc."
+msgstr "palm oil, cocoa oil, cajou oil, cotton, hevea, oil palm, shea, etc."
+
+#: .\commodites\templates\commodite_list.html:5
+msgid "Liste des Commodités"
+msgstr "List of Commodities"
+
+#: .\commodites\templates\commodite_list.html:178
+msgid "Commodités Agricoles"
+msgstr "Agricultural Commodities"
+
+#: .\commodites\templates\commodite_list.html:181
+#, python-format
+msgid ""
+"\n"
+"                        %(counter)s commodité • %(total_liaisons)s liaison "
+"avec des fournisseurs\n"
+"                    "
+msgid_plural ""
+"\n"
+"                        %(counter)s commodités • %(total_liaisons)s liaisons "
+"avec des fournisseurs\n"
+"                    "
+msgstr[0] ""
+"\n"
+"                        %(counter)s amenity • %(total_liaisons)s connection "
+"with suppliers\n"
+"                    "
+msgstr[1] ""
+"\n"
+"                        %(counter)s amenities • %(total_liaisons)s "
+"connections with suppliers\n"
+"                    "
+
+#: .\commodites\templates\commodite_list.html:201
+#: .\commodites\templates\commodite_stats.html:95
+#: .\commodites\templates\fournisseur_commodite_confirm_delete.html:12
+#: .\commodites\templates\fournisseur_commodite_form.html:12
+#: .\fournisseurs\templates\fournisseur_stats.html:114
+#: .\fournisseurs\templates\port_fournisseur_detail.html:62
+#: .\villes\templates\portlocalite\port_localite_detail.html:62
+#: .\villes\templates\portlocalite\port_localite_form.html:12
+#: .\villes\templates\portville\ville_port_detail.html:62
+#: .\villes\templates\portville\ville_port_form.html:12
+#: .\villes\templates\ville\ville_list.html:112
+msgid "Liaisons"
+msgstr "Connections"
+
+#: .\commodites\templates\commodite_list.html:208
+msgid "Nouvelle Commodité"
+msgstr "New Amenity"
+
+#: .\commodites\templates\commodite_list.html:221
+msgid "Rechercher une commodité..."
+msgstr "Search for an amenity..."
+
+#: .\commodites\templates\commodite_list.html:274
+msgid "Bien fourni"
+msgstr "Well supplied"
+
+#: .\commodites\templates\commodite_list.html:281
+msgid "Peu de fournisseurs"
+msgstr "Few suppliers"
+
+#: .\commodites\templates\commodite_list.html:320
+#: .\commodites\templates\fournisseur_commodite_list.html:195
+#: .\fournisseurs\templates\fournisseur_list.html:404
+#: .\fournisseurs\templates\port_fournisseur_list.html:239
+#: .\port\templates\port\port_list.html:245
+#: .\villes\templates\portlocalite\port_localite_list.html:208
+#: .\villes\templates\portville\ville_port_list.html:219
+#: .\villes\templates\ville\ville_list.html:314
+#: .\zones\templates\zone_list.html:357
+msgid "Premier"
+msgstr "First"
+
+#: .\commodites\templates\commodite_list.html:339
+#: .\commodites\templates\fournisseur_commodite_list.html:214
+#: .\fournisseurs\templates\fournisseur_list.html:423
+#: .\fournisseurs\templates\port_fournisseur_list.html:258
+#: .\port\templates\port\port_list.html:261
+#: .\villes\templates\portlocalite\port_localite_list.html:227
+#: .\villes\templates\portville\ville_port_list.html:238
+#: .\villes\templates\ville\ville_list.html:333
+#: .\zones\templates\zone_list.html:395
+msgid "Dernier"
+msgstr "Last"
+
+#: .\commodites\templates\commodite_list.html:350
+msgid "Aucune commodité trouvée"
+msgstr "No amenity found"
+
+#: .\commodites\templates\commodite_list.html:353
+msgid "Aucune commodité ne correspond à votre recherche."
+msgstr "No amenity matches your search."
+
+#: .\commodites\templates\commodite_list.html:355
+msgid "Commencez par créer votre première commodité."
+msgstr "Start by creating your first amenity."
+
+#: .\commodites\templates\commodite_list.html:359
+msgid "Créer une commodité"
+msgstr "Create an amenity"
+
+#: .\commodites\templates\commodite_stats.html:5
+msgid "Statistiques - Commodités"
+msgstr "Statistics - Amenities"
+
+#: .\commodites\templates\commodite_stats.html:40
+msgid "Statistiques des Commodités"
+msgstr "Amenity Statistics"
+
+#: .\commodites\templates\commodite_stats.html:43
+msgid "Vue d'ensemble de la distribution des commodités et fournisseurs"
+msgstr "Overview of amenity and supplier distribution"
+
+#: .\commodites\templates\commodite_stats.html:131
+msgid "Commodité la plus fournie"
+msgstr "Most supplied amenity"
+
+#: .\commodites\templates\commodite_stats.html:134
+#, python-format
+msgid ""
+"\n"
+"                        %(counter)s fournisseur\n"
+"                    "
+msgid_plural ""
+"\n"
+"                        %(counter)s fournisseurs\n"
+"                    "
+msgstr[0] ""
+"\n"
+"                        %(counter)s supplier\n"
+"                    "
+msgstr[1] ""
+"\n"
+"                        %(counter)s suppliers\n"
+"                    "
+
+#: .\commodites\templates\commodite_stats.html:151
+msgid "Classement par nombre de fournisseurs"
+msgstr "Ranking by number of suppliers"
+
+#: .\commodites\templates\commodite_stats.html:176
+#: .\fournisseurs\templates\fournisseur_stats.html:223
+msgid ""
+"\n"
+"                                    fournisseur\n"
+"                                "
+msgid_plural ""
+"\n"
+"                                    fournisseurs\n"
+"                                "
+msgstr[0] ""
+"\n"
+"                                    supplier\n"
+"                                "
+msgstr[1] ""
+"\n"
+"                                    suppliers\n"
+"                                "
+
+#: .\commodites\templates\commodite_stats.html:201
+#: .\fournisseurs\templates\fournisseur_stats.html:155
+msgid "Répartition par zone géographique"
+msgstr "Distribution by geographic area"
+
+#: .\commodites\templates\commodite_stats.html:216
+#: .\fournisseurs\templates\fournisseur_stats.html:174
+msgid "Commodités distinctes:"
+msgstr "Distinct amenities:"
+
+#: .\commodites\templates\commodite_stats.html:220
+#: .\fournisseurs\templates\fournisseur_stats.html:170
+msgid "Fournisseurs:"
+msgstr "Suppliers:"
+
+#: .\commodites\templates\fournisseur_commodite_confirm_delete.html:5
+msgid "Supprimer la liaison"
+msgstr "Delete connection"
+
+#: .\commodites\templates\fournisseur_commodite_confirm_delete.html:33
+msgid "Êtes-vous sûr de vouloir supprimer cette liaison ?"
+msgstr "Are you sure you want to delete this connection?"
+
+#: .\commodites\templates\fournisseur_commodite_confirm_delete.html:78
+msgid ""
+"Cette liaison sera marquée comme supprimée mais pourra être restaurée depuis "
+"l'interface d'administration."
+msgstr ""
+"This connection will be marked as deleted but can be restored from the "
+"administration interface."
+
+#: .\commodites\templates\fournisseur_commodite_form.html:78
+#: .\fournisseurs\templates\port_fournisseur_form.html:104
+#: .\villes\templates\portlocalite\port_localite_form.html:84
+#: .\villes\templates\portville\ville_port_form.html:84
+msgid "À propos des liaisons"
+msgstr "About the connections"
+
+#: .\commodites\templates\fournisseur_commodite_form.html:79
+#: .\villes\templates\portlocalite\port_localite_form.html:85
+#: .\villes\templates\portville\ville_port_form.html:85
+msgid ""
+"Cette liaison permet d'associer un fournisseur à une commodité spécifique. "
+"Un même fournisseur peut fournir plusieurs commodités différentes."
+msgstr ""
+"This connection allows associating a supplier with a specific amenity. A "
+"single supplier can provide several different amenities."
+
+#: .\commodites\templates\fournisseur_commodite_list.html:5
+#: .\commodites\templates\fournisseur_commodite_list.html:27
+msgid "Liaisons Fournisseur-Commodité"
+msgstr "Supplier-Amenity Connections"
+
+#: .\commodites\templates\fournisseur_commodite_list.html:30
+#: .\fournisseurs\templates\port_fournisseur_list.html:30
+#: .\villes\templates\portlocalite\port_localite_list.html:30
+#: .\villes\templates\portville\ville_port_list.html:30
+#, python-format
+msgid ""
+"\n"
+"                        %(counter)s liaison au total\n"
+"                    "
+msgid_plural ""
+"\n"
+"                        %(counter)s liaisons au total\n"
+"                    "
+msgstr[0] ""
+"\n"
+"                        %(counter)s connection in total\n"
+"                    "
+msgstr[1] ""
+"\n"
+"                        %(counter)s connections in total\n"
+"                    "
+
+#: .\commodites\templates\fournisseur_commodite_list.html:42
+#: .\fournisseurs\templates\port_fournisseur_list.html:42
+#: .\villes\templates\portlocalite\port_localite_list.html:42
+#: .\villes\templates\portville\ville_port_list.html:42
+msgid "Nouvelle Liaison"
+msgstr "New Connection"
+
+#: .\commodites\templates\fournisseur_commodite_list.html:59
+msgid "Fournisseur, commodité, ville..."
+msgstr "Supplier, amenity, city..."
+
+#: .\commodites\templates\fournisseur_commodite_list.html:69
+#: .\commodites\templates\fournisseur_commodite_list.html:84
+#: .\fournisseurs\templates\fournisseur_list.html:273
+#: .\fournisseurs\templates\port_fournisseur_list.html:102
+#: .\villes\templates\localite\localite_list.html:186
+#: .\villes\templates\localite\localite_list.html:204
+#: .\villes\templates\portlocalite\port_localite_list.html:85
+#: .\villes\templates\portville\ville_port_list.html:84
+msgid "Toutes"
+msgstr "All"
+
+#: .\commodites\templates\fournisseur_commodite_list.html:102
+#: .\fournisseurs\templates\fournisseur_list.html:288
+#: .\fournisseurs\templates\fournisseur_search.html:218
+#: .\fournisseurs\templates\port_fournisseur_list.html:139
+#: .\port\templates\port\port_list.html:170
+#: .\utilisateur\templates\pages\accueil.html:630
+#: .\villes\templates\localite\localite_list.html:227
+#: .\villes\templates\portlocalite\port_localite_list.html:122
+#: .\villes\templates\portville\ville_port_list.html:121
+#: .\villes\templates\ville\ville_list.html:191
+#: .\zones\templates\zone_list.html:224
+msgid "Réinitialiser"
+msgstr "Reset"
+
+#: .\commodites\templates\fournisseur_commodite_list.html:128
+#: .\villes\templates\portlocalite\port_localite_list.html:145
+#: .\villes\templates\portville\ville_port_list.html:147
+msgid "Date création"
+msgstr "Creation date"
+
+#: .\commodites\templates\fournisseur_commodite_list.html:131
+#: .\fournisseurs\templates\port_fournisseur_list.html:165
+#: .\villes\templates\portlocalite\port_localite_list.html:148
+#: .\villes\templates\portville\ville_port_list.html:150
+msgid "Actions"
+msgstr "Actions"
+
+#: .\commodites\templates\fournisseur_commodite_list.html:225
+#: .\fournisseurs\templates\port_fournisseur_list.html:269
+#: .\villes\templates\portlocalite\port_localite_list.html:238
+#: .\villes\templates\portville\ville_port_list.html:249
+msgid "Aucune liaison trouvée"
+msgstr "No connection found"
+
+#: .\commodites\templates\fournisseur_commodite_list.html:228
+#: .\fournisseurs\templates\port_fournisseur_list.html:272
+#: .\villes\templates\portlocalite\port_localite_list.html:241
+#: .\villes\templates\portville\ville_port_list.html:252
+msgid "Aucune liaison ne correspond à vos critères de recherche."
+msgstr "No connection found"
+
+#: .\commodites\templates\fournisseur_commodite_list.html:230
+#: .\fournisseurs\templates\port_fournisseur_list.html:274
+#: .\villes\templates\portlocalite\port_localite_list.html:243
+#: .\villes\templates\portville\ville_port_list.html:254
+msgid "Commencez par créer votre première liaison."
+msgstr "Start by creating your first connection."
+
+#: .\commodites\templates\fournisseur_commodite_list.html:234
+#: .\fournisseurs\templates\port_fournisseur_list.html:278
+#: .\villes\templates\portlocalite\port_localite_list.html:247
+#: .\villes\templates\portville\ville_port_list.html:258
+msgid "Créer une liaison"
+msgstr "Create a connection"
+
+#: .\commodites\views.py:166
+#, python-format
+msgid "La commodité %(nom)s a été créée avec succès"
+msgstr "The amenity %(nom)s has been successfully created"
+
+#: .\commodites\views.py:173
+msgid "Créer une nouvelle commodité"
+msgstr "Create a new amenity"
+
+#: .\commodites\views.py:189
+#, python-format
+msgid "La commodité %(nom)s a été modifiée avec succès"
+msgstr "The amenity %(nom)s has been successfully modified"
+
+#: .\commodites\views.py:196 .\fournisseurs\views\update.py:33
+#: .\villes\views\localite\update_localite.py:32
+#: .\villes\views\ville\update.py:31
+#, python-format
+msgid "Modifier %(nom)s"
+msgstr "Edit %(nom)s"
+
+#: .\commodites\views.py:213
+msgid "La commodité a été supprimée avec succès"
+msgstr "The amenity has been successfully deleted"
+
+#: .\commodites\views.py:297 .\fournisseurs\views\port_fournisseur.py:26
+#: .\villes\views\portlocalite\create.py:22
+#: .\villes\views\portville\create.py:22
+msgid "La liaison a été créée avec succès"
+msgstr "The connection has been successfully created"
+
+#: .\commodites\views.py:305
+msgid "Créer une liaison Fournisseur-Commodité"
+msgstr "Create a Fournisseur-Amenity connection"
+
+#: .\commodites\views.py:334
+#, python-format
+msgid "Cette liaison existe déjà entre %(fournisseur)s et %(commodite)s"
+msgstr ""
+"This connection already exists between %(fournisseur)s and %(commodite)s"
+
+#: .\commodites\views.py:354
+msgid "La liaison a été supprimée avec succès"
+msgstr "The connection has been successfully deleted"
+
+#: .\cotation\forms.py:26
+#, fuzzy
+#| msgid "Nom de la commodité"
+msgid "Nom du client ou société"
+msgstr "Commodity Name"
+
+#: .\cotation\forms.py:30
+msgid "Téléphone"
+msgstr "Cell phone"
+
+#: .\cotation\forms.py:34
+#, fuzzy
+#| msgid "Email:"
+msgid "Email"
+msgstr "Email:"
+
+#: .\cotation\forms.py:41 .\echantillonnages\models.py:50
+msgid "Quantité"
+msgstr "Quantity"
+
+#: .\cotation\forms.py:54
+#, fuzzy
+msgid "Port de déchargement (POD)"
+msgstr "Unloading port: "
+
+#: .\cotation\forms.py:58
+msgid "Target price"
+msgstr "Target price"
+
+#: .\cotation\forms.py:68
+msgid "La quantité doit être supérieure à zéro."
+msgstr "The quantity must be greater than zero."
+
+#: .\cotation\forms.py:74
+msgid "Le prix cible doit être supérieur à zéro."
+msgstr "The target price must be greater than zero."
+
+#: .\cotation\templates\cotations\create.html:939
+msgid "Nouvelle demande de cotation"
+msgstr "New quotation request"
+
+#: .\cotation\templates\cotations\create.html:941
+msgid "Remplissez le formulaire en quelques étapes simples"
+msgstr "Fill out the form in a few simple steps"
+
+#: .\cotation\templates\cotations\create.html:950
+msgid "Fermer la notification"
+msgstr "Close notification"
+
+#: .\cotation\templates\cotations\create.html:956
+msgid "Progression du formulaire"
+msgstr "Form progress"
+
+#: .\cotation\templates\cotations\create.html:961
+msgid "Étapes du formulaire"
+msgstr "Form steps"
+
+#: .\cotation\templates\cotations\create.html:963
+msgid "Étape 1"
+msgstr "Step 1"
+
+#: .\cotation\templates\cotations\create.html:964
+#: .\cotation\templates\cotations\create.html:983
+msgid "Informations client"
+msgstr "Client information"
+
+#: .\cotation\templates\cotations\create.html:967
+msgid "Étape 2"
+msgstr "Step 2"
+
+#: .\cotation\templates\cotations\create.html:968
+msgid "Détails produit"
+msgstr "Product details"
+
+#: .\cotation\templates\cotations\create.html:971
+msgid "Étape 3"
+msgstr "Step 3"
+
+#: .\cotation\templates\cotations\create.html:972
+msgid "Confirmation"
+msgstr "Confirmation"
+
+#: .\cotation\templates\cotations\create.html:976
+msgid "Formulaire de demande de cotation"
+msgstr "Quotation request form"
+
+#: .\cotation\templates\cotations\create.html:989
+#, fuzzy
+#| msgid "Entrez le nom complet du client ou de l'entreprise"
+msgid "Entrez le nom complet du client ou de l\\"
+msgstr "Enter the full name of the client or company"
+
+#: .\cotation\templates\cotations\create.html:991
+msgid "Information: Entrez le nom complet du client ou de l'entreprise"
+msgstr "Information: Enter the full name of the client or company"
+
+#: .\cotation\templates\cotations\create.html:998
+msgid "Nom complet du client ou de l'entreprise"
+msgstr "Full name of the client or company"
+
+#: .\cotation\templates\cotations\create.html:1007
+msgid "Nom valide"
+msgstr "Valid name"
+
+#: .\cotation\templates\cotations\create.html:1015
+msgid "Format: +225 XX XX XX XX XX"
+msgstr "Format: +225 XX XX XX XX XX"
+
+#: .\cotation\templates\cotations\create.html:1017
+msgid "Information: Format attendu +225 XX XX XX XX XX"
+msgstr "Information: Format attendu +225 XX XX XX XX XX"
+
+#: .\cotation\templates\cotations\create.html:1024
+msgid "Numéro avec indicatif pays"
+msgstr "Number with country code"
+
+#: .\cotation\templates\cotations\create.html:1033
+msgid "Numéro valide"
+msgstr "Valid number"
+
+#: .\cotation\templates\cotations\create.html:1053
+msgid "Email valide"
+msgstr "Valid email"
+
+#: .\cotation\templates\cotations\create.html:1063
+msgid "Détails du produit"
+msgstr "Product details"
+
+#: .\cotation\templates\cotations\create.html:1070
+msgid "Sélectionnez le type de produit"
+msgstr "Select the product type"
+
+#: .\cotation\templates\cotations\create.html:1072
+msgid "Information: Sélectionnez le type de produit"
+msgstr "Information: Select the product type"
+
+#: .\cotation\templates\cotations\create.html:1093
+#: .\cotation\templates\cotations\create.html:1371
+msgid "Tonnes"
+msgstr "Tonnes"
+
+#: .\cotation\templates\cotations\create.html:1107
+msgid "Type de conteneur ou emballage"
+msgstr "Type of container or packaging"
+
+#: .\cotation\templates\cotations\create.html:1109
+msgid "Information: Type de conteneur ou emballage"
+msgstr "Information: Type of container or packaging"
+
+#: .\cotation\templates\cotations\create.html:1116
+msgid "Type de conteneur ou de conditionnement"
+msgstr "Type of container or packaging"
+
+#: .\cotation\templates\cotations\create.html:1129
+msgid "Termes commerciaux internationaux (FOB, CIF, etc.)"
+msgstr "Commercial terms (FOB, CIF, etc.)"
+
+#: .\cotation\templates\cotations\create.html:1131
+msgid "Information: Termes commerciaux internationaux"
+msgstr "Information: Commercial terms"
+
+#: .\cotation\templates\cotations\create.html:1138
+msgid "Conditions commerciales internationales"
+msgstr "Commercial conditions"
+
+#: .\cotation\templates\cotations\create.html:1155
+msgid "Prix cible par tonne"
+msgstr "Target price per tonne"
+
+#: .\cotation\templates\cotations\create.html:1182
+msgid "Port de chargement (optionnel)"
+msgstr "Loading port (optional)"
+
+#: .\cotation\templates\cotations\create.html:1199
+msgid "Port de déchargement (optionnel)"
+msgstr "Unloading port (optional)"
+
+#: .\cotation\templates\cotations\create.html:1214
+msgid "Vérification et confirmation"
+msgstr "Verification and confirmation"
+
+#: .\cotation\templates\cotations\create.html:1220
+msgid "Récapitulatif de votre demande"
+msgstr "Your request summary"
+
+#: .\cotation\templates\cotations\create.html:1226
+msgid "Client:"
+msgstr "Client:"
+
+#: .\cotation\templates\cotations\create.html:1233
+msgid "Contact:"
+msgstr "Contact:"
+
+#: .\cotation\templates\cotations\create.html:1240
+msgid "Email:"
+msgstr "Email:"
+
+#: .\cotation\templates\cotations\create.html:1247
+msgid "Commodité:"
+msgstr "Amenity:"
+
+#: .\cotation\templates\cotations\create.html:1254
+msgid "Quantité:"
+msgstr "Quantity:"
+
+#: .\cotation\templates\cotations\create.html:1261
+msgid "Conditionnement:"
+msgstr "Packaging:"
+
+#: .\cotation\templates\cotations\create.html:1268
+msgid "Incoterm:"
+msgstr "Incoterm:"
+
+#: .\cotation\templates\cotations\create.html:1275
+msgid "Port de chargement:"
+msgstr "Loading port:"
+
+#: .\cotation\templates\cotations\create.html:1282
+msgid "Port de déchargement:"
+msgstr "Unloading port: "
+
+#: .\cotation\templates\cotations\create.html:1289
+msgid "Prix cible:"
+msgstr "Target price:"
+
+#: .\cotation\templates\cotations\create.html:1296
+msgid "Devise:"
+msgstr "Currency: "
+
+#: .\cotation\templates\cotations\create.html:1304
+msgid ""
+"Veuillez vérifier attentivement toutes les informations ci-dessus avant de "
+"soumettre votre demande. Une fois soumise, vous recevrez une confirmation "
+"par email."
+msgstr ""
+"Please carefully check all the information above before submitting your "
+"request. Once submitted, you will receive a confirmation by email."
+
+#: .\cotation\templates\cotations\create.html:1310
+#, fuzzy
+#| msgid "Retour à l\""
+msgid "Retour à l\\"
+msgstr "Back to"
+
+#: .\cotation\templates\cotations\create.html:1315
+msgid "Annuler et retourner"
+msgstr "Cancel and go back"
+
+#: .\cotation\templates\cotations\create.html:1319
+msgid "Passer à l\\"
+msgstr "Proceed to"
+
+#: .\cotation\templates\cotations\create.html:1323
+msgid "Soumettre la demande de cotation"
+msgstr "Submit quotation request"
+
+#: .\cotation\templates\cotations\create.html:1325
+#: .\cotation\templates\cotations\create.html:1860
+msgid "Soumettre"
+msgstr "Submit"
+
+#: .\cotation\templates\cotations\create.html:1338
+#: .\cotation\templates\cotations\create.html:1365
+msgid "Sauvegarde..."
+msgstr "Saving..."
+
+#: .\cotation\templates\cotations\create.html:1359
+msgid "Ce champ est obligatoire"
+msgstr "This field is required"
+
+#: .\cotation\templates\cotations\create.html:1360
+msgid "Format d\\"
+msgstr "Format of number is invalid"
+
+#: .\cotation\templates\cotations\create.html:1361
+msgid "Format de numéro invalide"
+msgstr "Format of number is invalid"
+
+#: .\cotation\templates\cotations\create.html:1362
+msgid "Veuillez entrer un nombre valide"
+msgstr "Please enter a valid number"
+
+#: .\cotation\templates\cotations\create.html:1363
+msgid "Veuillez corriger les erreurs avant de continuer"
+msgstr "Please correct the errors before continuing"
+
+#: .\cotation\templates\cotations\create.html:1364
+msgid "Données précédentes restaurées"
+msgstr "Previous data restored"
+
+#: .\cotation\templates\cotations\create.html:1366
+msgid "Sauvegardé"
+msgstr "Saved"
+
+#: .\cotation\templates\cotations\create.html:1367
+msgid "Veuillez corriger toutes les erreurs avant de soumettre"
+msgstr "Please correct all errors before submitting"
+
+#: .\cotation\templates\cotations\create.html:1368
+msgid "Envoi en cours..."
+msgstr "Sending in progress..."
+
+#: .\cotation\templates\cotations\create.html:1369
+msgid "La soumission prend plus de temps que prévu. Veuillez patienter..."
+msgstr "The submission takes longer than expected. Please wait..."
+
+#: .\cotation\templates\cotations\create.html:1370
+msgid "Des données précédentes ont été trouvées. Voulez-vous les restaurer ?"
+msgstr "Previous data found. Do you want to restore it?"
+
+#: .\cotation\templates\cotations\create.html:1440
+#: .\utilisateur\templates\connexion\login\google_auth_setup.html:68
+#: .\utilisateur\templates\connexion\login\google_auth_setup.html:79
+msgid "Fermer"
+msgstr "Close"
+
+#: .\cotation\templates\cotations\email_queue_list.html:5
+#: .\cotation\templates\cotations\email_queue_list.html:64
+msgid "File d'attente des emails"
+msgstr "Email queue"
+
+#: .\cotation\templates\cotations\email_queue_list.html:67
+msgid "Gérez les emails en attente d'envoi"
+msgstr "Manage emails in queue"
+
+#: .\cotation\templates\cotations\email_queue_list.html:74
+msgid "Retour aux demandes"
+msgstr "Back to requests"
+
+#: .\cotation\templates\cotations\email_queue_list.html:89
+#: .\cotation\templates\cotations\email_queue_list.html:134
+#: .\cotation\templates\cotations\email_queue_list.html:292
+msgid "En attente"
+msgstr "Pending"
+
+#: .\cotation\templates\cotations\email_queue_list.html:102
+#: .\cotation\templates\cotations\email_queue_list.html:137
+msgid "Envoyés"
+msgstr "Sent"
+
+#: .\cotation\templates\cotations\email_queue_list.html:115
+msgid "Échecs"
+msgstr "Failed"
+
+#: .\cotation\templates\cotations\email_queue_list.html:129
+#: .\cotation\templates\cotations\email_queue_list.html:220
+#: .\cotation\templates\cotations\list.html:106 .\utilisateur\admin.py:246
+msgid "Statut"
+msgstr "Status"
+
+#: .\cotation\templates\cotations\email_queue_list.html:132
+#: .\cotation\templates\cotations\list.html:109
+msgid "Tous les statuts"
+msgstr "All statuses"
+
+#: .\cotation\templates\cotations\email_queue_list.html:145
+msgid "Type d'email"
+msgstr "Email type"
+
+#: .\cotation\templates\cotations\email_queue_list.html:148
+msgid "Tous les types"
+msgstr "All types"
+
+#: .\cotation\templates\cotations\email_queue_list.html:150
+msgid "Confirmation client"
+msgstr "Client confirmation"
+
+#: .\cotation\templates\cotations\email_queue_list.html:153
+msgid "Notification admin"
+msgstr "Admin notification"
+
+#: .\cotation\templates\cotations\email_queue_list.html:162
+#: .\fournisseurs\templates\fournisseur_list.html:285
+msgid "Appliquer les filtres"
+msgstr "Apply filters"
+
+#: .\cotation\templates\cotations\email_queue_list.html:176
+msgid "Commande d'envoi"
+msgstr "Send command"
+
+#: .\cotation\templates\cotations\email_queue_list.html:178
+msgid "Pour envoyer les emails en attente, exécutez :"
+msgstr "To send emails in queue, run :"
+
+#: .\cotation\templates\cotations\email_queue_list.html:184
+msgid ""
+"Cette commande est configurée dans crontab pour s'exécuter automatiquement."
+msgstr "This command is configured in crontab to run automatically."
+
+#: .\cotation\templates\cotations\email_queue_list.html:199
+msgid "ID"
+msgstr "ID"
+
+#: .\cotation\templates\cotations\email_queue_list.html:202
+msgid "Type"
+msgstr "Type"
+
+#: .\cotation\templates\cotations\email_queue_list.html:205
+msgid "Destinataire"
+msgstr "Recipient"
+
+#: .\cotation\templates\cotations\email_queue_list.html:208
+msgid "Demande"
+msgstr "Request"
+
+#: .\cotation\templates\cotations\email_queue_list.html:211
+msgid "Sujet"
+msgstr "Subject"
+
+#: .\cotation\templates\cotations\email_queue_list.html:217
+#: .\utilisateur\admin.py:334
+msgid "Tentatives"
+msgstr "Attempts"
+
+#: .\cotation\templates\cotations\email_queue_list.html:234
+msgid "Client"
+msgstr "Client"
+
+#: .\cotation\templates\cotations\email_queue_list.html:239
+msgid "Admin"
+msgstr "Admin"
+
+#: .\cotation\templates\cotations\email_queue_list.html:271
+msgid "Envoyé"
+msgstr "Sent"
+
+#: .\cotation\templates\cotations\email_queue_list.html:281
+msgid "Échec"
+msgstr "Failed"
+
+#: .\cotation\templates\cotations\email_queue_list.html:307
+msgid "Affichage de"
+msgstr "Displaying"
+
+#: .\cotation\templates\cotations\email_queue_list.html:307
+msgid "à"
+msgstr "to"
+
+#: .\cotation\templates\cotations\email_queue_list.html:307
+msgid "sur"
+msgstr "of"
+
+#: .\cotation\templates\cotations\email_queue_list.html:307
+msgid "résultats"
+msgstr "results"
+
+#: .\cotation\templates\cotations\email_queue_list.html:312
+msgid "Première"
+msgstr "First"
+
+#: .\cotation\templates\cotations\email_queue_list.html:315
+msgid "Précédente"
+msgstr "Previous"
+
+#: .\cotation\templates\cotations\email_queue_list.html:321
+msgid "Suivante"
+msgstr "Next"
+
+#: .\cotation\templates\cotations\email_queue_list.html:324
+msgid "Dernière"
+msgstr "Last"
+
+#: .\cotation\templates\cotations\email_queue_list.html:336
+msgid "Aucun email trouvé"
+msgstr "No email found"
+
+#: .\cotation\templates\cotations\email_queue_list.html:339
+msgid "Aucun email ne correspond à vos critères de recherche."
+msgstr "No email found matching your search criteria."
+
+#: .\cotation\templates\cotations\email_queue_list.html:341
+msgid "Aucun email n'a été trouvé dans la file d'attente."
+msgstr "No email found in queue."
+
+#: .\cotation\templates\cotations\list.html:5
+msgid "Liste des demandes de cotation"
+msgstr "List of quotation requests"
+
+#: .\cotation\templates\cotations\list.html:54
+msgid "Demandes de cotation"
+msgstr "Quotation requests"
+
+#: .\cotation\templates\cotations\list.html:56
+msgid "Gérez les demandes de cotation des clients"
+msgstr "Manage quotation requests from clients"
+
+#: .\cotation\templates\cotations\list.html:63
+msgid "Mails en attente"
+msgstr "Pending emails"
+
+#: .\cotation\templates\cotations\list.html:95
+msgid "Nom client, contact, commodité..."
+msgstr "Name client, contact, commodity..."
+
+#: .\cotation\views\create.py:37
+#, python-format
+msgid ""
+"Votre demande de cotation a été enregistrée avec succès. Référence: %(ref)s. "
+"Un email de confirmation vous sera envoyé sous peu."
+msgstr ""
+"Your quotation request has been successfully registered. Reference: %(ref)s. "
+"A confirmation email will be sent to you shortly."
+
+#: .\cotation\views\create.py:46
+msgid ""
+"Une erreur est survenue lors de la soumission du formulaire. Veuillez "
+"corriger les erreurs ci-dessous."
+msgstr ""
+"An error occurred while submitting the form. Please correct the errors below."
+
+#: .\echantillonnages\admin.py:63
+#: .\fournisseurs\templates\fournisseur_search.html:55
+msgid "Informations générales"
+msgstr "General information"
+
+#: .\echantillonnages\admin.py:74
+msgid "Analyse qualité"
+msgstr "Quality analysis"
+
+#: .\echantillonnages\admin.py:82
+msgid "Métadonnées"
+msgstr "Metadata"
+
+#: .\echantillonnages\admin.py:123 .\echantillonnages\models.py:114
+msgid "Agent"
+msgstr "Agent"
+
+#: .\echantillonnages\admin.py:141
+msgid "Conformité"
+msgstr "Conformity"
+
+#: .\echantillonnages\admin.py:171
+msgid "Détails de conformité"
+msgstr "Conformity details"
+
+#: .\echantillonnages\admin.py:179
+msgid "Fournisseur (via commodité)"
+msgstr "Fournisseur (via commodité)"
+
+#: .\echantillonnages\admin.py:209
+msgid "Vérifier la conformité des échantillons sélectionnés"
+msgstr "Verify the conformity of selected samples"
+
+#: .\echantillonnages\admin.py:212 .\echantillonnages\models.py:158
+msgid "Échantillonnage"
+msgstr "Sampling"
+
+#: .\echantillonnages\admin.py:213 .\echantillonnages\models.py:159
+msgid "Échantillonnages"
+msgstr "Sampling"
+
+#: .\echantillonnages\models.py:42
+#: .\villes\templates\localite\localite_list.html:247
+#: .\villes\templates\ville\ville_list.html:207
+#: .\zones\templates\zone_list.html:286
+msgid "Référence"
+msgstr "Reference"
+
+#: .\echantillonnages\models.py:57
+msgid "Prix en FCFA/Tonne"
+msgstr "Price in FCFA/Tonne"
+
+#: .\echantillonnages\models.py:71
+msgid "Taux d'acidité (FFA %)"
+msgstr "Acidity rate (FFA %)"
+
+#: .\echantillonnages\models.py:84
+msgid "Impuretés insolubles (%)"
+msgstr "Insoluble impurities (%)"
+
+#: .\echantillonnages\models.py:98
+msgid "Teneur en eau et matières volatiles (MNL %)"
+msgstr "Water and volatile matter content (MNL %)"
+
+#: .\echantillonnages\models.py:135
+msgid "Quantité totale (tonnes)"
+msgstr "Total quantity (tonnes)"
+
+#: .\echantillonnages\models.py:143
+msgid "Date d'enregistrement"
+msgstr "Registration date"
+
+#: .\env\Lib\site-packages\click\_termui_impl.py:556
+#, python-brace-format
+msgid "{editor}: Editing failed"
+msgstr " "
+
+#: .\env\Lib\site-packages\click\_termui_impl.py:560
+#, python-brace-format
+msgid "{editor}: Editing failed: {e}"
+msgstr " "
+
+#: .\env\Lib\site-packages\click\core.py:1124
+msgid "Aborted!"
+msgstr ""
+
+#: .\env\Lib\site-packages\click\core.py:1349
+#: .\env\Lib\site-packages\click\core.py:1379
+#, python-brace-format
+msgid "(Deprecated) {text}"
+msgstr ""
+
+#: .\env\Lib\site-packages\click\core.py:1396
+msgid "Options"
+msgstr ""
+
+#: .\env\Lib\site-packages\click\core.py:1422
+#, python-brace-format
+msgid "Got unexpected extra argument ({args})"
+msgid_plural "Got unexpected extra arguments ({args})"
+msgstr[0] ""
+msgstr[1] ""
+
+#: .\env\Lib\site-packages\click\core.py:1438
+msgid "DeprecationWarning: The command {name!r} is deprecated."
+msgstr ""
+
+#: .\env\Lib\site-packages\click\core.py:1645
+msgid "Commands"
+msgstr ""
+
+#: .\env\Lib\site-packages\click\core.py:1677
+msgid "Missing command."
+msgstr ""
+
+#: .\env\Lib\site-packages\click\core.py:1755
+msgid "No such command {name!r}."
+msgstr ""
+
+#: .\env\Lib\site-packages\click\core.py:2313
+msgid "Value must be an iterable."
+msgstr ""
+
+#: .\env\Lib\site-packages\click\core.py:2334
+#, python-brace-format
+msgid "Takes {nargs} values but 1 was given."
+msgid_plural "Takes {nargs} values but {len} were given."
+msgstr[0] ""
+msgstr[1] ""
+
+#: .\env\Lib\site-packages\click\core.py:2783
+#, python-brace-format
+msgid "env var: {var}"
+msgstr ""
+
+#: .\env\Lib\site-packages\click\core.py:2813
+msgid "(dynamic)"
+msgstr ""
+
+#: .\env\Lib\site-packages\click\core.py:2828
+#, python-brace-format
+msgid "default: {default}"
+msgstr ""
+
+#: .\env\Lib\site-packages\click\core.py:2841
+msgid "required"
+msgstr ""
+
+#: .\env\Lib\site-packages\click\decorators.py:457
+#, python-format
+msgid "%(prog)s, version %(version)s"
+msgstr ""
+
+#: .\env\Lib\site-packages\click\decorators.py:520
+msgid "Show the version and exit."
+msgstr ""
+
+#: .\env\Lib\site-packages\click\decorators.py:541
+msgid "Show this message and exit."
+msgstr ""
+
+#: .\env\Lib\site-packages\click\exceptions.py:49
+#: .\env\Lib\site-packages\click\exceptions.py:88
+#, python-brace-format
+msgid "Error: {message}"
+msgstr ""
+
+#: .\env\Lib\site-packages\click\exceptions.py:80
+#, python-brace-format
+msgid "Try '{command} {option}' for help."
+msgstr ""
+
+#: .\env\Lib\site-packages\click\exceptions.py:129
+#, python-brace-format
+msgid "Invalid value: {message}"
+msgstr ""
+
+#: .\env\Lib\site-packages\click\exceptions.py:131
+#, python-brace-format
+msgid "Invalid value for {param_hint}: {message}"
+msgstr ""
+
+#: .\env\Lib\site-packages\click\exceptions.py:187
+msgid "Missing argument"
+msgstr ""
+
+#: .\env\Lib\site-packages\click\exceptions.py:189
+msgid "Missing option"
+msgstr ""
+
+#: .\env\Lib\site-packages\click\exceptions.py:191
+msgid "Missing parameter"
+msgstr ""
+
+#: .\env\Lib\site-packages\click\exceptions.py:193
+#, python-brace-format
+msgid "Missing {param_type}"
+msgstr ""
+
+#: .\env\Lib\site-packages\click\exceptions.py:200
+#, python-brace-format
+msgid "Missing parameter: {param_name}"
+msgstr ""
+
+#: .\env\Lib\site-packages\click\exceptions.py:220
+#, python-brace-format
+msgid "No such option: {name}"
+msgstr ""
+
+#: .\env\Lib\site-packages\click\exceptions.py:232
+#, python-brace-format
+msgid "Did you mean {possibility}?"
+msgid_plural "(Possible options: {possibilities})"
+msgstr[0] ""
+msgstr[1] ""
+
+#: .\env\Lib\site-packages\click\exceptions.py:270
+msgid "unknown error"
+msgstr ""
+
+#: .\env\Lib\site-packages\click\exceptions.py:277
+msgid "Could not open file {filename!r}: {message}"
+msgstr ""
+
+#: .\env\Lib\site-packages\click\formatting.py:156
+msgid "Usage:"
+msgstr ""
+
+#: .\env\Lib\site-packages\click\parser.py:233
+msgid "Argument {name!r} takes {nargs} values."
+msgstr ""
+
+#: .\env\Lib\site-packages\click\parser.py:415
+msgid "Option {name!r} does not take a value."
+msgstr ""
+
+#: .\env\Lib\site-packages\click\parser.py:476
+msgid "Option {name!r} requires an argument."
+msgid_plural "Option {name!r} requires {nargs} arguments."
+msgstr[0] ""
+msgstr[1] ""
+
+#: .\env\Lib\site-packages\click\shell_completion.py:326
+msgid "Shell completion is not supported for Bash versions older than 4.4."
+msgstr ""
+
+#: .\env\Lib\site-packages\click\shell_completion.py:333
+msgid "Couldn't detect Bash version, shell completion is not supported."
+msgstr ""
+
+#: .\env\Lib\site-packages\click\termui.py:158
+msgid "Repeat for confirmation"
+msgstr ""
+
+#: .\env\Lib\site-packages\click\termui.py:174
+msgid "Error: The value you entered was invalid."
+msgstr ""
+
+#: .\env\Lib\site-packages\click\termui.py:176
+#, python-brace-format
+msgid "Error: {e.message}"
+msgstr ""
+
+#: .\env\Lib\site-packages\click\termui.py:187
+msgid "Error: The two entered values do not match."
+msgstr ""
+
+#: .\env\Lib\site-packages\click\termui.py:243
+msgid "Error: invalid input"
+msgstr ""
+
+#: .\env\Lib\site-packages\click\termui.py:773
+msgid "Press any key to continue..."
+msgstr ""
+
+#: .\env\Lib\site-packages\click\types.py:267
+#, python-brace-format
+msgid ""
+"Choose from:\n"
+"\t{choices}"
+msgstr ""
+
+#: .\env\Lib\site-packages\click\types.py:299
+msgid "{value!r} is not {choice}."
+msgid_plural "{value!r} is not one of {choices}."
+msgstr[0] ""
+msgstr[1] ""
+
+#: .\env\Lib\site-packages\click\types.py:393
+msgid "{value!r} does not match the format {format}."
+msgid_plural "{value!r} does not match the formats {formats}."
+msgstr[0] ""
+msgstr[1] ""
+
+#: .\env\Lib\site-packages\click\types.py:415
+msgid "{value!r} is not a valid {number_type}."
+msgstr ""
+
+#: .\env\Lib\site-packages\click\types.py:471
+#, python-brace-format
+msgid "{value} is not in the range {range}."
+msgstr ""
+
+#: .\env\Lib\site-packages\click\types.py:612
+msgid "{value!r} is not a valid boolean."
+msgstr ""
+
+#: .\env\Lib\site-packages\click\types.py:636
+msgid "{value!r} is not a valid UUID."
+msgstr ""
+
+#: .\env\Lib\site-packages\click\types.py:826
+msgid "file"
+msgstr ""
+
+#: .\env\Lib\site-packages\click\types.py:828
+msgid "directory"
+msgstr ""
+
+#: .\env\Lib\site-packages\click\types.py:830
+msgid "path"
+msgstr ""
+
+#: .\env\Lib\site-packages\click\types.py:881
+msgid "{name} {filename!r} does not exist."
+msgstr ""
+
+#: .\env\Lib\site-packages\click\types.py:890
+msgid "{name} {filename!r} is a file."
+msgstr ""
+
+#: .\env\Lib\site-packages\click\types.py:898
+msgid "{name} {filename!r} is a directory."
+msgstr ""
+
+#: .\env\Lib\site-packages\click\types.py:907
+msgid "{name} {filename!r} is not readable."
+msgstr ""
+
+#: .\env\Lib\site-packages\click\types.py:916
+msgid "{name} {filename!r} is not writable."
+msgstr ""
+
+#: .\env\Lib\site-packages\click\types.py:925
+msgid "{name} {filename!r} is not executable."
+msgstr ""
+
+#: .\env\Lib\site-packages\click\types.py:992
+#, python-brace-format
+msgid "{len_type} values are required, but {len_value} was given."
+msgid_plural "{len_type} values are required, but {len_value} were given."
+msgstr[0] ""
+msgstr[1] ""
+
+#: .\env\Lib\site-packages\django\contrib\messages\apps.py:15
+msgid "Messages"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\contrib\sitemaps\apps.py:8
+msgid "Site Maps"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\contrib\staticfiles\apps.py:9
+msgid "Static Files"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\contrib\syndication\apps.py:7
+msgid "Syndication"
+msgstr ""
+
+#. Translators: String used to replace omitted page numbers in elided page
+#. range generated by paginators, e.g. [1, 2, '…', 5, 6, 7, '…', 9, 10].
+#: .\env\Lib\site-packages\django\core\paginator.py:30
+msgid "…"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\core\paginator.py:50
+msgid "That page number is not an integer"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\core\paginator.py:52
+msgid "That page number is less than 1"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\core\paginator.py:54
+msgid "That page contains no results"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\core\validators.py:22
+msgid "Enter a valid value."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\core\validators.py:104
+#: .\env\Lib\site-packages\django\forms\fields.py:752
+msgid "Enter a valid URL."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\core\validators.py:165
+msgid "Enter a valid integer."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\core\validators.py:176
+msgid "Enter a valid email address."
+msgstr ""
+
+#. Translators: "letters" means latin letters: a-z and A-Z.
+#: .\env\Lib\site-packages\django\core\validators.py:259
+msgid ""
+"Enter a valid “slug” consisting of letters, numbers, underscores or hyphens."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\core\validators.py:267
+msgid ""
+"Enter a valid “slug” consisting of Unicode letters, numbers, underscores, or "
+"hyphens."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\core\validators.py:281
+#: .\env\Lib\site-packages\django\core\validators.py:289
+#: .\env\Lib\site-packages\django\core\validators.py:318
+msgid "Enter a valid IPv4 address."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\core\validators.py:298
+#: .\env\Lib\site-packages\django\core\validators.py:319
+msgid "Enter a valid IPv6 address."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\core\validators.py:310
+#: .\env\Lib\site-packages\django\core\validators.py:317
+msgid "Enter a valid IPv4 or IPv6 address."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\core\validators.py:353
+msgid "Enter only digits separated by commas."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\core\validators.py:359
+#, python-format
+msgid "Ensure this value is %(limit_value)s (it is %(show_value)s)."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\core\validators.py:394
+#, python-format
+msgid "Ensure this value is less than or equal to %(limit_value)s."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\core\validators.py:403
+#, python-format
+msgid "Ensure this value is greater than or equal to %(limit_value)s."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\core\validators.py:412
+#, python-format
+msgid "Ensure this value is a multiple of step size %(limit_value)s."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\core\validators.py:422
+#, python-format
+msgid ""
+"Ensure this value has at least %(limit_value)d character (it has "
+"%(show_value)d)."
+msgid_plural ""
+"Ensure this value has at least %(limit_value)d characters (it has "
+"%(show_value)d)."
+msgstr[0] ""
+msgstr[1] ""
+
+#: .\env\Lib\site-packages\django\core\validators.py:440
+#, python-format
+msgid ""
+"Ensure this value has at most %(limit_value)d character (it has "
+"%(show_value)d)."
+msgid_plural ""
+"Ensure this value has at most %(limit_value)d characters (it has "
+"%(show_value)d)."
+msgstr[0] ""
+msgstr[1] ""
+
+#: .\env\Lib\site-packages\django\core\validators.py:463
+#: .\env\Lib\site-packages\django\forms\fields.py:347
+#: .\env\Lib\site-packages\django\forms\fields.py:386
+msgid "Enter a number."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\core\validators.py:465
+#, python-format
+msgid "Ensure that there are no more than %(max)s digit in total."
+msgid_plural "Ensure that there are no more than %(max)s digits in total."
+msgstr[0] ""
+msgstr[1] ""
+
+#: .\env\Lib\site-packages\django\core\validators.py:470
+#, python-format
+msgid "Ensure that there are no more than %(max)s decimal place."
+msgid_plural "Ensure that there are no more than %(max)s decimal places."
+msgstr[0] ""
+msgstr[1] ""
+
+#: .\env\Lib\site-packages\django\core\validators.py:475
+#, python-format
+msgid ""
+"Ensure that there are no more than %(max)s digit before the decimal point."
+msgid_plural ""
+"Ensure that there are no more than %(max)s digits before the decimal point."
+msgstr[0] ""
+msgstr[1] ""
+
+#: .\env\Lib\site-packages\django\core\validators.py:546
+#, python-format
+msgid ""
+"File extension “%(extension)s” is not allowed. Allowed extensions are: "
+"%(allowed_extensions)s."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\core\validators.py:607
+msgid "Null characters are not allowed."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\db\models\base.py:1423
+#: .\env\Lib\site-packages\django\forms\models.py:893
+msgid "and"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\db\models\base.py:1425
+#, python-format
+msgid "%(model_name)s with this %(field_labels)s already exists."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\db\models\constraints.py:17
+#, python-format
+msgid "Constraint “%(name)s” is violated."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\db\models\fields\__init__.py:128
+#, python-format
+msgid "Value %(value)r is not a valid choice."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\db\models\fields\__init__.py:129
+msgid "This field cannot be null."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\db\models\fields\__init__.py:130
+msgid "This field cannot be blank."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\db\models\fields\__init__.py:131
+#, python-format
+msgid "%(model_name)s with this %(field_label)s already exists."
+msgstr ""
+
+#. Translators: The 'lookup_type' is one of 'date', 'year' or
+#. 'month'. Eg: "Title must be unique for pub_date year"
+#: .\env\Lib\site-packages\django\db\models\fields\__init__.py:135
+#, python-format
+msgid ""
+"%(field_label)s must be unique for %(date_field_label)s %(lookup_type)s."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\db\models\fields\__init__.py:173
+#, python-format
+msgid "Field of type: %(field_type)s"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\db\models\fields\__init__.py:1094
+#, python-format
+msgid "“%(value)s” value must be either True or False."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\db\models\fields\__init__.py:1095
+#, python-format
+msgid "“%(value)s” value must be either True, False, or None."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\db\models\fields\__init__.py:1097
+msgid "Boolean (Either True or False)"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\db\models\fields\__init__.py:1147
+#, python-format
+msgid "String (up to %(max_length)s)"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\db\models\fields\__init__.py:1149
+msgid "String (unlimited)"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\db\models\fields\__init__.py:1253
+msgid "Comma-separated integers"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\db\models\fields\__init__.py:1354
+#, python-format
+msgid ""
+"“%(value)s” value has an invalid date format. It must be in YYYY-MM-DD "
+"format."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\db\models\fields\__init__.py:1358
+#: .\env\Lib\site-packages\django\db\models\fields\__init__.py:1493
+#, python-format
+msgid ""
+"“%(value)s” value has the correct format (YYYY-MM-DD) but it is an invalid "
+"date."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\db\models\fields\__init__.py:1362
+msgid "Date (without time)"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\db\models\fields\__init__.py:1489
+#, python-format
+msgid ""
+"“%(value)s” value has an invalid format. It must be in YYYY-MM-DD "
+"HH:MM[:ss[.uuuuuu]][TZ] format."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\db\models\fields\__init__.py:1497
+#, python-format
+msgid ""
+"“%(value)s” value has the correct format (YYYY-MM-DD HH:MM[:ss[.uuuuuu]]"
+"[TZ]) but it is an invalid date/time."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\db\models\fields\__init__.py:1502
+msgid "Date (with time)"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\db\models\fields\__init__.py:1626
+#, python-format
+msgid "“%(value)s” value must be a decimal number."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\db\models\fields\__init__.py:1628
+msgid "Decimal number"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\db\models\fields\__init__.py:1789
+#, python-format
+msgid ""
+"“%(value)s” value has an invalid format. It must be in [DD] "
+"[[HH:]MM:]ss[.uuuuuu] format."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\db\models\fields\__init__.py:1793
+msgid "Duration"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\db\models\fields\__init__.py:1845
+msgid "Email address"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\db\models\fields\__init__.py:1870
+msgid "File path"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\db\models\fields\__init__.py:1948
+#, python-format
+msgid "“%(value)s” value must be a float."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\db\models\fields\__init__.py:1950
+msgid "Floating point number"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\db\models\fields\__init__.py:1990
+#, python-format
+msgid "“%(value)s” value must be an integer."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\db\models\fields\__init__.py:1992
+msgid "Integer"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\db\models\fields\__init__.py:2088
+msgid "Big (8 byte) integer"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\db\models\fields\__init__.py:2105
+msgid "Small integer"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\db\models\fields\__init__.py:2113
+msgid "IPv4 address"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\db\models\fields\__init__.py:2144
+msgid "IP address"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\db\models\fields\__init__.py:2237
+#: .\env\Lib\site-packages\django\db\models\fields\__init__.py:2238
+#, python-format
+msgid "“%(value)s” value must be either None, True or False."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\db\models\fields\__init__.py:2240
+msgid "Boolean (Either True, False or None)"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\db\models\fields\__init__.py:2291
+msgid "Positive big integer"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\db\models\fields\__init__.py:2306
+msgid "Positive integer"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\db\models\fields\__init__.py:2321
+msgid "Positive small integer"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\db\models\fields\__init__.py:2337
+#, python-format
+msgid "Slug (up to %(max_length)s)"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\db\models\fields\__init__.py:2373
+msgid "Text"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\db\models\fields\__init__.py:2448
+#, python-format
+msgid ""
+"“%(value)s” value has an invalid format. It must be in HH:MM[:ss[.uuuuuu]] "
+"format."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\db\models\fields\__init__.py:2452
+#, python-format
+msgid ""
+"“%(value)s” value has the correct format (HH:MM[:ss[.uuuuuu]]) but it is an "
+"invalid time."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\db\models\fields\__init__.py:2456
+msgid "Time"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\db\models\fields\__init__.py:2564
+msgid "URL"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\db\models\fields\__init__.py:2588
+msgid "Raw binary data"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\db\models\fields\__init__.py:2653
+#, python-format
+msgid "“%(value)s” is not a valid UUID."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\db\models\fields\__init__.py:2655
+msgid "Universally unique identifier"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\db\models\fields\files.py:232
+msgid "File"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\db\models\fields\files.py:393
+msgid "Image"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\db\models\fields\json.py:26
+msgid "A JSON object"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\db\models\fields\json.py:28
+msgid "Value must be valid JSON."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\db\models\fields\related.py:919
+#, python-format
+msgid "%(model)s instance with %(field)s %(value)r does not exist."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\db\models\fields\related.py:921
+msgid "Foreign Key (type determined by related field)"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\db\models\fields\related.py:1212
+msgid "One-to-one relationship"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\db\models\fields\related.py:1269
+#, python-format
+msgid "%(from)s-%(to)s relationship"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\db\models\fields\related.py:1271
+#, python-format
+msgid "%(from)s-%(to)s relationships"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\db\models\fields\related.py:1319
+msgid "Many-to-many relationship"
+msgstr ""
+
+#. Translators: If found as last label character, these punctuation
+#. characters will prevent the default label_suffix to be appended to the label
+#: .\env\Lib\site-packages\django\forms\boundfield.py:184
+msgid ":?.!"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\forms\fields.py:91
+msgid "This field is required."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\forms\fields.py:298
+msgid "Enter a whole number."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\forms\fields.py:467
+#: .\env\Lib\site-packages\django\forms\fields.py:1241
+msgid "Enter a valid date."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\forms\fields.py:490
+#: .\env\Lib\site-packages\django\forms\fields.py:1242
+msgid "Enter a valid time."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\forms\fields.py:517
+msgid "Enter a valid date/time."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\forms\fields.py:551
+msgid "Enter a valid duration."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\forms\fields.py:552
+#, python-brace-format
+msgid "The number of days must be between {min_days} and {max_days}."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\forms\fields.py:621
+msgid "No file was submitted. Check the encoding type on the form."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\forms\fields.py:622
+msgid "No file was submitted."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\forms\fields.py:623
+msgid "The submitted file is empty."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\forms\fields.py:625
+#, python-format
+msgid "Ensure this filename has at most %(max)d character (it has %(length)d)."
+msgid_plural ""
+"Ensure this filename has at most %(max)d characters (it has %(length)d)."
+msgstr[0] ""
+msgstr[1] ""
+
+#: .\env\Lib\site-packages\django\forms\fields.py:630
+msgid "Please either submit a file or check the clear checkbox, not both."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\forms\fields.py:694
+msgid ""
+"Upload a valid image. The file you uploaded was either not an image or a "
+"corrupted image."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\forms\fields.py:857
+#: .\env\Lib\site-packages\django\forms\fields.py:949
+#: .\env\Lib\site-packages\django\forms\models.py:1566
+#, python-format
+msgid "Select a valid choice. %(value)s is not one of the available choices."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\forms\fields.py:951
+#: .\env\Lib\site-packages\django\forms\fields.py:1070
+#: .\env\Lib\site-packages\django\forms\models.py:1564
+msgid "Enter a list of values."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\forms\fields.py:1071
+msgid "Enter a complete value."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\forms\fields.py:1313
+msgid "Enter a valid UUID."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\forms\fields.py:1343
+msgid "Enter a valid JSON."
+msgstr ""
+
+#. Translators: This is the default suffix added to form field labels
+#: .\env\Lib\site-packages\django\forms\forms.py:98
+msgid ":"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\forms\forms.py:244
+#: .\env\Lib\site-packages\django\forms\forms.py:328
+#, python-format
+msgid "(Hidden field %(name)s) %(error)s"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\forms\formsets.py:63
+#, python-format
+msgid ""
+"ManagementForm data is missing or has been tampered with. Missing fields: "
+"%(field_names)s. You may need to file a bug report if the issue persists."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\forms\formsets.py:67
+#, python-format
+msgid "Please submit at most %(num)d form."
+msgid_plural "Please submit at most %(num)d forms."
+msgstr[0] ""
+msgstr[1] ""
+
+#: .\env\Lib\site-packages\django\forms\formsets.py:72
+#, python-format
+msgid "Please submit at least %(num)d form."
+msgid_plural "Please submit at least %(num)d forms."
+msgstr[0] ""
+msgstr[1] ""
+
+#: .\env\Lib\site-packages\django\forms\formsets.py:484
+#: .\env\Lib\site-packages\django\forms\formsets.py:491
+msgid "Order"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\forms\formsets.py:499
+msgid "Delete"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\forms\models.py:886
+#, python-format
+msgid "Please correct the duplicate data for %(field)s."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\forms\models.py:891
+#, python-format
+msgid "Please correct the duplicate data for %(field)s, which must be unique."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\forms\models.py:898
+#, python-format
+msgid ""
+"Please correct the duplicate data for %(field_name)s which must be unique "
+"for the %(lookup)s in %(date_field)s."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\forms\models.py:907
+msgid "Please correct the duplicate values below."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\forms\models.py:1338
+msgid "The inline value did not match the parent instance."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\forms\models.py:1429
+msgid "Select a valid choice. That choice is not one of the available choices."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\forms\models.py:1568
+#, python-format
+msgid "“%(pk)s” is not a valid value."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\forms\utils.py:226
+#, python-format
+msgid ""
+"%(datetime)s couldn’t be interpreted in time zone %(current_timezone)s; it "
+"may be ambiguous or it may not exist."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\forms\widgets.py:463
+msgid "Clear"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\forms\widgets.py:464
+msgid "Currently"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\forms\widgets.py:465
+msgid "Change"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\forms\widgets.py:794
+msgid "Unknown"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\forms\widgets.py:795
+msgid "Yes"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\forms\widgets.py:796
+msgid "No"
+msgstr ""
+
+#. Translators: Please do not add spaces around commas.
+#: .\env\Lib\site-packages\django\template\defaultfilters.py:874
+msgid "yes,no,maybe"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\template\defaultfilters.py:904
+#: .\env\Lib\site-packages\django\template\defaultfilters.py:921
+#, python-format
+msgid "%(size)d byte"
+msgid_plural "%(size)d bytes"
+msgstr[0] ""
+msgstr[1] ""
+
+#: .\env\Lib\site-packages\django\template\defaultfilters.py:923
+#, python-format
+msgid "%s KB"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\template\defaultfilters.py:925
+#, python-format
+msgid "%s MB"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\template\defaultfilters.py:927
+#, python-format
+msgid "%s GB"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\template\defaultfilters.py:929
+#, python-format
+msgid "%s TB"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\template\defaultfilters.py:931
+#, python-format
+msgid "%s PB"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\utils\dateformat.py:73
+msgid "p.m."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\utils\dateformat.py:74
+msgid "a.m."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\utils\dateformat.py:79
+msgid "PM"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\utils\dateformat.py:80
+msgid "AM"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\utils\dateformat.py:152
+msgid "midnight"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\utils\dateformat.py:154
+msgid "noon"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\utils\dates.py:7
+msgid "Monday"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\utils\dates.py:8
+msgid "Tuesday"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\utils\dates.py:9
+msgid "Wednesday"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\utils\dates.py:10
+msgid "Thursday"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\utils\dates.py:11
+msgid "Friday"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\utils\dates.py:12
+msgid "Saturday"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\utils\dates.py:13
+msgid "Sunday"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\utils\dates.py:16
+msgid "Mon"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\utils\dates.py:17
+msgid "Tue"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\utils\dates.py:18
+msgid "Wed"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\utils\dates.py:19
+msgid "Thu"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\utils\dates.py:20
+msgid "Fri"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\utils\dates.py:21
+msgid "Sat"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\utils\dates.py:22
+msgid "Sun"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\utils\dates.py:25
+msgid "January"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\utils\dates.py:26
+msgid "February"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\utils\dates.py:27
+msgid "March"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\utils\dates.py:28
+msgid "April"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\utils\dates.py:29
+msgid "May"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\utils\dates.py:30
+msgid "June"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\utils\dates.py:31
+msgid "July"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\utils\dates.py:32
+msgid "August"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\utils\dates.py:33
+msgid "September"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\utils\dates.py:34
+msgid "October"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\utils\dates.py:35
+msgid "November"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\utils\dates.py:36
+msgid "December"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\utils\dates.py:39
+msgid "jan"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\utils\dates.py:40
+msgid "feb"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\utils\dates.py:41
+msgid "mar"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\utils\dates.py:42
+msgid "apr"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\utils\dates.py:43
+msgid "may"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\utils\dates.py:44
+msgid "jun"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\utils\dates.py:45
+msgid "jul"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\utils\dates.py:46
+msgid "aug"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\utils\dates.py:47
+msgid "sep"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\utils\dates.py:48
+msgid "oct"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\utils\dates.py:49
+msgid "nov"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\utils\dates.py:50
+msgid "dec"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\utils\dates.py:53
+msgctxt "abbrev. month"
+msgid "Jan."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\utils\dates.py:54
+msgctxt "abbrev. month"
+msgid "Feb."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\utils\dates.py:55
+msgctxt "abbrev. month"
+msgid "March"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\utils\dates.py:56
+msgctxt "abbrev. month"
+msgid "April"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\utils\dates.py:57
+msgctxt "abbrev. month"
+msgid "May"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\utils\dates.py:58
+msgctxt "abbrev. month"
+msgid "June"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\utils\dates.py:59
+msgctxt "abbrev. month"
+msgid "July"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\utils\dates.py:60
+msgctxt "abbrev. month"
+msgid "Aug."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\utils\dates.py:61
+msgctxt "abbrev. month"
+msgid "Sept."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\utils\dates.py:62
+msgctxt "abbrev. month"
+msgid "Oct."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\utils\dates.py:63
+msgctxt "abbrev. month"
+msgid "Nov."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\utils\dates.py:64
+msgctxt "abbrev. month"
+msgid "Dec."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\utils\dates.py:67
+msgctxt "alt. month"
+msgid "January"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\utils\dates.py:68
+msgctxt "alt. month"
+msgid "February"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\utils\dates.py:69
+msgctxt "alt. month"
+msgid "March"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\utils\dates.py:70
+msgctxt "alt. month"
+msgid "April"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\utils\dates.py:71
+msgctxt "alt. month"
+msgid "May"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\utils\dates.py:72
+msgctxt "alt. month"
+msgid "June"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\utils\dates.py:73
+msgctxt "alt. month"
+msgid "July"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\utils\dates.py:74
+msgctxt "alt. month"
+msgid "August"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\utils\dates.py:75
+msgctxt "alt. month"
+msgid "September"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\utils\dates.py:76
+msgctxt "alt. month"
+msgid "October"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\utils\dates.py:77
+msgctxt "alt. month"
+msgid "November"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\utils\dates.py:78
+msgctxt "alt. month"
+msgid "December"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\utils\ipv6.py:20
+msgid "This is not a valid IPv6 address."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\utils\text.py:138
+#, python-format
+msgctxt "String to return when truncating text"
+msgid "%(truncated_text)s…"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\utils\text.py:323
+msgid "or"
+msgstr ""
+
+#. Translators: This string is used as a separator between list elements
+#: .\env\Lib\site-packages\django\utils\text.py:342
+#: .\env\Lib\site-packages\django\utils\timesince.py:135
+msgid ", "
+msgstr ""
+
+#: .\env\Lib\site-packages\django\utils\timesince.py:8
+#, python-format
+msgid "%(num)d year"
+msgid_plural "%(num)d years"
+msgstr[0] ""
+msgstr[1] ""
+
+#: .\env\Lib\site-packages\django\utils\timesince.py:9
+#, python-format
+msgid "%(num)d month"
+msgid_plural "%(num)d months"
+msgstr[0] ""
+msgstr[1] ""
+
+#: .\env\Lib\site-packages\django\utils\timesince.py:10
+#, python-format
+msgid "%(num)d week"
+msgid_plural "%(num)d weeks"
+msgstr[0] ""
+msgstr[1] ""
+
+#: .\env\Lib\site-packages\django\utils\timesince.py:11
+#, python-format
+msgid "%(num)d day"
+msgid_plural "%(num)d days"
+msgstr[0] ""
+msgstr[1] ""
+
+#: .\env\Lib\site-packages\django\utils\timesince.py:12
+#, python-format
+msgid "%(num)d hour"
+msgid_plural "%(num)d hours"
+msgstr[0] ""
+msgstr[1] ""
+
+#: .\env\Lib\site-packages\django\utils\timesince.py:13
+#, python-format
+msgid "%(num)d minute"
+msgid_plural "%(num)d minutes"
+msgstr[0] ""
+msgstr[1] ""
+
+#: .\env\Lib\site-packages\django\views\csrf.py:111
+msgid "Forbidden"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\views\csrf.py:112
+msgid "CSRF verification failed. Request aborted."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\views\csrf.py:116
+msgid ""
+"You are seeing this message because this HTTPS site requires a “Referer "
+"header” to be sent by your web browser, but none was sent. This header is "
+"required for security reasons, to ensure that your browser is not being "
+"hijacked by third parties."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\views\csrf.py:122
+msgid ""
+"If you have configured your browser to disable “Referer” headers, please re-"
+"enable them, at least for this site, or for HTTPS connections, or for “same-"
+"origin” requests."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\views\csrf.py:127
+msgid ""
+"If you are using the <meta name=\"referrer\" content=\"no-referrer\"> tag or "
+"including the “Referrer-Policy: no-referrer” header, please remove them. The "
+"CSRF protection requires the “Referer” header to do strict referer checking. "
+"If you’re concerned about privacy, use alternatives like <a "
+"rel=\"noreferrer\" …> for links to third-party sites."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\views\csrf.py:136
+msgid ""
+"You are seeing this message because this site requires a CSRF cookie when "
+"submitting forms. This cookie is required for security reasons, to ensure "
+"that your browser is not being hijacked by third parties."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\views\csrf.py:142
+msgid ""
+"If you have configured your browser to disable cookies, please re-enable "
+"them, at least for this site, or for “same-origin” requests."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\views\csrf.py:148
+msgid "More information is available with DEBUG=True."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\views\generic\dates.py:44
+msgid "No year specified"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\views\generic\dates.py:64
+#: .\env\Lib\site-packages\django\views\generic\dates.py:115
+#: .\env\Lib\site-packages\django\views\generic\dates.py:214
+msgid "Date out of range"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\views\generic\dates.py:94
+msgid "No month specified"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\views\generic\dates.py:147
+msgid "No day specified"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\views\generic\dates.py:194
+msgid "No week specified"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\views\generic\dates.py:349
+#: .\env\Lib\site-packages\django\views\generic\dates.py:380
+#, python-format
+msgid "No %(verbose_name_plural)s available"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\views\generic\dates.py:652
+#, python-format
+msgid ""
+"Future %(verbose_name_plural)s not available because "
+"%(class_name)s.allow_future is False."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\views\generic\dates.py:692
+#, python-format
+msgid "Invalid date string “%(datestr)s” given format “%(format)s”"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\views\generic\detail.py:56
+#, python-format
+msgid "No %(verbose_name)s found matching the query"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\views\generic\list.py:70
+msgid "Page is not “last”, nor can it be converted to an int."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\views\generic\list.py:77
+#, python-format
+msgid "Invalid page (%(page_number)s): %(message)s"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\views\generic\list.py:169
+#, python-format
+msgid "Empty list and “%(class_name)s.allow_empty” is False."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\views\static.py:38
+msgid "Directory indexes are not allowed here."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\views\static.py:40
+#, python-format
+msgid "“%(path)s” does not exist"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\views\static.py:79
+#, python-format
+msgid "Index of %(directory)s"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\views\templates\default_urlconf.html:7
+#: .\env\Lib\site-packages\django\views\templates\default_urlconf.html:220
+msgid "The install worked successfully! Congratulations!"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\views\templates\default_urlconf.html:206
+#, python-format
+msgid ""
+"View <a href=\"https://docs.djangoproject.com/en/%(version)s/releases/\" "
+"target=\"_blank\" rel=\"noopener\">release notes</a> for Django %(version)s"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\views\templates\default_urlconf.html:221
+#, python-format
+msgid ""
+"You are seeing this page because <a href=\"https://docs.djangoproject.com/en/"
+"%(version)s/ref/settings/#debug\" target=\"_blank\" "
+"rel=\"noopener\">DEBUG=True</a> is in your settings file and you have not "
+"configured any URLs."
+msgstr ""
+
+#: .\env\Lib\site-packages\django\views\templates\default_urlconf.html:229
+msgid "Django Documentation"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\views\templates\default_urlconf.html:230
+msgid "Topics, references, &amp; how-to’s"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\views\templates\default_urlconf.html:238
+msgid "Tutorial: A Polling App"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\views\templates\default_urlconf.html:239
+msgid "Get started with Django"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\views\templates\default_urlconf.html:247
+msgid "Django Community"
+msgstr ""
+
+#: .\env\Lib\site-packages\django\views\templates\default_urlconf.html:248
+msgid "Connect, get help, or contribute"
+msgstr ""
+
+#: .\env\Lib\site-packages\kombu\transport\qpid.py:1311
+#, python-format
+msgid "Attempting to connect to qpid with SASL mechanism %s"
+msgstr ""
+
+#: .\env\Lib\site-packages\kombu\transport\qpid.py:1316
+#, python-format
+msgid "Connected to qpid with SASL mechanism %s"
+msgstr ""
+
+#: .\env\Lib\site-packages\kombu\transport\qpid.py:1334
+#, python-format
+msgid "Unable to connect to qpid with SASL mechanism %s"
+msgstr ""
+
+#: .\fournisseurs\admin.py:25
+#: .\fournisseurs\templates\fournisseur_detail.html:377
+msgid "Commodités fournies"
+msgstr "Provided amenities"
+
+#: .\fournisseurs\admin.py:138
+msgid "Zone (via ville)"
+msgstr "Zone (via ville)"
+
+#: .\fournisseurs\admin.py:149
+msgid "Document"
+msgstr "Document"
+
+#: .\fournisseurs\admin.py:181
+msgid "Liste des commodités"
+msgstr "List of amenities"
+
+#: .\fournisseurs\forms.py:34
+msgid "Adresse email"
+msgstr "Email address"
+
+#: .\fournisseurs\forms.py:36
+msgid "Requis. Entrez une adresse email valide."
+msgstr "Required. Enter a valid email address."
+
+#: .\fournisseurs\forms.py:47
+msgid "Nom d'utilisateur"
+msgstr "Username"
+
+#: .\fournisseurs\forms.py:48
+#: .\utilisateur\templates\connexion\login\login.html:54
+msgid "Mot de passe"
+msgstr "Password"
+
+#: .\fournisseurs\forms.py:49
+msgid "Confirmation du mot de passe"
+msgstr "Password confirmation"
+
+#: .\fournisseurs\models.py:48
+#: .\fournisseurs\templates\fournisseur_search.html:62
+msgid "Nom du fournisseur"
+msgstr "Provider name"
+
+#: .\fournisseurs\models.py:54
+#: .\fournisseurs\templates\fournisseur_search.html:74
+msgid "Nom du responsable"
+msgstr "Provider name"
+
+#: .\fournisseurs\models.py:66
+#: .\fournisseurs\templates\fournisseur_detail.html:336
+msgid "Compte utilisateur associé"
+msgstr "Associated user account"
+
+#: .\fournisseurs\models.py:83 .\templates\layouts\footer.html:117
+msgid "Contact"
+msgstr "Contact"
+
+#: .\fournisseurs\models.py:92
+msgid "Document fourni (AEX)"
+msgstr "Document provided (AEX)"
+
+#: .\fournisseurs\models.py:103
+#: .\fournisseurs\templates\fournisseur_search.html:140 .\villes\models.py:353
+#: .\villes\templates\localite\localite_detail.html:62
+#: .\villes\templates\portlocalite\port_localite_detail.html:100
+msgid "Localité"
+msgstr "Locality"
+
+#: .\fournisseurs\models.py:179
+#: .\fournisseurs\templates\port_fournisseur_detail.html:91
+#: .\fournisseurs\templates\port_fournisseur_list.html:82
+#: .\fournisseurs\templates\port_fournisseur_list.html:153
+#: .\villes\models.py:153 .\villes\models.py:346
+#: .\villes\templates\portlocalite\port_localite_detail.html:91
+#: .\villes\templates\portlocalite\port_localite_list.html:97
+#: .\villes\templates\portlocalite\port_localite_list.html:136
+#: .\villes\templates\portville\ville_port_detail.html:91
+#: .\villes\templates\portville\ville_port_list.html:96
+#: .\villes\templates\portville\ville_port_list.html:135
+msgid "Port"
+msgstr "Port"
+
+#: .\fournisseurs\models.py:196
+msgid "Lien Fournisseur-Port"
+msgstr "Fournisseur-Port Link"
+
+#: .\fournisseurs\models.py:197
+msgid "Liens Fournisseur-Ports"
+msgstr "Fournisseur-Ports Links"
+
+#: .\fournisseurs\templates\fournisseur_confirm_delete.html:5
+msgid "Supprimer le fournisseur"
+msgstr "Delete the provider"
+
+#: .\fournisseurs\templates\fournisseur_confirm_delete.html:35
+msgid "Êtes-vous sûr de vouloir supprimer ce fournisseur ?"
+msgstr "Are you sure you want to delete this provider?"
+
+#: .\fournisseurs\templates\fournisseur_confirm_delete.html:47
+#: .\fournisseurs\templates\fournisseur_detail.html:49
+msgid "Responsable:"
+msgstr "Responsable:"
+
+#: .\fournisseurs\templates\fournisseur_confirm_delete.html:84
+#, python-format
+msgid ""
+"\n"
+"                        %(counter)s commodité associée\n"
+"                    "
+msgid_plural ""
+"\n"
+"                        %(counter)s commodités associées\n"
+"                    "
+msgstr[0] ""
+"\n"
+"                        %(counter)s associated amenity\n"
+"                    "
+msgstr[1] ""
+"\n"
+"                        %(counter)s associated amenities\n"
+"                    "
+
+#: .\fournisseurs\templates\fournisseur_confirm_delete.html:103
+#, python-format
+msgid ""
+"\n"
+"                            Ce fournisseur est associé à %(counter)s "
+"commodité. La suppression du fournisseur entraînera également la suppression "
+"de cette liaison (suppression logique).\n"
+"                        "
+msgid_plural ""
+"\n"
+"                            Ce fournisseur est associé à %(counter)s "
+"commodités. La suppression du fournisseur entraînera également la "
+"suppression de ces liaisons (suppression logique).\n"
+"                        "
+msgstr[0] ""
+"\n"
+"                            This supplier is associated with %(counter)s "
+"amenity. Deleting the supplier will also delete this connection (logical "
+"deletion).\n"
+"                        "
+msgstr[1] ""
+"\n"
+"                            This supplier is associated with %(counter)s "
+"amenities. Deleting the supplier will also delete these connections (logical "
+"deletion).\n"
+"                        "
+
+#: .\fournisseurs\templates\fournisseur_detail.html:99
+msgid "Ajouter commodité"
+msgstr "Add commodité"
+
+#: .\fournisseurs\templates\fournisseur_detail.html:126
+#: .\fournisseurs\templates\fournisseur_form.html:365
+#: .\fournisseurs\templates\fournisseur_search.html:181
+#: .\villes\templates\localite\localite_detail.html:171
+msgid "Coordonnées GPS"
+msgstr "GPS coordinates"
+
+#: .\fournisseurs\templates\fournisseur_detail.html:128
+#: .\fournisseurs\templates\fournisseur_detail.html:214
+msgid "Disponible"
+msgstr "Available"
+
+#: .\fournisseurs\templates\fournisseur_detail.html:130
+msgid "Non renseigné"
+msgstr "Not specified"
+
+#: .\fournisseurs\templates\fournisseur_detail.html:137
+msgid "Latitude:"
+msgstr "Latitude:"
+
+#: .\fournisseurs\templates\fournisseur_detail.html:141
+msgid "Longitude:"
+msgstr "Longitude:"
+
+#: .\fournisseurs\templates\fournisseur_detail.html:146
+msgid "Voir sur la carte"
+msgstr "View on the map"
+
+#: .\fournisseurs\templates\fournisseur_detail.html:150
+msgid "Aucune coordonnée GPS enregistrée"
+msgstr "No GPS coordinates registered"
+
+#: .\fournisseurs\templates\fournisseur_detail.html:157
+#: .\villes\templates\localite\localite_detail.html:148
+#: .\villes\templates\localite\localite_list.html:274
+#: .\villes\templates\ville\ville_detail.html:163
+#: .\villes\templates\ville\ville_list.html:254
+msgid "Ports liés"
+msgstr "Linked ports"
+
+#: .\fournisseurs\templates\fournisseur_detail.html:159
+msgid "port(s)"
+msgstr "port(s)"
+
+#: .\fournisseurs\templates\fournisseur_detail.html:185
+msgid "Distance non calculée"
+msgstr "Distance not calculated"
+
+#: .\fournisseurs\templates\fournisseur_detail.html:198
+msgid "Aucun port n'est lié à ce fournisseur"
+msgstr "No ports are linked to this provider"
+
+#: .\fournisseurs\templates\fournisseur_detail.html:205
+msgid "Documents"
+msgstr "Documents"
+
+#: .\fournisseurs\templates\fournisseur_detail.html:213
+msgid "Document AEX"
+msgstr "Document AEX"
+
+#: .\fournisseurs\templates\fournisseur_detail.html:220
+msgid "Télécharger"
+msgstr "Download"
+
+#: .\fournisseurs\templates\fournisseur_detail.html:228
+msgid "Aucun document"
+msgstr "No document"
+
+#: .\fournisseurs\templates\fournisseur_detail.html:237
+msgid "Compte utilisateur"
+msgstr "User account"
+
+#: .\fournisseurs\templates\fournisseur_detail.html:240
+msgid "Compte utilisateur déjà créé"
+msgstr "User account already created"
+
+#: .\fournisseurs\templates\fournisseur_detail.html:255
+msgid ""
+"Créez un compte utilisateur pour permettre à ce fournisseur d'accéder à "
+"l'application."
+msgstr ""
+"Create a user account to allow this provider to access the application."
+
+#: .\fournisseurs\templates\fournisseur_detail.html:312
+msgid "Créer le compte utilisateur"
+msgstr "Create the user account"
+
+#: .\fournisseurs\templates\fournisseur_detail.html:326
+msgid "Un compte utilisateur a déjà été créé pour ce fournisseur."
+msgstr "A user account has already been created for this provider."
+
+#: .\fournisseurs\templates\fournisseur_detail.html:348
+msgid "Compte utilisateur associé :"
+msgstr "Associated user account :"
+
+#: .\fournisseurs\templates\fournisseur_detail.html:365
+msgid "Aucun compte utilisateur associé à ce fournisseur."
+msgstr "No user account is associated with this provider."
+
+#: .\fournisseurs\templates\fournisseur_detail.html:395
+msgid "Depuis"
+msgstr "Since"
+
+#: .\fournisseurs\templates\fournisseur_detail.html:413
+msgid "Aucune commodité"
+msgstr "No commodité"
+
+#: .\fournisseurs\templates\fournisseur_detail.html:414
+msgid "Ce fournisseur n'a pas encore de commodités associées."
+msgstr "This provider has no associated commodités."
+
+#: .\fournisseurs\templates\fournisseur_detail.html:420
+msgid "Ajouter une commodité"
+msgstr "Add a commodité"
+
+#: .\fournisseurs\templates\fournisseur_detail.html:431
+#: .\port\templates\port\port_detail.html:49
+#: .\villes\templates\ville\ville_detail.html:403
+msgid "Identifiant"
+msgstr "Identifier"
+
+#: .\fournisseurs\templates\fournisseur_detail.html:439
+#: .\villes\templates\localite\localite_detail.html:356
+#: .\villes\templates\ville\ville_detail.html:431
+msgid "Dernière modification"
+msgstr "Last modification"
+
+#: .\fournisseurs\templates\fournisseur_form.html:356
+msgid "Chargement..."
+msgstr "Loading..."
+
+#: .\fournisseurs\templates\fournisseur_form.html:391
+msgid "Document (AEX)"
+msgstr "Document (AEX)"
+
+#: .\fournisseurs\templates\fournisseur_form.html:429
+msgid "Localisation sur la carte"
+msgstr "Location on the map"
+
+#: .\fournisseurs\templates\fournisseur_form.html:491
+msgid "Instructions d'utilisation"
+msgstr "Usage instructions"
+
+#: .\fournisseurs\templates\fournisseur_form.html:495
+msgid ""
+"Utilisez la barre de recherche pour trouver un lieu ou un fournisseur "
+"existant"
+msgstr "Use the search bar to find a place or an existing provider"
+
+#: .\fournisseurs\templates\fournisseur_form.html:499
+msgid "Cliquez sur la carte pour positionner le fournisseur"
+msgstr "Click on the map to position the provider"
+
+#: .\fournisseurs\templates\fournisseur_form.html:503
+msgid "Les coordonnées GPS seront automatiquement mises à jour"
+msgstr "The GPS coordinates will be automatically updated"
+
+#: .\fournisseurs\templates\fournisseur_list.html:5
+msgid "Liste des Fournisseurs"
+msgstr "List of providers"
+
+#: .\fournisseurs\templates\fournisseur_list.html:158
+#, python-format
+msgid ""
+"\n"
+"                        %(counter)s fournisseur enregistré\n"
+"                    "
+msgid_plural ""
+"\n"
+"                        %(counter)s fournisseurs enregistrés\n"
+"                    "
+msgstr[0] ""
+"\n"
+"                        %(counter)s registered supplier\n"
+"                    "
+msgstr[1] ""
+"\n"
+"                        %(counter)s registered suppliers\n"
+"                    "
+
+#: .\fournisseurs\templates\fournisseur_list.html:172
+#: .\villes\templates\localite\localite_list.html:127
+msgid "liaison"
+msgstr "connection"
+
+#: .\fournisseurs\templates\fournisseur_list.html:178
+msgid "Recherche avancée"
+msgstr "Advanced search"
+
+#: .\fournisseurs\templates\fournisseur_list.html:185
+#: .\fournisseurs\templates\fournisseur_map.html:54
+msgid "Carte"
+msgstr "Map"
+
+#: .\fournisseurs\templates\fournisseur_list.html:199
+msgid "Nouveau Fournisseur"
+msgstr "New supplier"
+
+#: .\fournisseurs\templates\fournisseur_list.html:217
+msgid "Nom, responsable, contact, localité..."
+msgstr "Name, responsible, contact, location..."
+
+#: .\fournisseurs\templates\fournisseur_list.html:228
+#: .\fournisseurs\templates\fournisseur_search.html:98
+#: .\port\templates\port\port_list.html:135
+#: .\villes\templates\ville\ville_list.html:153
+#: .\zones\templates\zone_list.html:161
+msgid "Tous les pays"
+msgstr "All countries"
+
+#: .\fournisseurs\templates\fournisseur_list.html:243
+#: .\fournisseurs\templates\fournisseur_list.html:455
+#: .\fournisseurs\templates\fournisseur_map.html:80
+#: .\fournisseurs\templates\fournisseur_search.html:113
+#: .\port\templates\port\port_list.html:151
+#: .\port\templates\port\port_list.html:290
+#: .\villes\templates\localite\localite_list.html:418
+#: .\villes\templates\ville\ville_list.html:169
+#: .\villes\templates\ville\ville_list.html:363
+msgid "Toutes les zones"
+msgstr "All zones"
+
+#: .\fournisseurs\templates\fournisseur_list.html:434
+#: .\utilisateur\templates\pages\accueil.html:705
+msgid "Aucun fournisseur trouvé"
+msgstr "No supplier found"
+
+#: .\fournisseurs\templates\fournisseur_list.html:437
+msgid "Aucun fournisseur ne correspond à vos critères."
+msgstr "No supplier matches your criteria."
+
+#: .\fournisseurs\templates\fournisseur_list.html:439
+msgid "Commencez par créer votre premier fournisseur."
+msgstr "Start by creating your first supplier."
+
+#: .\fournisseurs\templates\fournisseur_list.html:443
+msgid "Créer un fournisseur"
+msgstr "Create a supplier"
+
+#: .\fournisseurs\templates\fournisseur_map.html:5
+#: .\fournisseurs\templates\fournisseur_map.html:62
+#: .\utilisateur\templates\pages\accueil.html:592
+msgid "Carte des Fournisseurs"
+msgstr "Supplier map"
+
+#: .\fournisseurs\templates\fournisseur_map.html:65
+msgid "Localisation géographique de"
+msgstr "Geographic location of"
+
+#: .\fournisseurs\templates\fournisseur_map.html:65
+msgid "fournisseurs sur"
+msgstr "suppliers on"
+
+#: .\fournisseurs\templates\fournisseur_map.html:70
+#: .\fournisseurs\templates\port_fournisseur_detail.html:82
+#: .\villes\templates\portlocalite\port_localite_detail.html:82
+#: .\villes\templates\portville\ville_port_detail.html:82
+msgid "Retour à la liste"
+msgstr "Back to list"
+
+#: .\fournisseurs\templates\fournisseur_map.html:92
+#: .\fournisseurs\templates\fournisseur_search.html:160
+msgid "Toutes les commodités"
+msgstr "All commodités"
+
+#: .\fournisseurs\templates\fournisseur_map.html:110
+msgid "Sur la carte"
+msgstr "On the map"
+
+#: .\fournisseurs\templates\fournisseur_map.html:115
+msgid "Total fournisseurs"
+msgstr "Total suppliers"
+
+#: .\fournisseurs\templates\fournisseur_map.html:120
+msgid "Couverture GPS"
+msgstr "GPS coverage"
+
+#: .\fournisseurs\templates\fournisseur_map.html:125
+msgid "Zones actives"
+msgstr "Active zones"
+
+#: .\fournisseurs\templates\fournisseur_map.html:137
+msgid "Légende"
+msgstr "Legend"
+
+#: .\fournisseurs\templates\fournisseur_map.html:141
+msgid "0 commodité"
+msgstr "0 commodity"
+
+#: .\fournisseurs\templates\fournisseur_map.html:145
+msgid "1-2 commodités"
+msgstr "1-2 commodities"
+
+#: .\fournisseurs\templates\fournisseur_map.html:149
+msgid "3-4 commodités"
+msgstr "3-4 commodities"
+
+#: .\fournisseurs\templates\fournisseur_map.html:153
+msgid "5+ commodités"
+msgstr "5+ commodities"
+
+#: .\fournisseurs\templates\fournisseur_search.html:5
+msgid "Recherche Avancée - Fournisseurs"
+msgstr "Advanced search - Suppliers"
+
+#: .\fournisseurs\templates\fournisseur_search.html:35
+msgid "Recherche Avancée"
+msgstr "Advanced search"
+
+#: .\fournisseurs\templates\fournisseur_search.html:42
+msgid "Recherche Avancée de Fournisseurs"
+msgstr "Advanced search of suppliers"
+
+#: .\fournisseurs\templates\fournisseur_search.html:45
+msgid "Utilisez les filtres ci-dessous pour affiner votre recherche"
+msgstr "Use the filters below to refine your search"
+
+#: .\fournisseurs\templates\fournisseur_search.html:67
+msgid "Ex: SARL AGRICOLE..."
+msgstr "Ex: SARL AGRICOLE..."
+
+#: .\fournisseurs\templates\fournisseur_search.html:79
+msgid "Ex: KOUASSI Jean..."
+msgstr "Ex: KOUASSI Jean..."
+
+#: .\fournisseurs\templates\fournisseur_search.html:88
+msgid "Localisation géographique"
+msgstr "Geographic location"
+
+#: .\fournisseurs\templates\fournisseur_search.html:143
+msgid "Toutes les localités"
+msgstr "All localities"
+
+#: .\fournisseurs\templates\fournisseur_search.html:157
+msgid "Commodité fournie"
+msgstr "Commodities provided"
+
+#: .\fournisseurs\templates\fournisseur_search.html:174
+msgid "Critères techniques"
+msgstr "Technical criteria"
+
+#: .\fournisseurs\templates\fournisseur_search.html:184
+#: .\fournisseurs\templates\fournisseur_search.html:200
+msgid "Peu importe"
+msgstr "Any"
+
+#: .\fournisseurs\templates\fournisseur_search.html:186
+msgid "Avec coordonnées GPS"
+msgstr "With GPS coordinates"
+
+#: .\fournisseurs\templates\fournisseur_search.html:189
+msgid "Sans coordonnées GPS"
+msgstr "Without GPS coordinates"
+
+#: .\fournisseurs\templates\fournisseur_search.html:197
+msgid "Documents AEX"
+msgstr "Documents AEX"
+
+#: .\fournisseurs\templates\fournisseur_search.html:202
+msgid "Avec documents"
+msgstr "With documents"
+
+#: .\fournisseurs\templates\fournisseur_search.html:205
+msgid "Sans documents"
+msgstr "Without documents"
+
+#: .\fournisseurs\templates\fournisseur_search.html:229
+msgid "Résultats de la recherche"
+msgstr "Results of the search"
+
+#: .\fournisseurs\templates\fournisseur_search.html:233
+msgid "résultat(s)"
+msgstr "result(s)"
+
+#: .\fournisseurs\templates\fournisseur_search.html:240
+msgid "Exporter"
+msgstr "Export"
+
+#: .\fournisseurs\templates\fournisseur_search.html:282
+msgid "commodité(s)"
+msgstr "commodities"
+
+#: .\fournisseurs\templates\fournisseur_search.html:307
+msgid "Voir détails"
+msgstr "View details"
+
+#: .\fournisseurs\templates\fournisseur_stats.html:5
+msgid "Statistiques - Fournisseurs"
+msgstr "Statistics - Suppliers"
+
+#: .\fournisseurs\templates\fournisseur_stats.html:36
+msgid "Statistiques des Fournisseurs"
+msgstr "Statistics of Suppliers"
+
+#: .\fournisseurs\templates\fournisseur_stats.html:39
+msgid "Vue d'ensemble de la distribution des fournisseurs et commodités"
+msgstr "Overview of the distribution of suppliers and commodities"
+
+#: .\fournisseurs\templates\fournisseur_stats.html:74
+msgid "Avec GPS"
+msgstr "With GPS"
+
+#: .\fournisseurs\templates\fournisseur_stats.html:94
+msgid "Avec Documents"
+msgstr "With documents"
+
+#: .\fournisseurs\templates\fournisseur_stats.html:133
+msgid "Fournisseur avec le plus de commodités"
+msgstr "Supplier with the most commodities"
+
+#: .\fournisseurs\templates\fournisseur_stats.html:138
+#, python-format
+msgid ""
+"\n"
+"                        %(counter)s commodité\n"
+"                    "
+msgid_plural ""
+"\n"
+"                        %(counter)s commodités\n"
+"                    "
+msgstr[0] ""
+"\n"
+"                        %(counter)s amenity\n"
+"                    "
+msgstr[1] ""
+"\n"
+"                        %(counter)s amenities\n"
+"                    "
+
+#: .\fournisseurs\templates\fournisseur_stats.html:190
+msgid "Top 10 des villes avec le plus de fournisseurs"
+msgstr "Top 10 of cities with the most suppliers"
+
+#: .\fournisseurs\templates\port_fournisseur_detail.html:73
+msgid "Itinéraire entre le port et le fournisseur"
+msgstr "Route between the port and the supplier"
+
+#: .\fournisseurs\templates\port_fournisseur_detail.html:93
+#: .\fournisseurs\templates\port_fournisseur_detail.html:102
+#: .\villes\templates\portlocalite\port_localite_detail.html:93
+#: .\villes\templates\portlocalite\port_localite_detail.html:102
+#: .\villes\templates\portville\ville_port_detail.html:93
+#: .\villes\templates\portville\ville_port_detail.html:102
+msgid "Nom"
+msgstr "Name"
+
+#: .\fournisseurs\templates\port_fournisseur_detail.html:94
+#: .\fournisseurs\templates\port_fournisseur_detail.html:103
+#: .\port\templates\port\port_list.html:206
+#: .\villes\templates\localite\localite_detail.html:239
+#: .\villes\templates\portlocalite\port_localite_detail.html:94
+#: .\villes\templates\portlocalite\port_localite_detail.html:103
+#: .\villes\templates\portville\ville_port_detail.html:94
+#: .\villes\templates\portville\ville_port_detail.html:103
+#: .\villes\templates\ville\ville_detail.html:344
+msgid "Coordonnées"
+msgstr "Coordinates"
+
+#: .\fournisseurs\templates\port_fournisseur_detail.html:112
+#: .\villes\templates\portlocalite\port_localite_detail.html:112
+#: .\villes\templates\portville\ville_port_detail.html:112
+msgid "Distance à vol d'oiseau"
+msgstr "Distance by air"
+
+#: .\fournisseurs\templates\port_fournisseur_detail.html:138
+#: .\villes\templates\portlocalite\port_localite_detail.html:138
+#: .\villes\templates\portville\ville_port_detail.html:138
+msgid "Itinéraire sur la carte"
+msgstr "Route on the map"
+
+#: .\fournisseurs\templates\port_fournisseur_form.html:12
+msgid "Liaisons Fournisseurs-Ports"
+msgstr "Fournisseur-Ports connections"
+
+#: .\fournisseurs\templates\port_fournisseur_form.html:80
+msgid "en kilomètres"
+msgstr "in kilometers"
+
+#: .\fournisseurs\templates\port_fournisseur_form.html:105
+msgid ""
+"Cette liaison permet d'associer un fournisseur à un port spécifique. La "
+"distance sera calculée automatiquement si elle n'est pas spécifiée."
+msgstr ""
+"This connection allows you to associate a supplier with a specific port. The "
+"distance will be calculated automatically if it is not specified."
+
+#: .\fournisseurs\templates\port_fournisseur_list.html:5
+#: .\fournisseurs\templates\port_fournisseur_list.html:27
+msgid "Liaisons Port-Fournisseur"
+msgstr "Port-Fournisseur connections"
+
+#: .\fournisseurs\templates\port_fournisseur_list.html:60
+msgid "port, fournisseur..."
+msgstr "port, supplier..."
+
+#: .\fournisseurs\templates\port_fournisseur_list.html:70
+#: .\fournisseurs\templates\port_fournisseur_list.html:85
+#: .\fournisseurs\templates\port_fournisseur_list.html:117
+#: .\villes\templates\localite\localite_list.html:168
+#: .\villes\templates\portlocalite\port_localite_list.html:70
+#: .\villes\templates\portlocalite\port_localite_list.html:100
+#: .\villes\templates\portville\ville_port_list.html:69
+#: .\villes\templates\portville\ville_port_list.html:99
+msgid "Tous"
+msgstr "All"
+
+#: .\fournisseurs\templates\port_fournisseur_list.html:162
+msgid "Distance (km)"
+msgstr "Distance (km)"
+
+#: .\fournisseurs\views\create.py:24
+#, python-format
+msgid "Le fournisseur %(nom)s a été créé avec succès"
+msgstr "The supplier %(nom)s has been created successfully"
+
+#: .\fournisseurs\views\create.py:64
+msgid "Créer un nouveau fournisseur"
+msgstr "Create a new supplier"
+
+#: .\fournisseurs\views\delete.py:18
+msgid "Le fournisseur a été supprimé avec succès"
+msgstr "The supplier has been deleted successfully"
+
+#: .\fournisseurs\views\detail.py:74
+msgid "Un compte utilisateur existe déjà pour ce fournisseur."
+msgstr "A user account already exists for this supplier."
+
+#: .\fournisseurs\views\detail.py:97
+msgid "Le compte utilisateur a été créé avec succès. Identifiants : {}"
+msgstr "The user account has been created successfully. Credentials: {}"
+
+#: .\fournisseurs\views\port_fournisseur.py:67
+msgid "Ajouter une liaison port-fournisseur"
+msgstr "Add a port-supplier connection"
+
+#: .\fournisseurs\views\port_fournisseur.py:86
+#, python-format
+msgid ""
+"Erreur: Le port %(port)s n'est pas dans le même pays que le fournisseur."
+msgstr "Error: The port %(port)s is not in the same country as the supplier."
+
+#: .\fournisseurs\views\port_fournisseur.py:100
+msgid "Une liaison existe déjà entre ce fournisseur et ce port."
+msgstr "A connection already exists between this supplier and this port."
+
+#: .\fournisseurs\views\port_fournisseur_detail.py:26
+#, python-brace-format
+msgid "Liaison {port} - {fournisseur}"
+msgstr "Port-Supplier connection {port} - {fournisseur}"
+
+#: .\fournisseurs\views\update.py:24
+#, python-format
+msgid "Le fournisseur %(nom)s a été modifié avec succès"
+msgstr "The supplier %(nom)s has been modified successfully"
+
+#: .\port\forms.py:14
+msgid "Nom du port"
+msgstr "Port name"
+
+#: .\port\forms.py:15 .\port\templates\port\port_detail.html:90
+msgid "Latitude"
+msgstr "Latitude"
+
+#: .\port\forms.py:16 .\port\templates\port\port_detail.html:98
+msgid "Longitude"
+msgstr "Longitude"
+
+#: .\port\forms.py:23
+msgid "Ex: Port d'Abidjan, Port de San-Pedro..."
+msgstr "Ex: Port of Abidjan, Port of San-Pedro..."
+
+#: .\port\templates\port\port_confirm_delete.html:15
+msgid "Supprimer ce port"
+msgstr "Delete this port"
+
+#: .\port\templates\port\port_confirm_delete.html:21
+msgid "Êtes-vous sûr de vouloir supprimer ce port ?"
+msgstr "Are you sure you want to delete this port?"
+
+#: .\port\templates\port\port_confirm_delete.html:32
+msgid ""
+"Les liaisons avec les villes et localités associées seront également "
+"affectées."
+msgstr ""
+"The connections with the cities and localities associated will also be "
+"affected."
+
+#: .\port\templates\port\port_detail.html:5
+msgid "Détail du port"
+msgstr "Port details"
+
+#: .\port\templates\port\port_detail.html:33
+msgid "Retour à la liste des ports"
+msgstr "Back to the ports list"
+
+#: .\port\templates\port\port_detail.html:87
+msgid "Coordonnées géographiques"
+msgstr "Geographic coordinates"
+
+#: .\port\templates\port\port_detail.html:94
+#: .\port\templates\port\port_detail.html:102
+#: .\villes\templates\localite\localite_detail.html:225
+#: .\villes\templates\ville\ville_detail.html:253
+#: .\villes\templates\ville\ville_list.html:239
+msgid "Non définie"
+msgstr "Undefined"
+
+#: .\port\templates\port\port_detail.html:131
+msgid "Aucune ville associée à ce port."
+msgstr "No city associated with this port."
+
+#: .\port\templates\port\port_detail.html:158
+msgid "Aucune localité associée à ce port."
+msgstr "No locality associated with this port."
+
+#: .\port\templates\port\port_form.html:214
+#: .\port\templates\port\port_list.html:65
+#: .\villes\templates\localite\localite_detail.html:191
+#: .\villes\templates\ville\ville_detail.html:207
+msgid "Ports"
+msgstr "Ports"
+
+#: .\port\templates\port\port_form.html:217
+#: .\port\templates\port\port_list.html:105
+msgid "Nouveau port"
+msgstr "New port"
+
+#: .\port\templates\port\port_form.html:230
+msgid "Renseignez les informations du port ci-dessous."
+msgstr "Fill in the port information below."
+
+#: .\port\templates\port\port_form.html:257
+msgid "Informations du port"
+msgstr "Port information"
+
+#: .\port\templates\port\port_form.html:303
+msgid "Utilisez la carte pour sélectionner la position du port"
+msgstr "Use the map to select the port position"
+
+#: .\port\templates\port\port_form.html:326
+msgid "Localisation du port"
+msgstr "Port location"
+
+#: .\port\templates\port\port_form.html:334
+msgid "Rechercher un port ou une localisation..."
+msgstr "Search for a port or location..."
+
+#: .\port\templates\port\port_form.html:372
+msgid "Position sélectionnée"
+msgstr "Selected position"
+
+#: .\port\templates\port\port_form.html:375
+msgid "Cliquez sur la carte pour positionner le port"
+msgstr "Click on the map to position the port"
+
+#: .\port\templates\port\port_form.html:379
+msgid "Effacer la position"
+msgstr "Clear position"
+
+#: .\port\templates\port\port_form.html:386
+msgid "Comment utiliser"
+msgstr "How to use"
+
+#: .\port\templates\port\port_form.html:388
+msgid "Recherchez un lieu avec la barre de recherche"
+msgstr "Search for a location with the search bar"
+
+#: .\port\templates\port\port_form.html:389
+msgid "Ou cliquez directement sur la carte"
+msgstr "Or click directly on the map"
+
+#: .\port\templates\port\port_form.html:390
+msgid "Le marqueur est déplaçable par glisser-déposer"
+msgstr "The marker is draggable by drag-and-drop"
+
+#: .\port\templates\port\port_form.html:391
+msgid "Les coordonnées se mettent à jour automatiquement"
+msgstr "The coordinates are updated automatically"
+
+#: .\port\templates\port\port_form.html:709
+#: .\villes\templates\localite\localite_form.html:849
+#: .\villes\templates\ville\ville_form.html:787
+msgid "Enregistrement..."
+msgstr "Saving..."
+
+#: .\port\templates\port\port_list.html:5
+msgid "Liste des Ports"
+msgstr "List of ports"
+
+#: .\port\templates\port\port_list.html:72
+#: .\villes\templates\localite\localite_detail.html:90
+#: .\villes\templates\ville\ville_detail.html:103
+#, python-format
+msgid ""
+"\n"
+"                            %(counter)s port\n"
+"                        "
+msgid_plural ""
+"\n"
+"                            %(counter)s ports\n"
+"                        "
+msgstr[0] ""
+"\n"
+"                            %(counter)s port\n"
+"                        "
+msgstr[1] ""
+"\n"
+"                            %(counter)s ports\n"
+"                        "
+
+#: .\port\templates\port\port_list.html:82
+#, python-format
+msgid ""
+"\n"
+"                            %(counter)s ville liée\n"
+"                        "
+msgid_plural ""
+"\n"
+"                            %(counter)s villes liées\n"
+"                        "
+msgstr[0] ""
+"\n"
+"                            %(counter)s linked city\n"
+"                        "
+msgstr[1] ""
+"\n"
+"                            %(counter)s linked cities\n"
+"                        "
+
+#: .\port\templates\port\port_list.html:92
+#, python-format
+msgid ""
+"\n"
+"                            %(counter)s localité liée\n"
+"                        "
+msgid_plural ""
+"\n"
+"                            %(counter)s localités liées\n"
+"                        "
+msgstr[0] ""
+"\n"
+"                            %(counter)s linked locality\n"
+"                        "
+msgstr[1] ""
+"\n"
+"                            %(counter)s linked localities\n"
+"                        "
+
+#: .\port\templates\port\port_list.html:123
+msgid "Nom du port..."
+msgstr "Port name..."
+
+#: .\port\templates\port\port_list.html:211
+msgid "Non définies"
+msgstr "Not defined"
+
+#: .\port\templates\port\port_list.html:218
+#: .\villes\templates\localite\localite_list.html:319
+#: .\villes\templates\ville\ville_list.html:281
+#: .\zones\templates\zone_detail.html:309
+#: .\zones\templates\zone_detail.html:369
+msgid "Voir les détails"
+msgstr "View details"
+
+#: .\port\templates\port\port_list.html:272
+msgid "Aucun port trouvé"
+msgstr "No port found"
+
+#: .\port\templates\port\port_list.html:275
+msgid "Aucun port ne correspond à votre recherche."
+msgstr "No port matches your search."
+
+#: .\port\templates\port\port_list.html:277
+msgid "Commencez par créer votre premier port."
+msgstr "Start by creating your first port."
+
+#: .\port\templates\port\port_list.html:281
+msgid "Créer un port"
+msgstr "Create a port"
+
+#: .\port\views\create.py:31
+msgid "Créer un nouveau port"
+msgstr "Create a new port"
+
+#: .\port\views\delete.py:27
+msgid "Le port a été supprimé avec succès."
+msgstr "The port has been deleted successfully."
+
+#: .\port\views\delete.py:32
+msgid "Confirmer la suppression du port"
+msgstr "Confirm port deletion"
+
+#: .\port\views\update.py:23
+msgid "Le port a été mis à jour avec succès."
+msgstr "The port has been updated successfully."
+
+#: .\port\views\update.py:28
+msgid "Modifier le port : {}"
+msgstr "Modify port : {}"
+
+#: .\templates\layouts\base_client.html:11
+msgid ""
+"Innov-Sourcing OOA est une plateforme spécialisée dans le sourcing et "
+"l’approvisionnement d’huiles et produits dérivés (huile de palme, huile de "
+"coco, CPKO, CNSL, et autres commodités). Nous garantissons qualité, "
+"traçabilité, disponibilité en temps réel des stocks et des solutions "
+"d’approvisionnement sur mesure pour entreprises."
+msgstr ""
+"Innov-Sourcing OOA is a specialized platform for sourcing and supplying oils "
+"and derivative products such as palm oil, coconut oil, CPKO, CNSL, and other "
+"commodities. We ensure quality, traceability, real-time stock availability, "
+"and tailored sourcing solutions for businesses."
+
+#: .\templates\layouts\base_client.html:12
+msgid ""
+"Inov-Sourcing OOA is a specialized platform for sourcing and supplying oils "
+"and derivative products such as palm oil, coconut oil, CPKO, CNSL, and other "
+"commodities. We ensure quality, traceability, real-time stock availability, "
+"and tailored sourcing solutions for businesses."
+msgstr ""
+"Innov Sourcing, sourcing oils, palm oil, coconut oil, CPKO, CNSL, "
+"commodities, supply chain, stock availability, quality control, "
+"traceability, sourcing solutions, West Africa"
+
+#: .\templates\layouts\base_client.html:13
+msgid ""
+"Innov Sourcing, sourcing huiles, huile de palme, huile de coco, CPKO, CNSL, "
+"commodités, approvisionnement, stocks disponibles, traçabilité, qualité, "
+"solutions sourcing, Afrique de l’Ouest"
+msgstr ""
+"Innov Sourcing, oil sourcing, palm oil, coconut oil, CPKO, CNSL, "
+"commodities, supply chain, stock availability, quality control, "
+"traceability, sourcing solutions, West Africa"
+
+#: .\templates\layouts\base_client.html:14
+msgid ""
+"Innov Sourcing, oil sourcing, palm oil, coconut oil, CPKO, CNSL, commodities "
+"sourcing, supply chain, stock availability, quality control, traceability, "
+"sourcing solutions, West Africa"
+msgstr ""
+"Innov Sourcing, oil sourcing, palm oil, coconut oil, CPKO, CNSL, "
+"commodities, supply chain, stock availability, quality control, "
+"traceability, sourcing solutions, West Africa"
+
+#: .\templates\layouts\footer.html:20 .\templates\layouts\header_client.html:10
+#: .\templates\layouts\header_client.html:244
+#: .\utilisateur\templates\connexion\login\login.html:16
+#, fuzzy
+#| msgid "Innov Sourcing - Oils of Africa"
+msgid "Innov-Sourcing OOA"
+msgstr "Innov-Sourcing OOA"
+
+#: .\templates\layouts\footer.html:23
+msgid ""
+"Notre plateforme met en avant l'ensemble des commodités dans le domaine du "
+"sourcing des huiles de palme et dérivés, en facilitant l'accès à des "
+"produits uniques et authentiques."
+msgstr ""
+"Our platform showcases all commodities in the field of palm oil and "
+"derivative sourcing, facilitating access to unique and authentic products."
+
+#: .\templates\layouts\footer.html:41
+msgid "Liens rapides"
+msgstr "Quick links"
+
+#: .\templates\layouts\footer.html:46
+#: .\templates\layouts\header_client.html:183
+#: .\templates\layouts\header_client.html:254
+msgid "Accueil"
+msgstr "Home"
+
+#: .\templates\layouts\footer.html:49
+#: .\templates\layouts\header_client.html:184
+#: .\templates\layouts\header_client.html:260
+msgid "Nos Disponibilités"
+msgstr "Our Availabilities"
+
+#: .\templates\layouts\footer.html:52
+#: .\templates\layouts\header_client.html:185
+#: .\templates\layouts\header_client.html:257
+msgid "Besoin d'une offre ?"
+msgstr "Need a quote?"
+
+#: .\templates\layouts\footer.html:127
+msgid "Modeste, Grand-Bassam, Côte d'Ivoire"
+msgstr "Modeste, Grand-Bassam, Côte d'Ivoire"
+
+#: .\templates\layouts\footer.html:145
+msgid "Tous droits réservés."
+msgstr "All rights reserved."
+
+#: .\templates\layouts\footer.html:150
+#, fuzzy
+#| msgid "Instructions d'utilisation"
+msgid "Conditions d'utilisation"
+msgstr "Terms of use"
+
+#: .\templates\layouts\footer.html:152
+msgid "Politique de confidentialité"
+msgstr "Privacy policy"
+
+#: .\templates\layouts\footer.html:154
+#, fuzzy
+#| msgid "Informations générales"
+msgid "Mentions légales"
+msgstr "Legal notices"
+
+#: .\templates\layouts\header_client.html:178
+#, fuzzy
+#| msgid "Innov Sourcing - Oils of Africa"
+msgid "Innov-SourcIng OOA"
+msgstr "Innov-Sourcing OOA"
+
+#: .\templates\layouts\header_client.html:221
+msgid "Se connecter"
+msgstr "Sign in"
+
+#: .\templates\layouts\header_client.html:270
+#, fuzzy
+#| msgid "Description"
+msgid "Inscription"
+msgstr "Register"
+
+#: .\templates\layouts\header_client.html:273
+msgid "Connexion"
+msgstr "Login"
+
+#: .\templates\layouts\header_client.html:410
+#, fuzzy
+#| msgid "Retour"
+msgid "Bon retour"
+msgstr "Welcome back"
+
+#: .\templates\layouts\header_client.html:412
+msgid "Bienvenue sur Sourcing !"
+msgstr "Welcome to Sourcing!"
+
+#: .\utilisateur\admin.py:55 .\utilisateur\admin.py:81
+msgid "Informations de connexion"
+msgstr "Login information"
+
+#: .\utilisateur\admin.py:58
+msgid "Informations personnelles"
+msgstr "Personal information"
+
+#: .\utilisateur\admin.py:67
+#: .\utilisateur\templates\connexion\login\google_auth_verification.html:18
+msgid "Authentification à deux facteurs"
+msgstr "Two-factor authentication"
+
+#: .\utilisateur\admin.py:71
+msgid "Permissions"
+msgstr "Permissions"
+
+#: .\utilisateur\admin.py:85
+msgid "Identifiant système"
+msgstr "System ID"
+
+#: .\utilisateur\admin.py:114
+#: .\villes\templates\localite\localite_detail.html:338
+msgid "Nom complet"
+msgstr "Full name"
+
+#: .\utilisateur\admin.py:131
+msgid "Type d'utilisateur"
+msgstr "User type"
+
+#: .\utilisateur\admin.py:143
+msgid "En ligne"
+msgstr "Online"
+
+#: .\utilisateur\admin.py:155
+msgid "Vérifié"
+msgstr "Verified"
+
+#: .\utilisateur\admin.py:173
+msgid "Activer les utilisateurs sélectionnés"
+msgstr "Activate selected users"
+
+#: .\utilisateur\admin.py:183
+msgid "Désactiver les utilisateurs sélectionnés"
+msgstr "Deactivate selected users"
+
+#: .\utilisateur\admin.py:193
+msgid "Vérifier les utilisateurs sélectionnés"
+msgstr "Verify selected users"
+
+#: .\utilisateur\admin.py:196 .\utilisateur\admin.py:277
+msgid "Utilisateur"
+msgstr "User"
+
+#: .\utilisateur\admin.py:197
+msgid "Utilisateurs"
+msgstr "Users"
+
+#: .\utilisateur\admin.py:243
+msgid "Informations du code"
+msgstr "Code information"
+
+#: .\utilisateur\admin.py:296
+msgid "Type de code"
+msgstr "Code type"
+
+#: .\utilisateur\admin.py:308
+msgid "Utilisé"
+msgstr "Used"
+
+#: .\utilisateur\admin.py:345
+msgid "Expiration"
+msgstr "Expiration"
+
+#: .\utilisateur\admin.py:374
+msgid "Statut global"
+msgstr "Global status"
+
+#: .\utilisateur\admin.py:396
+msgid "Marquer comme utilisé"
+msgstr "Mark as used"
+
+#: .\utilisateur\admin.py:411
+msgid "Supprimer les codes expirés"
+msgstr "Delete expired codes"
+
+#: .\utilisateur\admin.py:414
+msgid "Code de vérification"
+msgstr "Verification code"
+
+#: .\utilisateur\admin.py:415
+msgid "Codes de vérification"
+msgstr "Verification codes"
+
+#: .\utilisateur\models.py:40
+msgid "Agent Sourcing"
+msgstr "Agent Sourcing"
+
+#: .\utilisateur\models.py:45
+msgid "numero de telephone"
+msgstr "Phone number"
+
+#: .\utilisateur\models.py:54
+msgid "type utilisateur"
+msgstr "User type"
+
+#: .\utilisateur\models.py:61
+msgid "creation"
+msgstr "Creation"
+
+#: .\utilisateur\models.py:65
+msgid "mise a jour"
+msgstr "Update"
+
+#: .\utilisateur\templates\connexion\login\google_auth_setup.html:11
+#: .\utilisateur\templates\connexion\login\google_auth_verification.html:13
+#, fuzzy
+#| msgid "Agent Sourcing"
+msgid "Sourcing"
+msgstr "Agent Sourcing"
+
+#: .\utilisateur\templates\connexion\login\google_auth_setup.html:16
+msgid "Configuration de Google Authenticator"
+msgstr "Google Authenticator Setup"
+
+#: .\utilisateur\templates\connexion\login\google_auth_setup.html:17
+msgid "Scanner le code QR avec l'application Google Authenticator"
+msgstr "Scan the QR code with the Google Authenticator app"
+
+#: .\utilisateur\templates\connexion\login\google_auth_setup.html:30
+msgid "Entrée manuelle"
+msgstr "Manual entry"
+
+#: .\utilisateur\templates\connexion\login\google_auth_setup.html:32
+msgid "Si vous ne pouvez pas scanner le code QR, utilisez cette clé secrète :"
+msgstr "If you cannot scan the QR code, use this secret key:"
+
+#: .\utilisateur\templates\connexion\login\google_auth_setup.html:35
+msgid "Copier la clé"
+msgstr "Copy key"
+
+#: .\utilisateur\templates\connexion\login\google_auth_setup.html:44
+msgid "J'ai configuré Google Authenticator"
+msgstr "I have configured Google Authenticator"
+
+#: .\utilisateur\templates\connexion\login\google_auth_setup.html:50
+msgid "Comment configurer ?"
+msgstr "How to use"
+
+#: .\utilisateur\templates\connexion\login\google_auth_setup.html:57
+#: .\utilisateur\templates\connexion\login\google_auth_verification.html:70
+#: .\utilisateur\templates\emails\email_verification.html:86
+msgid "Besoin d'aide ?"
+msgstr "Need help?"
+
+#: .\utilisateur\templates\connexion\login\google_auth_setup.html:57
+msgid "Contactez le support"
+msgstr "Contact support"
+
+#: .\utilisateur\templates\connexion\login\google_auth_setup.html:67
+msgid "Comment configurer Google Authenticator"
+msgstr "How to set up Google Authenticator"
+
+#: .\utilisateur\templates\connexion\login\google_auth_setup.html:72
+msgid ""
+"Téléchargez l'application Google Authenticator sur votre appareil mobile"
+msgstr "Download the Google Authenticator app on your mobile device"
+
+#: .\utilisateur\templates\connexion\login\google_auth_setup.html:73
+msgid "Ouvrez l'application et appuyez sur \\"
+msgstr "Open the app and tap on \""
+
+#: .\utilisateur\templates\connexion\login\google_auth_setup.html:74
+msgid "Scannez le code QR ci-dessus ou entrez manuellement la clé secrète"
+msgstr "Scan the QR code above or manually enter the secret key"
+
+#: .\utilisateur\templates\connexion\login\google_auth_setup.html:75
+msgid "Une fois configuré, appuyez sur le bouton ci-dessous pour continuer"
+msgstr "Once configured, click the button below to continue"
+
+#: .\utilisateur\templates\connexion\login\google_auth_setup.html:81
+msgid "Aide Google Authenticator"
+msgstr "Google Authenticator Help"
+
+#: .\utilisateur\templates\connexion\login\google_auth_verification.html:19
+msgid "Entrez le code de votre application"
+msgstr "Enter your app code"
+
+#: .\utilisateur\templates\connexion\login\google_auth_verification.html:61
+#: .\utilisateur\templates\emails\email_verification.html:64
+msgid "Vérifier"
+msgstr "Verify"
+
+#: .\utilisateur\templates\connexion\login\google_auth_verification.html:81
+msgid "Comment obtenir votre code"
+msgstr "How to get your code"
+
+#: .\utilisateur\templates\connexion\login\google_auth_verification.html:88
+msgid "Ouvrez Google Authenticator"
+msgstr "Open Google Authenticator"
+
+#: .\utilisateur\templates\connexion\login\google_auth_verification.html:92
+msgid "Trouvez l'entrée \\"
+msgstr "Find the entry \""
+
+#: .\utilisateur\templates\connexion\login\google_auth_verification.html:96
+msgid "Entrez le code à 6 chiffres"
+msgstr "We have sent a 6-digit code"
+
+#: .\utilisateur\templates\connexion\login\google_auth_verification.html:102
+msgid ""
+"Le code change toutes les 30 secondes. Assurez-vous que l'heure de votre "
+"appareil est synchronisée."
+msgstr ""
+"The code changes every 30 seconds. Make sure your device's time is "
+"synchronized."
+
+#: .\utilisateur\templates\connexion\login\login.html:20
+msgid "Connexion à votre compte"
+msgstr "Sign in to your account"
+
+#: .\utilisateur\templates\connexion\login\login.html:23
+msgid "Entrez vos identifiants pour accéder à votre espace"
+msgstr "Enter your credentials to access your space"
+
+#: .\utilisateur\templates\connexion\login\login.html:42
+msgid "Nom d'utilisateur ou email"
+msgstr "Username"
+
+#: .\utilisateur\templates\connexion\login\login.html:46
+#, fuzzy
+#| msgid "Vérifiez votre email"
+msgid "Entrez votre email ou nom d\\"
+msgstr "Verify your email"
+
+#: .\utilisateur\templates\connexion\login\login.html:58
+#, fuzzy
+#| msgid "Mot de passe"
+msgid "Votre mot de passe"
+msgstr "Password"
+
+#: .\utilisateur\templates\connexion\login\login.html:67
+#, fuzzy
+#| msgid "Mot de passe"
+msgid "Mot de passe oublié ?"
+msgstr "Password"
+
+#: .\utilisateur\templates\connexion\login\login.html:78
+msgid "Se souvenir de moi"
+msgstr "Remember me"
+
+#: .\utilisateur\templates\connexion\login\login.html:88
+#, fuzzy
+#| msgid "Se connecter"
+msgid "se connecter"
+msgstr "Sign in"
+
+#: .\utilisateur\templates\connexion\login\login.html:90
+msgid "C'est parti !"
+msgstr "Let's go!"
+
+#: .\utilisateur\templates\connexion\login\login.html:100
+#, fuzzy
+#| msgid "Créer un port"
+msgid "créer un compte"
+msgstr "Create a port"
+
+#: .\utilisateur\templates\connexion\login\login.html:102
+msgid "cree un compte"
+msgstr "Create an account"
+
+#: .\utilisateur\templates\emails\email_verification.html:21
+msgid "Vérifiez votre email"
+msgstr "Verify your email"
+
+#: .\utilisateur\templates\emails\email_verification.html:22
+msgid "Nous avons envoyé un code à 6 chiffres"
+msgstr "We have sent a 6-digit code"
+
+#: .\utilisateur\templates\emails\email_verification.html:70
+msgid "Vous n'avez pas reçu le code ?"
+msgstr "Did not receive the code?"
+
+#: .\utilisateur\templates\emails\email_verification.html:73
+msgid "Renvoyer"
+msgstr "Send again"
+
+#: .\utilisateur\templates\emails\email_verification.html:77
+msgid "Renvoyer dans"
+msgstr "Send in"
+
+#: .\utilisateur\templates\pages\accueil.html:593
+#, fuzzy
+#| msgid "Fournisseur avec le plus de commodités"
+msgid "Visualisez vos fournisseurs par ports et par commodités"
+msgstr "Supplier with the most commodities"
+
+#: .\utilisateur\templates\pages\accueil.html:607
+#, fuzzy
+#| msgid "Rechercher"
+msgid "Recherche"
+msgstr "Search"
+
+#: .\utilisateur\templates\pages\accueil.html:609
+#, fuzzy
+#| msgid "Nom du fournisseur"
+msgid "Nom du fournisseur..."
+msgstr "Provider name"
+
+#: .\utilisateur\templates\pages\accueil.html:613
+#, fuzzy
+#| msgid "Sur la carte"
+msgid "Style de carte"
+msgstr "On the map"
+
+#: .\utilisateur\templates\pages\accueil.html:615
+msgid "Plan"
+msgstr "Plan"
+
+#: .\utilisateur\templates\pages\accueil.html:616
+msgid "Satellite Streets"
+msgstr "Satellite Streets"
+
+#: .\utilisateur\templates\pages\accueil.html:617
+msgid "Satellite"
+msgstr "Satellite"
+
+#: .\utilisateur\templates\pages\accueil.html:618
+msgid "Clair"
+msgstr "Clear"
+
+#: .\utilisateur\templates\pages\accueil.html:619
+msgid "Sombre"
+msgstr "Dark"
+
+#: .\utilisateur\templates\pages\accueil.html:641
+#: .\website\templates\website\accueil1.html:540
+msgid "Total"
+msgstr "Total"
+
+#: .\utilisateur\templates\pages\accueil.html:648
+msgid "Visibles"
+msgstr "Available"
+
+#: .\utilisateur\templates\pages\accueil.html:661
+msgid "Usines à Ports"
+msgstr "List of ports"
+
+#: .\utilisateur\templates\pages\accueil.html:668
+#: .\utilisateur\templates\pages\accueil.html:685
+msgid "Chargement de la carte..."
+msgstr "Loading..."
+
+#: .\utilisateur\templates\pages\accueil.html:678
+msgid "Fournisseurs & Commodités"
+msgstr "Supplier-Commodity Links"
+
+#: .\utilisateur\templates\pages\accueil.html:689
+msgid "Légende des commodités"
+msgstr "List of amenities"
+
+#: .\villes\admin.py:85 .\villes\admin.py:153
+#: .\villes\templates\localite\localite_detail.html:294
+#: .\villes\templates\ville\ville_detail.html:180
+#: .\villes\templates\ville\ville_list.html:234
+msgid "Superficie"
+msgstr "Area"
+
+#: .\villes\admin.py:108 .\villes\models.py:70
+#: .\villes\templates\localite\localite_confirm_delete.html:70
+#: .\villes\templates\ville\ville_confirm_delete.html:73 .\zones\admin.py:75
+#: .\zones\templates\zone_list.html:312
+msgid "Ville de référence"
+msgstr "Reference city"
+
+#: .\villes\models.py:35
+msgid "Nom de la ville"
+msgstr "City name"
+
+#: .\villes\models.py:41 .\villes\models.py:282
+msgid "Superficie (km²)"
+msgstr "Area (km²)"
+
+#: .\villes\models.py:63 .\zones\models.py:42
+msgid "Description"
+msgstr "Description"
+
+#: .\villes\models.py:177
+msgid "Lien Ville-Port"
+msgstr "City-Port link"
+
+#: .\villes\models.py:178
+msgid "Liens Ville-Ports"
+msgstr "City-Ports links"
+
+#: .\villes\models.py:370
+msgid "Lien Port-Localite"
+msgstr "Port-Localite link"
+
+#: .\villes\models.py:371
+msgid "Liens Port-Localites"
+msgstr "Port-Localites links"
+
+#: .\villes\templates\localite\localite_confirm_delete.html:5
+msgid "Supprimer la localite"
+msgstr "Delete the localite"
+
+#: .\villes\templates\localite\localite_confirm_delete.html:12
+msgid "localites"
+msgstr "localites"
+
+#: .\villes\templates\localite\localite_confirm_delete.html:35
+msgid "Êtes-vous sûr de vouloir supprimer cette localite ?"
+msgstr "Are you sure you want to delete this localite?"
+
+#: .\villes\templates\localite\localite_confirm_delete.html:87
+#: .\villes\templates\ville\ville_confirm_delete.html:90
+msgid ""
+"Cette ville est actuellement la ville de référence de sa zone. Après "
+"suppression, la zone n'aura plus de ville de référence. Vous devrez en "
+"désigner une nouvelle."
+msgstr ""
+"This city is currently the reference city of its zone. After deletion, the "
+"zone will no longer have a reference city. You will need to designate a new "
+"one."
+
+#: .\villes\templates\localite\localite_detail.html:130
+msgid "Retour à la ville"
+msgstr "Back to the city"
+
+#: .\villes\templates\localite\localite_detail.html:152
+msgid ""
+"\n"
+"                    port associé\n"
+"                "
+msgid_plural ""
+"\n"
+"                    ports associés\n"
+"                "
+msgstr[0] ""
+"\n"
+"                    associated port\n"
+"                "
+msgstr[1] ""
+"\n"
+"                    associated ports\n"
+"                "
+
+#: .\villes\templates\localite\localite_detail.html:176
+msgid "Latitude, Longitude"
+msgstr "Latitude, Longitude"
+
+#: .\villes\templates\localite\localite_detail.html:179
+msgid "Non spécifiées"
+msgstr "Not specified"
+
+#: .\villes\templates\localite\localite_detail.html:204
+msgid "Voir le port"
+msgstr "View port"
+
+#: .\villes\templates\localite\localite_detail.html:219
+#: .\villes\templates\localite\localite_list.html:284
+#: .\villes\templates\portlocalite\port_localite_list.html:142
+#: .\villes\templates\portville\ville_port_list.html:144
+#: .\villes\templates\ville\ville_detail.html:247
+#: .\villes\templates\ville\ville_list.html:264
+msgid "Distance"
+msgstr "Distance"
+
+#: .\villes\templates\localite\localite_detail.html:254
+#: .\villes\templates\ville\ville_detail.html:273
+msgid "Aucun port lié"
+msgstr "No port linked"
+
+#: .\villes\templates\localite\localite_detail.html:255
+msgid "Cette localité n'est pas encore liée à un port."
+msgstr "This locality is not yet linked to a port."
+
+#: .\villes\templates\localite\localite_detail.html:266
+msgid "Ville parente"
+msgstr "Parent city"
+
+#: .\villes\templates\localite\localite_detail.html:308
+msgid "Voir la ville"
+msgstr "View city"
+
+#: .\villes\templates\localite\localite_detail.html:329
+msgid "Identifiant unique"
+msgstr "Unique identifier"
+
+#: .\villes\templates\localite\localite_form.html:279
+#: .\villes\templates\ville\ville_form.html:263
+msgid "Superficie et localisation"
+msgstr "Area and location"
+
+#: .\villes\templates\localite\localite_form.html:338
+msgid "À propos de la localité"
+msgstr "About the locality"
+
+#: .\villes\templates\localite\localite_form.html:339
+msgid ""
+"Une localité représente un quartier, un village ou une zone spécifique "
+"appartenant à une ville."
+msgstr ""
+"A locality represents a neighborhood, village or specific area belonging to "
+"a city."
+
+#: .\villes\templates\localite\localite_form.html:367
+#: .\villes\templates\ville\ville_form.html:351
+msgid "Localisation et Superficie"
+msgstr "Location and Area"
+
+#: .\villes\templates\localite\localite_form.html:373
+msgid "Rechercher une localité"
+msgstr "Search for a locality"
+
+#: .\villes\templates\localite\localite_list.html:5
+msgid "Liste des localités"
+msgstr "List of localities"
+
+#: .\villes\templates\localite\localite_list.html:106
+#: .\villes\templates\ville\ville_detail.html:92
+#: .\zones\templates\zone_detail.html:127
+#, python-format
+msgid ""
+"\n"
+"                            %(counter)s localité\n"
+"                        "
+msgid_plural ""
+"\n"
+"                            %(counter)s localités\n"
+"                        "
+msgstr[0] ""
+"\n"
+"                            %(counter)s locality\n"
+"                        "
+msgstr[1] ""
+"\n"
+"                            %(counter)s localities\n"
+"                        "
+
+#: .\villes\templates\localite\localite_list.html:117
+#: .\villes\templates\ville\ville_list.html:102
+#: .\zones\templates\zone_list.html:254
+msgid "Filtres actifs"
+msgstr "Active filters"
+
+#: .\villes\templates\localite\localite_list.html:133
+msgid "Nouvelle localité"
+msgstr "New locality"
+
+#: .\villes\templates\localite\localite_list.html:155
+#: .\villes\templates\ville\ville_list.html:140
+msgid "Nom, description..."
+msgstr "Name, description..."
+
+#: .\villes\templates\localite\localite_list.html:281
+#: .\villes\templates\ville\ville_list.html:261
+msgid "Voir la distance détaillée"
+msgstr "View detailed distance"
+
+#: .\villes\templates\localite\localite_list.html:286
+#: .\villes\templates\ville\ville_list.html:266
+msgid "Distance inconnue"
+msgstr "Unknown distance"
+
+#: .\villes\templates\localite\localite_list.html:292
+msgid "Aucun port n'est lié à cette localité."
+msgstr "No port is linked to this locality."
+
+#: .\villes\templates\localite\localite_list.html:394
+msgid "Aucune localité trouvée"
+msgstr "No locality found"
+
+#: .\villes\templates\localite\localite_list.html:397
+msgid ""
+"Aucune localité ne correspond à vos critères de recherche. Essayez de "
+"modifier vos filtres."
+msgstr "No locality matches your search criteria. Try modifying your filters."
+
+#: .\villes\templates\localite\localite_list.html:399
+msgid ""
+"Vous n'avez pas encore de localités. Commencez par en créer une pour "
+"démarrer."
+msgstr "You don't have any localities yet. Start by creating one."
+
+#: .\villes\templates\localite\localite_list.html:406
+msgid "Créer une localité"
+msgstr "Create a locality"
+
+#: .\villes\templates\portlocalite\port_localite_detail.html:73
+msgid "Itinéraire entre le port et la localité"
+msgstr "Route between the port and the locality"
+
+#: .\villes\templates\portlocalite\port_localite_list.html:5
+msgid "Liaisons Port-localite"
+msgstr "Port-locality connections"
+
+#: .\villes\templates\portlocalite\port_localite_list.html:27
+msgid "Liaisons Port-Localite"
+msgstr "Port-locality connections"
+
+#: .\villes\templates\portlocalite\port_localite_list.html:60
+msgid "port, localite..."
+msgstr "port, locality..."
+
+#: .\villes\templates\portlocalite\port_localite_list.html:82
+#: .\villes\templates\portlocalite\port_localite_list.html:139
+msgid "Localite"
+msgstr "Locality"
+
+#: .\villes\templates\portlocalite\port_localite_list.html:187
+#: .\villes\templates\portville\ville_port_list.html:198
+msgid "voir itinéraire"
+msgstr "View itinerary"
+
+#: .\villes\templates\portville\ville_port_detail.html:73
+msgid "Itinéraire entre le port et la ville"
+msgstr "Route between the port and the city"
+
+#: .\villes\templates\portville\ville_port_list.html:5
+#: .\villes\templates\portville\ville_port_list.html:27
+msgid "Liaisons Port-Ville"
+msgstr "Port-city connections"
+
+#: .\villes\templates\portville\ville_port_list.html:59
+msgid "port, ville..."
+msgstr "port, city..."
+
+#: .\villes\templates\ville\ville_confirm_delete.html:5
+msgid "Supprimer la ville"
+msgstr "Delete the city"
+
+#: .\villes\templates\ville\ville_confirm_delete.html:35
+msgid "Êtes-vous sûr de vouloir supprimer cette ville ?"
+msgstr "Are you sure you want to delete this city?"
+
+#: .\villes\templates\ville\ville_detail.html:56
+msgid "Ville de Référence"
+msgstr "Reference city"
+
+#: .\villes\templates\ville\ville_detail.html:57
+msgid "Cette ville est la référence de la Zone"
+msgstr "This city is the reference of the Zone"
+
+#: .\villes\templates\ville\ville_detail.html:216
+msgid "Ajouter un port"
+msgstr "Add a port"
+
+#: .\villes\templates\ville\ville_detail.html:233
+msgid "Voir l'itinéraire"
+msgstr "View itinerary"
+
+#: .\villes\templates\ville\ville_detail.html:274
+msgid "Cette ville n'est pas encore liée à un port."
+msgstr "This city is not yet linked to a port."
+
+#: .\villes\templates\ville\ville_detail.html:294
+msgid "Ajouter une localité"
+msgstr "Add a locality"
+
+#: .\villes\templates\ville\ville_detail.html:378
+msgid "Aucune localité"
+msgstr "No locality"
+
+#: .\villes\templates\ville\ville_detail.html:379
+msgid "Cette ville n'a pas encore de localités associées."
+msgstr "This city has no associated localities."
+
+#: .\villes\templates\ville\ville_detail.html:385
+msgid "Créer la première localité"
+msgstr "Create the first locality"
+
+#: .\villes\templates\ville\ville_detail.html:397
+msgid "Informations détaillées"
+msgstr "Detailed information"
+
+#: .\villes\templates\ville\ville_detail.html:410
+msgid "Zone géographique"
+msgstr "Geographic zone"
+
+#: .\villes\templates\ville\ville_form.html:322
+msgid "À propos de la ville de référence"
+msgstr "About the reference city"
+
+#: .\villes\templates\ville\ville_form.html:323
+msgid ""
+"Si vous cochez cette option, cette ville deviendra la ville de référence de "
+"sa zone. L'ancienne ville de référence perdra automatiquement ce statut."
+msgstr ""
+"If you check this option, this city will become the reference city of its "
+"zone. The old reference city will automatically lose this status."
+
+#: .\villes\templates\ville\ville_form.html:357
+msgid "Rechercher une ville dans le monde"
+msgstr "Search for a city in the world"
+
+#: .\villes\templates\ville\ville_list.html:5
+msgid "Liste des Villes"
+msgstr "List of Cities"
+
+#: .\villes\templates\ville\ville_list.html:91
+#: .\zones\templates\zone_detail.html:115
+#, python-format
+msgid ""
+"\n"
+"                            %(counter)s ville\n"
+"                        "
+msgid_plural ""
+"\n"
+"                            %(counter)s villes\n"
+"                        "
+msgstr[0] ""
+"\n"
+"                            %(counter)s city\n"
+"                        "
+msgstr[1] ""
+"\n"
+"                            %(counter)s cities\n"
+"                        "
+
+#: .\villes\templates\ville\ville_list.html:118
+msgid "Nouvelle ville"
+msgstr "New city"
+
+#: .\villes\templates\ville\ville_list.html:217
+#: .\zones\templates\zone_detail.html:283
+#: .\zones\templates\zone_detail.html:343
+msgid "localités"
+msgstr "localities"
+
+#: .\villes\templates\ville\ville_list.html:272
+msgid "Aucun port n'est lié à cette ville."
+msgstr "No port is linked to this city."
+
+#: .\villes\templates\ville\ville_list.html:344
+msgid "Aucune ville trouvée"
+msgstr "No city found"
+
+#: .\villes\templates\ville\ville_list.html:347
+msgid "Aucune ville ne correspond à vos critères de recherche."
+msgstr "No city matches your search criteria."
+
+#: .\villes\templates\ville\ville_list.html:349
+msgid "Commencez par créer votre première ville."
+msgstr "Start by creating your first city."
+
+#: .\villes\templates\ville\ville_list.html:353
+msgid "Créer une ville"
+msgstr "Create a city"
+
+#: .\villes\views\localite\create_localite.py:24
+#, python-format
+msgid "La localite %(nom)s a été créée avec succès"
+msgstr "The locality %(nom)s has been created successfully"
+
+#: .\villes\views\localite\create_localite.py:31
+msgid "Créer une nouvelle localite"
+msgstr "Create a new locality"
+
+#: .\villes\views\localite\delete_localite.py:20
+msgid "La localite a été supprimée avec succès"
+msgstr "The locality has been deleted successfully"
+
+#: .\villes\views\localite\update_localite.py:25
+#, python-format
+msgid "La localite %(nom)s a été modifiée avec succès"
+msgstr "The locality %(nom)s has been modified successfully"
+
+#: .\villes\views\portlocalite\create.py:44
+msgid "Créer une liaison Port-Localite"
+msgstr "Create a Port-locality connection"
+
+#: .\villes\views\portlocalite\create.py:67
+#, python-format
+msgid ""
+"Erreur: Le port %(port)s n'est pas dans le même pays que la localite "
+"sélectionnée."
+msgstr ""
+"Error: The port %(port)s is not in the same country as the selected locality."
+
+#: .\villes\views\portlocalite\create.py:83
+#, python-format
+msgid "Cette liaison existe déjà entre %(port)s et %(localite)s"
+msgstr "This connection already exists between %(port)s and %(localite)s"
+
+#: .\villes\views\portlocalite\create.py:99
+#: .\villes\views\portville\create.py:105
+#, python-format
+msgid ""
+"La liaison a été créée avec succès. Distance calculée : %(distance).2f km"
+msgstr ""
+"The connection has been created successfully. Calculated distance: "
+"%(distance).2f km"
+
+#: .\villes\views\portlocalite\create.py:106
+#: .\villes\views\portville\create.py:112
+msgid ""
+"La liaison a été créée mais n'a pas pu calculer la distance. Vérifiez que "
+"les coordonnées du port et de la ville sont correctes."
+msgstr ""
+"The connection has been created but could not calculate the distance. Check "
+"that the port and city coordinates are correct."
+
+#: .\villes\views\portlocalite\detail.py:26
+#, fuzzy, python-brace-format
+#| msgid "Liaison {port} - {ville}"
+msgid "Liaison {port} - {localite}"
+msgstr "Connection {port} - {city}"
+
+#: .\villes\views\portville\create.py:44
+msgid "Créer une liaison Port-Ville"
+msgstr "Create a Port-city connection"
+
+#: .\villes\views\portville\create.py:69
+#, python-format
+msgid ""
+"Erreur: Le port %(port)s n'est pas dans le même pays que la ville "
+"sélectionnée."
+msgstr ""
+"Error: The port %(port)s is not in the same country as the selected city."
+
+#: .\villes\views\portville\create.py:85
+#, python-format
+msgid "Cette liaison existe déjà entre %(port)s et %(ville)s"
+msgstr "This connection already exists between %(port)s and %(ville)s"
+
+#: .\villes\views\portville\detail.py:26
+#, python-brace-format
+msgid "Liaison {port} - {ville}"
+msgstr "Connection {port} - {city}"
+
+#: .\villes\views\ville\create.py:28
+#, python-format
+msgid "La ville %(nom)s a été créée avec succès"
+msgstr "The city %(nom)s has been created successfully"
+
+#: .\villes\views\ville\create.py:35
+msgid "Créer une nouvelle ville"
+msgstr "Create a new city"
+
+#: .\villes\views\ville\delete.py:20
+msgid "La ville a été supprimée avec succès"
+msgstr "The city has been deleted successfully"
+
+#: .\villes\views\ville\update.py:24
+#, python-format
+msgid "La ville %(nom)s a été modifiée avec succès"
+msgstr "The city %(nom)s has been modified successfully"
+
+#: .\villes\views\ville\update.py:50
+#, python-format
+msgid "%(nom)s est maintenant la ville de référence de la Zone %(zone)s"
+msgstr "%(nom)s is now the reference city of the Zone %(zone)s"
+
+#: .\website\templates\website\accueil1.html:211
+msgid "Innov Sourcing - Oils of Africa"
+msgstr "Innov Sourcing - Oils of Africa"
+
+#: .\website\templates\website\accueil1.html:212
+msgid ""
+"Découvrez notre huile de palme de qualité supérieure, produite avec soin par "
+"des producteurs locaux engagés"
+msgstr ""
+"Discover our high-quality palm oil, produced with care by engaged local "
+"producers"
+
+#: .\website\templates\website\accueil1.html:222
+msgid "Une production durable"
+msgstr "Sustainable production"
+
+#: .\website\templates\website\accueil1.html:223
+msgid "Des méthodes de production responsables qui préservent l'environnement"
+msgstr "Responsible production methods that preserve the environment"
+
+#: .\website\templates\website\accueil1.html:233
+msgid "Qualité et traçabilité"
+msgstr "Quality and traceability"
+
+#: .\website\templates\website\accueil1.html:234
+msgid "Une chaîne d'approvisionnement transparente et éthique"
+msgstr "A transparent and ethical supply chain"
+
+#: .\website\templates\website\accueil1.html:295
+msgid "Oils of Africa"
+msgstr "Oils of Africa"
+
+#: .\website\templates\website\accueil1.html:296
+msgid "Votre partenaire en approvisionnement"
+msgstr "Your partner in supply"
+
+#: .\website\templates\website\accueil1.html:297
+msgid "des huile de palme & derivés"
+msgstr "of palm oil & derivatives"
+
+#: .\website\templates\website\accueil1.html:301
+msgid ""
+"Spécialistes du sourcing des huile de palme en Afrique de l'Ouest, nous "
+"garantissons qualité, traçabilité et respect des normes internationales"
+msgstr ""
+"Specialists of palm oil sourcing in West Africa, we guarantee quality, "
+"traceability and respect for international standards"
+
+#: .\website\templates\website\accueil1.html:313
+msgid "Voir les stocks"
+msgstr "View stocks"
+
+#: .\website\templates\website\accueil1.html:331
+msgid "Stock disponible"
+msgstr "Available stock"
+
+#: .\website\templates\website\accueil1.html:335
+msgid "Produits sourcés"
+msgstr "Sourced products"
+
+#: .\website\templates\website\accueil1.html:339
+msgid "Autorisation exportation"
+msgstr "Export authorization"
+
+#: .\website\templates\website\accueil1.html:348
+msgid "Découvrir"
+msgstr "Discover"
+
+#: .\website\templates\website\accueil1.html:360
+msgid "Nos produits phares"
+msgstr "Our flagship products"
+
+#: .\website\templates\website\accueil1.html:362
+msgid ""
+"Découvrez notre gamme complète d'huiles de palme & des dérivés, produits de "
+"manière éthique et durable"
+msgstr ""
+"Discover our complete range of palm oil & derivatives, products produced "
+"ethically and sustainably"
+
+#: .\website\templates\website\accueil1.html:398
+#: .\website\templates\website\accueil1.html:504
+msgid "Pause"
+msgstr "Pause"
+
+#: .\website\templates\website\accueil1.html:500
+msgid "Lecture"
+msgstr "Reading"
+
+#: .\website\templates\website\accueil1.html:528
+msgid "Disponibilités en temps réel"
+msgstr "Real-time availability"
+
+#: .\website\templates\website\accueil1.html:531
+msgid ""
+"Consultez nos stocks disponibles d'huile de palme et de produits dérivés, "
+"mis à jour quotidiennement"
+msgstr "Consult our available palm oil and derivative stocks, updated daily"
+
+#: .\website\templates\website\accueil1.html:545
+msgid "Stock total disponible"
+msgstr "Available total stock"
+
+#: .\website\templates\website\accueil1.html:551
+msgid "Produits"
+msgstr "Products"
+
+#: .\website\templates\website\accueil1.html:556
+msgid "Références disponibles"
+msgstr "Available references"
+
+#: .\website\templates\website\accueil1.html:562
+msgid "Alerte"
+msgstr "Alert"
+
+#: .\website\templates\website\accueil1.html:567
+msgid "Stocks faibles (≤50T)"
+msgstr "Low stocks (≤50T)"
+
+#: .\website\templates\website\accueil1.html:586
+msgid "Stock faible"
+msgstr "Low stock"
+
+#: .\website\templates\website\accueil1.html:600
+msgid "Tonnes disponibles"
+msgstr "Available tonnes"
+
+#: .\website\templates\website\accueil1.html:614
+msgid "Mis à jour le"
+msgstr "Updated on"
+
+#: .\website\templates\website\accueil1.html:646
+msgid "Aucune commodité disponible"
+msgstr "No commodity available"
+
+#: .\website\templates\website\accueil1.html:647
+msgid "Les stocks seront mis à jour prochainement."
+msgstr "The stocks will be updated next time."
+
+#: .\website\templates\website\accueil1.html:679
+msgid "Ils nous font confiance"
+msgstr "They trust us"
+
+#: .\website\templates\website\accueil1.html:681
+msgid ""
+"Découvrez les retours d'expérience de nos partenaires qui nous ont choisis "
+"pour achat de commodité"
+msgstr ""
+"Discover the experiences of our partners who chose us for commodity purchase"
+
+#: .\website\templates\website\accueil1.html:695
+msgid ""
+"Notre entreprise fait appel à leurs services de sourcing depuis plus de 2 "
+"ans. La qualité des produits et la fiabilité des approvisionnements sont "
+"exceptionnelles."
+msgstr ""
+"Our company has been using their sourcing services for more than 2 years. "
+"The quality of the products and the reliability of the supplies are "
+"exceptional."
+
+#: .\website\templates\website\accueil1.html:703
+msgid "Responsable Achats - Abidjan"
+msgstr "Responsable Achats - Abidjan"
+
+#: .\website\templates\website\accueil1.html:717
+msgid ""
+"Leur équipe a su trouver les fournisseurs parfaits pour notre gamme de "
+"produits. Réactivité, professionnalisme et respect des délais sont au rendez-"
+"vous."
+msgstr ""
+"Their team managed to find the perfect suppliers for our product range. "
+"Responsiveness, professionalism and respect for deadlines are all there."
+
+#: .\website\templates\website\accueil1.html:725
+msgid "Directeur Commercial - Yamoussoukro"
+msgstr "Directeur Commercial - Yamoussoukro"
+
+#: .\website\templates\website\accueil1.html:739
+#, python-format
+msgid ""
+"Leur expertise en sourcing nous a permis de réduire nos coûts "
+"d'approvisionnement de 30%% tout en améliorant la qualité de nos matières "
+"premières. Un partenaire de confiance."
+msgstr ""
+"Their sourcing expertise allowed us to reduce our supply costs by 30%% while "
+"improving the quality of our raw materials. A trusted partner."
+
+#: .\website\templates\website\accueil1.html:747
+msgid "Directrice d'Usine - San Pedro"
+msgstr "Plant Manager - San Pedro"
+
+#: .\website\templates\website\accueil1.html:760
+msgid "Besoin d'une solution de sourcing sur mesure ?"
+msgstr "Need a custom sourcing solution?"
+
+#: .\website\templates\website\accueil1.html:763
+msgid ""
+"Découvrez notre expertise en sourcing et obtenez un devis personnalisé pour "
+"vos besoins spécifiques"
+msgstr ""
+"Discover our sourcing expertise and get a personalized quote for your "
+"specific needs"
+
+#: .\website\templates\website\accueil1.html:778
+msgid "Demander une cotation"
+msgstr "Request a quotation"
+
+#: .\website\templates\website\accueil1.html:792
+msgid "Restez informé"
+msgstr "Stay informed"
+
+#: .\website\templates\website\accueil1.html:794
+msgid ""
+"Inscrivez-vous à notre newsletter pour recevoir les dernières information"
+msgstr "Subscribe to our newsletter to receive the latest information"
+
+#: .\website\templates\website\accueil1.html:800
+msgid "Votre adresse email"
+msgstr "Your email address"
+
+#: .\website\templates\website\accueil1.html:806
+msgid "S'inscrire"
+msgstr "Subscribe"
+
+#: .\website\templates\website\accueil1.html:813
+msgid ""
+"J'accepte de recevoir des informations sur les nouveautés et offres spéciales"
+msgstr "I agree to receive information about news and special offers"
+
+#: .\zones\admin.py:69
+msgid "Nombre de villes"
+msgstr "Number of cities"
+
+#: .\zones\admin.py:79
+msgid "Aucune"
+msgstr "None"
+
+#: .\zones\models.py:29
+msgid "Numéro de zone"
+msgstr "Zone number"
+
+#: .\zones\templates\zone_confirm_delete.html:5
+msgid "Supprimer la zone"
+msgstr "Delete zone"
+
+#: .\zones\templates\zone_confirm_delete.html:35
+msgid "Êtes-vous sûr de vouloir supprimer cette zone ?"
+msgstr "Are you sure you want to delete this zone?"
+
+#: .\zones\templates\zone_confirm_delete.html:54
+#, python-format
+msgid ""
+"\n"
+"                        %(counter)s ville associée\n"
+"                    "
+msgid_plural ""
+"\n"
+"                        %(counter)s villes associées\n"
+"                    "
+msgstr[0] ""
+"\n"
+"                        %(counter)s associated city\n"
+"                    "
+msgstr[1] ""
+"\n"
+"                        %(counter)s associated cities\n"
+"                    "
+
+#: .\zones\templates\zone_confirm_delete.html:73
+#, python-format
+msgid ""
+"\n"
+"                            Cette zone contient %(counter)s ville. La "
+"suppression de la zone entraînera également la suppression de cette ville "
+"(suppression logique).\n"
+"                        "
+msgid_plural ""
+"\n"
+"                            Cette zone contient %(counter)s villes. La "
+"suppression de la zone entraînera également la suppression de ces villes "
+"(suppression logique).\n"
+"                        "
+msgstr[0] ""
+msgstr[1] ""
+
+#: .\zones\templates\zone_detail.html:150
+msgid "Ville de référence:"
+msgstr "Reference city:"
+
+#: .\zones\templates\zone_detail.html:177
+#: .\zones\templates\zone_detail.html:399
+msgid "Ajouter une ville"
+msgstr "Add a city"
+
+#: .\zones\templates\zone_detail.html:240
+msgid "Commodités disponibles"
+msgstr "Available Commodities"
+
+#: .\zones\templates\zone_detail.html:253
+msgid "Villes de cette zone"
+msgstr "Cities in this zone"
+
+#: .\zones\templates\zone_detail.html:269
+msgid "VILLE DE RÉFÉRENCE"
+msgstr "Reference city"
+
+#: .\zones\templates\zone_detail.html:289
+#: .\zones\templates\zone_detail.html:349
+msgid "fournisseurs"
+msgstr "Providers"
+
+#: .\zones\templates\zone_detail.html:295
+#: .\zones\templates\zone_detail.html:355
+msgid "Commodités :"
+msgstr "Commodities :"
+
+#: .\zones\templates\zone_detail.html:301
+#: .\zones\templates\zone_detail.html:361
+msgid "plus"
+msgstr "more"
+
+#: .\zones\templates\zone_detail.html:319
+#: .\zones\templates\zone_detail.html:379
+msgid "Modifiée le"
+msgstr "Modified on"
+
+#: .\zones\templates\zone_detail.html:392
+msgid "Aucune ville dans cette zone"
+msgstr "No cities in this zone"
+
+#: .\zones\templates\zone_detail.html:393
+msgid "Commencez par ajouter des villes à cette zone."
+msgstr "Start by adding cities to this zone."
+
+#: .\zones\templates\zone_form.html:73
+msgid "Note"
+msgstr "Note"
+
+#: .\zones\templates\zone_form.html:74
+msgid "Le numéro de zone sera généré automatiquement de manière séquentielle."
+msgstr ""
+"The zone number will be generated automatically in a sequential manner."
+
+#: .\zones\templates\zone_list.html:5
+msgid "Liste des Zones"
+msgstr "List of Zones"
+
+#: .\zones\templates\zone_list.html:151
+msgid "Rechercher une zone..."
+msgstr "Search for a zone..."
+
+#: .\zones\templates\zone_list.html:236
+msgid "Zones Géographiques"
+msgstr "Geographic Zones"
+
+#: .\zones\templates\zone_list.html:264
+msgid "Nouvelle Zone"
+msgstr "New Zone"
+
+#: .\zones\templates\zone_list.html:283
+msgid "Zone "
+msgstr "Zone "
+
+#: .\zones\templates\zone_list.html:345
+#, fuzzy, python-format
+#| msgid ""
+#| "\n"
+#| "                        Affichage de %(start)s à %(end)s sur "
+#| "%(total)s                         éléments\n"
+#| "                    "
+msgid ""
+"\n"
+"                        Affichage de %(start)s à %(end)s sur %(total)s "
+"éléments\n"
+"                    "
+msgstr ""
+"\n"
+"                        Showing %(start)s to %(end)s of "
+"%(total)s                         items\n"
+"                    "
+
+#: .\zones\templates\zone_list.html:411
+msgid "Aucune zone trouvée"
+msgstr "No zone found"
+
+#: .\zones\templates\zone_list.html:414
+msgid ""
+"Aucune zone ne correspond à vos critères de recherche. Essayez de modifier "
+"votre recherche."
+msgstr "No zone matches your search criteria. Try modifying your search."
+
+#: .\zones\templates\zone_list.html:416
+msgid ""
+"Il semble qu'aucune zone n'ait été créée pour le moment. Commencez par "
+"ajouter votre première zone géographique."
+msgstr ""
+"It seems no zone has been created yet. Start by adding your first geographic "
+"zone."
+
+#: .\zones\templates\zone_list.html:425
+msgid "Réinitialiser la recherche"
+msgstr "Reset search"
+
+#: .\zones\templates\zone_list.html:432
+msgid "Créer une zone"
+msgstr "Create a new zone"
+
+#: .\zones\views\create.py:18
+#, python-format
+msgid "La zone %(numero)s a été créée avec succès"
+msgstr "The zone %(numero)s has been created successfully"
+
+#: .\zones\views\create.py:36
+msgid "Créer une nouvelle zone"
+msgstr "Create a new zone"
+
+#: .\zones\views\delete.py:16
+msgid "La zone a été supprimée avec succès"
+msgstr "The zone has been deleted successfully"
+
+#: .\zones\views\update.py:16
+#, python-format
+msgid "La zone %(numero)s a été modifiée avec succès"
+msgstr "The zone %(numero)s has been modified successfully"
+
+#: .\zones\views\update.py:34
+#, python-format
+msgid "Modifier la zone %(numero)s"
+msgstr "Modify zone %(numero)s"
+
+#~ msgid ""
+#~ "Our platform showcases an extensive range of commodities in the sourcing "
+#~ "of palm oil and derivative products, making it easier to access unique "
+#~ "and authentic products."
+#~ msgstr ""
+#~ "Our platform showcases an extensive range of commodities in the sourcing "
+#~ "of palm oil and derivative products, making it easier to access unique "
+#~ "and authentic products."
+
+#~ msgid "Confirmer the deletion"
+#~ msgstr "Confirm the deletion"
