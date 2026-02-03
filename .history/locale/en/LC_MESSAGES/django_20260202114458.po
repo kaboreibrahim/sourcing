@@ -1293,9 +1293,9 @@ msgid "Quantité"
 msgstr "Quantity"
 
 #: .\cotation\forms.py:54 .\cotation\models.py:71
- 
+#, fuzzy
 msgid "Port de déchargement (POD)"
-msgstr "POD (Port of Discharging)"
+msgstr "Unloading port: "
 
 #: .\cotation\forms.py:58
 msgid "Target price"
@@ -1379,7 +1379,7 @@ msgstr "Incoterm:"
 
 #: .\cotation\models.py:63
 msgid "Port de chargement (POL)"
-msgstr "POL (Port of Loading) "
+msgstr "Unloading port: "
 
 #: .\cotation\models.py:67
 msgid "Abidjan"
@@ -1664,11 +1664,11 @@ msgstr "Target price per tonne"
 
 #: .\cotation\templates\cotations\create.html:1182
 msgid "Port de chargement (optionnel)"
-msgstr "Port of loading "
+msgstr "Loading port (optional)"
 
 #: .\cotation\templates\cotations\create.html:1199
 msgid "Port de déchargement (optionnel)"
-msgstr "Port of Discharging"
+msgstr "Unloading port (optional)"
 
 #: .\cotation\templates\cotations\create.html:1214
 msgid "Vérification et confirmation"
@@ -5480,7 +5480,8 @@ msgid ""
 "Découvrez notre huile de palme de qualité supérieure, produite avec soin par "
 "des producteurs locaux engagés"
 msgstr ""
-"Discover our high-quality palm oil, palm kernel oils and derivaties from Africa "
+"Discover our high-quality palm oil, produced with care by engaged local "
+"producers"
 
 #: .\website\templates\website\accueil1.html:222
 msgid "Une production durable"

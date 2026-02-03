@@ -62,12 +62,13 @@ class DemandeCotation(models.Model):
     pol = models.CharField(
         _("Port de chargement (POL)"),
         max_length=255,
+        blank=True,
         choices=[
             ('ABIDJ', _('Abidjan')),
             ('SAN', _('San Pedro')),
         ]
     )
-    pod = models.CharField(_("Port de déchargement (POD)"), max_length=255)
+    pod = models.CharField(_("Port de déchargement (POD)"), max_length=255, blank=True)
 
     target_price = models.DecimalField(_("Prix cible"), max_digits=10, decimal_places=2)
     target_price_currency = models.CharField(

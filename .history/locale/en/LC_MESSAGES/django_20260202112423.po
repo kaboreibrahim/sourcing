@@ -1276,14 +1276,18 @@ msgid "La liaison a été supprimée avec succès"
 msgstr "The connection has been successfully deleted"
 
 #: .\cotation\forms.py:26
+#, fuzzy
+#| msgid "Nom de la commodité"
 msgid "Nom du client ou société"
-msgstr "Customer or company name"
+msgstr "Commodity Name"
 
 #: .\cotation\forms.py:30
 msgid "Téléphone"
 msgstr "Cell phone"
 
 #: .\cotation\forms.py:34 .\cotation\models.py:42
+#, fuzzy
+#| msgid "Email:"
 msgid "Email"
 msgstr "Email:"
 
@@ -1293,9 +1297,9 @@ msgid "Quantité"
 msgstr "Quantity"
 
 #: .\cotation\forms.py:54 .\cotation\models.py:71
- 
+#, fuzzy
 msgid "Port de déchargement (POD)"
-msgstr "POD (Port of Discharging)"
+msgstr "Unloading port: "
 
 #: .\cotation\forms.py:58
 msgid "Target price"
@@ -1319,31 +1323,31 @@ msgstr ""
 
 #: .\cotation\models.py:21
 msgid "FOB"
-msgstr "FOB"
+msgstr ""
 
 #: .\cotation\models.py:22
 msgid "CIF"
-msgstr "CIF"
+msgstr ""
 
 #: .\cotation\models.py:23
 msgid "CFR"
-msgstr "CFR"
+msgstr ""
 
 #: .\cotation\models.py:27
 msgid "Vrac"
-msgstr "Bulk"
+msgstr ""
 
 #: .\cotation\models.py:28
 msgid "Flexitank"
-msgstr "Flexitank"
+msgstr ""
 
 #: .\cotation\models.py:29
 msgid "Isotank"
-msgstr "Isotank"
+msgstr ""
 
 #: .\cotation\models.py:30
 msgid "Autre"
-msgstr "Other"
+msgstr ""
 
 #: .\cotation\models.py:34
 #: .\cotation\templates\cotations\email_queue_list.html:89
@@ -1354,15 +1358,15 @@ msgstr "Pending"
 
 #: .\cotation\models.py:35
 msgid "Traitée"
-msgstr "Processed"
+msgstr ""
 
 #: .\cotation\models.py:36
 msgid "Refusée"
-msgstr "Rejected"
+msgstr ""
 
 #: .\cotation\models.py:39
 msgid "Nom client"
-msgstr "Client name"
+msgstr ""
 
 #: .\cotation\models.py:40 .\fournisseurs\models.py:83
 #: .\templates\layouts\footer.html:117
@@ -1370,52 +1374,59 @@ msgid "Contact"
 msgstr "Contact"
 
 #: .\cotation\models.py:49
+#, fuzzy
+#| msgid "Type de conteneur ou de conditionnement"
 msgid "Type de conditionnement"
 msgstr "Type of container or packaging"
 
 #: .\cotation\models.py:56
+#, fuzzy
+#| msgid "Incoterm:"
 msgid "Incoterm"
 msgstr "Incoterm:"
 
 #: .\cotation\models.py:63
+#, fuzzy
 msgid "Port de chargement (POL)"
-msgstr "POL (Port of Loading) "
+msgstr "Unloading port: "
 
 #: .\cotation\models.py:67
 msgid "Abidjan"
-msgstr "Abidjan"
+msgstr ""
 
 #: .\cotation\models.py:68
 msgid "San Pedro"
 msgstr ""
 
 #: .\cotation\models.py:73
+#, fuzzy
+#| msgid "Prix cible:"
 msgid "Prix cible"
 msgstr "Target price:"
 
 #: .\cotation\models.py:75
 msgid "Devise du prix cible"
-msgstr "Target price currency"
+msgstr ""
 
 #: .\cotation\models.py:78
 msgid "XOF (Francs CFA)"
-msgstr "XOF (Francs CFA)"
+msgstr ""
 
 #: .\cotation\models.py:79
 msgid "USD (Dollars)"
-msgstr "USD (Dollars)"
+msgstr ""
 
 #: .\cotation\models.py:80
 msgid "EUR (Euros)"
-msgstr "EUR (Euros)"
+msgstr ""
 
 #: .\cotation\models.py:81
 msgid "GBP (Livres sterling)"
-msgstr "GBP (British pounds)"
+msgstr ""
 
 #: .\cotation\models.py:82
 msgid "CHF (Francs suisses)"
-msgstr "CHF (Swiss francs)"
+msgstr ""
 
 #: .\cotation\models.py:87
 #: .\cotation\templates\cotations\email_queue_list.html:129
@@ -1432,7 +1443,7 @@ msgstr "Request"
 
 #: .\cotation\models.py:104
 msgid "REF-PENDING"
-msgstr "REF-PENDING"
+msgstr ""
 
 #: .\cotation\models.py:110
 #, fuzzy
@@ -1493,6 +1504,8 @@ msgid "Envoyé"
 msgstr "Sent"
 
 #: .\cotation\models.py:147
+#, fuzzy
+#| msgid "Commande d'envoi"
 msgid "Date d'envoi"
 msgstr "Send command"
 
@@ -1504,7 +1517,7 @@ msgstr "Attempts"
 
 #: .\cotation\models.py:150
 msgid "Message d'erreur"
-msgstr "Error message"
+msgstr ""
 
 #: .\cotation\models.py:153
 #, fuzzy
@@ -1664,11 +1677,11 @@ msgstr "Target price per tonne"
 
 #: .\cotation\templates\cotations\create.html:1182
 msgid "Port de chargement (optionnel)"
-msgstr "Port of loading "
+msgstr "Loading port (optional)"
 
 #: .\cotation\templates\cotations\create.html:1199
 msgid "Port de déchargement (optionnel)"
-msgstr "Port of Discharging"
+msgstr "Unloading port (optional)"
 
 #: .\cotation\templates\cotations\create.html:1214
 msgid "Vérification et confirmation"
@@ -5480,7 +5493,8 @@ msgid ""
 "Découvrez notre huile de palme de qualité supérieure, produite avec soin par "
 "des producteurs locaux engagés"
 msgstr ""
-"Discover our high-quality palm oil, palm kernel oils and derivaties from Africa "
+"Discover our high-quality palm oil, produced with care by engaged local "
+"producers"
 
 #: .\website\templates\website\accueil1.html:222
 msgid "Une production durable"

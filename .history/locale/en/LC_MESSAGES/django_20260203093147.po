@@ -1664,11 +1664,11 @@ msgstr "Target price per tonne"
 
 #: .\cotation\templates\cotations\create.html:1182
 msgid "Port de chargement (optionnel)"
-msgstr "Port of loading "
+msgstr "Loading port (optional)"
 
 #: .\cotation\templates\cotations\create.html:1199
 msgid "Port de déchargement (optionnel)"
-msgstr "Port of Discharging"
+msgstr "Unloading port (optional)"
 
 #: .\cotation\templates\cotations\create.html:1214
 msgid "Vérification et confirmation"

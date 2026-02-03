@@ -1,0 +1,32 @@
+NEW QUOTATION REQUEST - ACTION REQUIRED
+=======================================
+
+⚠️ A new quotation request requires your attention.
+
+REFERENCE: {{ demande.ref }}
+
+CUSTOMER INFORMATION
+--------------------
+Customer Name: {{ demande.nom_client }}
+Contact: {{ demande.contact }}
+Request Date: {{ demande.date_demande|date:"d/m/Y H:i" }}
+Status: {{ demande.get_statut_display }}
+
+ORDER DETAILS
+-------------
+Commodity: {{ demande.commodite.nom }}
+Quantity: {{ demande.quantite }} tons
+Packaging: {{ demande.get_type_conditionnement_display }}
+Incoterm: {{ demande.incoterm }}
+Port of Loading: {{ demande.pol }}
+Port of Discharging: {{ demande.pod }}
+Target Price: {{ demande.target_price }} {{ demande.target_price_currency }}
+
+ACTION REQUIRED
+--------------
+Please process this request as soon as possible and contact 
+the customer to provide a detailed quotation.
+
+---
+    © 2026 oils of africa - Innov sourcing
+    This email was sent automatically by the system.

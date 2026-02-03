@@ -1,0 +1,33 @@
+Quotation Request Confirmation
+=============================
+
+Hello {{ nom_client }},
+
+We have received your quotation request. Here is a summary of your request:
+
+REFERENCE: {{ reference }}
+
+Order Details:
+--------------
+Commodity: {{ commodite }}
+Quantity: {{ quantite }} tons
+Packaging: {{ demande.get_type_conditionnement_display }}
+Incoterm: {{ demande.incoterm }}
+Port of Loading: {{ demande.pol }}
+Port of Discharging: {{ demande.pod }}
+Target price: {{ demande.target_price }} {{ demande.target_price_currency }}
+
+Next Steps:
+-----------
+- Our sales team will analyze your request
+- We will contact you as soon as possible
+- You will receive a detailed quotation by email
+
+If you have any questions or need additional information, please do not hesitate to contact us.
+
+Best regards,
+The Sales Team
+
+---
+    © 2026 oils of africa - Innov sourcing
+    This email was sent automatically by the system.

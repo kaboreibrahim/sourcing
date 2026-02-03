@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quotation Request Confirmation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background-color: #007bff;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 5px 5px 0 0;
+        }
+        .content {
+            background-color: #f9f9f9;
+            padding: 30px;
+            border: 1px solid #ddd;
+        }
+        .info-box {
+            background-color: white;
+            padding: 15px;
+            margin: 20px 0;
+            border-left: 4px solid #007bff;
+        }
+        .info-row {
+            margin: 10px 0;
+        }
+        .label {
+            font-weight: bold;
+            color: #555;
+        }
+        .footer {
+            background-color: #333;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 12px;
+            border-radius: 0 0 5px 5px;
+        }
+        .button {
+            display: inline-block;
+            padding: 12px 30px;
+            background-color: #28a745;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Quotation Request Confirmation</h1>
+    </div>
+    
+    <div class="content">
+        <p>Hello <strong>{{ nom_client }}</strong>,</p>
+        
+        <p>We have received your quotation request. Here is a summary of your request:</p>
+        
+        <div class="info-box">
+            <h3 style="margin-top: 0; color: #007bff;">Reference: {{ reference }}</h3>
+            
+            <div class="info-row">
+                <span class="label">Commodity:</span> {{ commodite }}
+            </div>
+            
+            <div class="info-row">
+                <span class="label">Quantity:</span> {{ quantite }} tons
+            </div>
+            
+            <div class="info-row">
+                <span class="label">Packaging:</span> {{ demande.get_type_conditionnement_display }}
+            </div>
+            
+            <div class="info-row">
+                <span class="label">Incoterm:</span> {{ demande.incoterm }}
+            </div>
+            
+            <div class="info-row">
+                <span class="label">Port of Loading:</span> {{ demande.pol }}
+            </div>
+            
+            <div class="info-row">
+                <span class="label">Port of Discharging:</span> {{ demande.pod }}
+            </div>
+            
+            <div class="info-row">
+                <span class="label">Target price:</span>  {{ demande.target_price }} {{ demande.target_price_currency }}
+            </div>
+        </div>
+        
+        <p><strong>Next Steps:</strong></p>
+        <ul>
+            <li>Our sales team will analyze your request</li>
+            <li>We will contact you as soon as possible</li>
+            <li>You will receive a detailed quotation by email</li>
+        </ul>
+        
+        <p>If you have any questions or need additional information, please do not hesitate to contact us.</p>
+        
+        <p>Best regards,<br>
+        <strong>The Sales Team</strong></p>
+    </div>
+    
+    <div class="footer">
+        <p>© 2026 Oils of africa - Innov sourcing</p>
+        <p>This email was sent automatically by the system.</p>
+    </div>
+</body>
+</html>

@@ -4,26 +4,8 @@ from django.core.mail import EmailMultiAlternatives
 from django.utils import translation
 from cotation.models import EmailQueue
 
-# Variable globale pour stocker la langue sélectionnée
-CURRENT_EMAIL_LANGUAGE = 'en'
 
-def set_email_language(language):
-    """
-    Définit la langue à utiliser pour les emails
-    """
-    global CURRENT_EMAIL_LANGUAGE
-    if language in ['fr', 'en']:
-        CURRENT_EMAIL_LANGUAGE = language
-    else:
-        CURRENT_EMAIL_LANGUAGE = 'en'  # langue par défaut
-
-def get_email_language():
-    """
-    Retourne la langue actuellement configurée pour les emails
-    """
-    return CURRENT_EMAIL_LANGUAGE
-
-def send_client_confirmation_email(demande, language=CURRENT_EMAIL_LANGUAGE):
+def send_client_confirmation_email(demande, language='fr'):
     """
     Envoie directement un email de confirmation client
     """
@@ -81,7 +63,7 @@ def send_client_confirmation_email(demande, language=CURRENT_EMAIL_LANGUAGE):
         translation.activate(current_language)
 
 
-def send_admin_notification_email(demande, language=CURRENT_EMAIL_LANGUAGE):
+def send_admin_notification_email(demande, language='fr'):
     """
     Envoie directement un email de notification admin
     """
@@ -137,7 +119,7 @@ def send_admin_notification_email(demande, language=CURRENT_EMAIL_LANGUAGE):
         translation.activate(current_language)
 
 
-def send_all_emails(demande, language=CURRENT_EMAIL_LANGUAGE):
+def send_all_emails(demande, language='fr'):
     """
     Envoie directement tous les emails nécessaires pour une demande
     """

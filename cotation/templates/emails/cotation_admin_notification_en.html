@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Quotation Request</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background-color: #dc3545;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 5px 5px 0 0;
+        }
+        .content {
+            background-color: #f9f9f9;
+            padding: 30px;
+            border: 1px solid #ddd;
+        }
+        .alert {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .info-box {
+            background-color: white;
+            padding: 15px;
+            margin: 20px 0;
+            border-left: 4px solid #dc3545;
+        }
+        .info-row {
+            margin: 10px 0;
+            padding: 8px;
+            background-color: #f8f9fa;
+        }
+        .label {
+            font-weight: bold;
+            color: #555;
+            display: inline-block;
+            width: 180px;
+        }
+        .footer {
+            background-color: #333;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 12px;
+            border-radius: 0 0 5px 5px;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            background-color: #ffc107;
+            color: #000;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🔔 New Quotation Request</h1>
+    </div>
+    
+    <div class="content">
+        <div class="alert">
+            <strong>⚠️ Action Required:</strong> A new quotation request requires your attention.
+        </div>
+        
+        <h3 style="color: #dc3545;">Reference: {{ demande.ref }}</h3>
+        
+        <div class="info-box">
+            <h4 style="margin-top: 0;">Customer Information</h4>
+            
+            <div class="info-row">
+                <span class="label">Customer Name:</span> 
+                <strong>{{ demande.nom_client }}</strong>
+            </div>
+            
+            <div class="info-row">
+                <span class="label">Contact:</span> 
+                {{ demande.contact }}
+            </div>
+            
+            <div class="info-row">
+                <span class="label">Request Date:</span> 
+                {{ demande.date_demande|date:"d/m/Y H:i" }}
+            </div>
+            
+            <div class="info-row">
+                <span class="label">Status:</span> 
+                <span class="status-badge">{{ demande.get_statut_display }}</span>
+            </div>
+        </div>
+        
+        <div class="info-box">
+            <h4 style="margin-top: 0;">Order Details</h4>
+            
+            <div class="info-row">
+                <span class="label">Commodity:</span> 
+                <strong>{{ demande.commodite.nom }}</strong>
+            </div>
+            
+            <div class="info-row">
+                <span class="label">Quantity:</span> 
+                {{ demande.quantite }} tons
+            </div>
+            
+            <div class="info-row">
+                <span class="label">Packaging:</span> 
+                {{ demande.get_type_conditionnement_display }}
+            </div>
+            
+            <div class="info-row">
+                <span class="label">Incoterm:</span> 
+                {{ demande.incoterm }}
+            </div>
+            
+            <div class="info-row">
+                <span class="label">Port of Loading:</span> 
+                {% if demande.pol %}
+                    {{ demande.pol }}
+                {% else %}
+                    Not specified
+                {% endif %}
+            </div>
+            
+            <div class="info-row">
+                <span class="label">Port of Discharging:</span> 
+                {% if demande.pod %}
+                    {{ demande.pod }}
+                {% else %}
+                    Not specified
+                {% endif %}
+            </div>
+            
+            <div class="info-row">
+                <span class="label">Target Price:</span> 
+                <strong style="color: #28a745; font-size: 1.2em;">{{ demande.target_price }} {{ demande.target_price_currency }}</strong>
+            </div>
+        </div>
+        
+        <p style="margin-top: 30px;">
+            <strong>Action Required:</strong> Please process this request as soon as possible 
+            and contact the customer to provide a detailed quotation.
+        </p>
+    </div>
+    
+    <div class="footer">
+        <p>© 2026 Oils of africa - Innov sourcing</p>
+        <p>This email was sent automatically by the system.</p>
+    </div>
+</body>
+</html>

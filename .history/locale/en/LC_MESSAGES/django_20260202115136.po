@@ -1293,7 +1293,6 @@ msgid "Quantité"
 msgstr "Quantity"
 
 #: .\cotation\forms.py:54 .\cotation\models.py:71
- 
 msgid "Port de déchargement (POD)"
 msgstr "POD (Port of Discharging)"
 
@@ -1379,7 +1378,7 @@ msgstr "Incoterm:"
 
 #: .\cotation\models.py:63
 msgid "Port de chargement (POL)"
-msgstr "POL (Port of Loading) "
+msgstr "POL (Port of Loading)"
 
 #: .\cotation\models.py:67
 msgid "Abidjan"
@@ -1664,11 +1663,11 @@ msgstr "Target price per tonne"
 
 #: .\cotation\templates\cotations\create.html:1182
 msgid "Port de chargement (optionnel)"
-msgstr "Port of loading "
+msgstr "POL (Port of Loading)"
 
 #: .\cotation\templates\cotations\create.html:1199
 msgid "Port de déchargement (optionnel)"
-msgstr "Port of Discharging"
+msgstr "POD(Port of Discharging)"
 
 #: .\cotation\templates\cotations\create.html:1214
 msgid "Vérification et confirmation"
@@ -1708,11 +1707,11 @@ msgstr "Incoterm:"
 
 #: .\cotation\templates\cotations\create.html:1275
 msgid "Port de chargement:"
-msgstr "Loading port:"
+msgstr "POL (Port of Loading)"
 
 #: .\cotation\templates\cotations\create.html:1282
 msgid "Port de déchargement:"
-msgstr "Unloading port: "
+msgstr "POD (Port of Discharging) "
 
 #: .\cotation\templates\cotations\create.html:1289
 msgid "Prix cible:"
@@ -4575,8 +4574,6 @@ msgid "Tous droits réservés."
 msgstr "All rights reserved."
 
 #: .\templates\layouts\footer.html:150
-#, fuzzy
-#| msgid "Instructions d'utilisation"
 msgid "Conditions d'utilisation"
 msgstr "Terms of use"
 
@@ -4585,14 +4582,11 @@ msgid "Politique de confidentialité"
 msgstr "Privacy policy"
 
 #: .\templates\layouts\footer.html:154
-#, fuzzy
-#| msgid "Informations générales"
 msgid "Mentions légales"
 msgstr "Legal notices"
 
 #: .\templates\layouts\header_client.html:178
-#, fuzzy
-#| msgid "Innov Sourcing - Oils of Africa"
+
 msgid "Innov-SourcIng OOA"
 msgstr "Innov-Sourcing OOA"
 
@@ -5446,7 +5440,7 @@ msgstr "This connection already exists between %(port)s and %(ville)s"
 #: .\villes\views\portville\detail.py:26
 #, python-brace-format
 msgid "Liaison {port} - {ville}"
-msgstr "Connection {port} - {city}"
+msgstr " "
 
 #: .\villes\views\ville\create.py:28
 #, python-format

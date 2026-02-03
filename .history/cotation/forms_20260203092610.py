@@ -47,9 +47,8 @@ class DemandeCotationForm(forms.ModelForm):
                 'class': 'form-control'
             }),
             'pol': forms.Select(attrs={
-                'class': 'form-control',
-                'placeholder': _('Port de chargement (POL)')
-
+                'class': 'form-control'
+                
             }),
             'pod': forms.TextInput(attrs={
                 'class': 'form-control',

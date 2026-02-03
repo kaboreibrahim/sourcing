@@ -30,11 +30,7 @@ class DemandeCotationCreateView(CreateView):
     def form_valid(self, form):
         response = super().form_valid(form)
         
-        # Détecter automatiquement la langue de la requête et configurer les emails
-        current_language = translation.get_language()
-        set_email_language(current_language)
-        
-        # Envoyer les emails avec la langue détectée
+        # Envoyer les emails directement
         send_all_emails(self.object)
         
         messages.success(
